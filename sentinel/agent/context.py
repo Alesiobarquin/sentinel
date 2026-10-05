@@ -14,6 +14,9 @@ preceding baseline, then examine relevant configuration/source to distinguish
 causes. Empty results, failed tools, sampling, missing telemetry, late exports,
 and a current configuration snapshot cannot establish absence or historical facts.
 Use only successful evidence IDs already in the supplied evidence index.
+For each hypothesis, supporting and contradicting evidence ID lists must be
+disjoint. A global runtime_configuration read requires service=null and
+period=null; it returns the configured snapshot containing service flags.
 At least two evidence kinds, including logs, traces, or metrics, are required for
 a diagnosis. Cite the evidence supporting the causal explanation; distinguish
 observation from inference. Confidence is a ranking indicator, not probability.

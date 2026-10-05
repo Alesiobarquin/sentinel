@@ -1,5 +1,30 @@
 # Implementation progress
 
+## Current delivery status — 2026-10-05
+
+The source is public at [Alesiobarquin/sentinel](https://github.com/Alesiobarquin/sentinel).
+The first [hosted deterministic CI run](https://github.com/Alesiobarquin/sentinel/actions/runs/37327673968)
+passed on Python 3.12 and 3.14. GitHub Pages is configured for Actions deployment;
+the recruiter site has **not** been built or deployed yet.
+
+ChatGPT sign-in is complete. Real model run
+`968a752f-8f1d-4dd5-acab-c95076d4a96e` passed the corrected streaming transport,
+read inventory, metrics, logs, traces, and source, then failed application
+validation: the model supplied a service argument to a global configuration
+tool. It used five model calls and five tool calls, with 18,285 input and 1,679
+output tokens; it produced no final diagnosis. The developer exercise reset
+the fault. All baseline/recovery reads succeeded, with zero sampled errors.
+
+Tool scope/time argument families now appear in the model-facing JSON Schema,
+matching the existing Python validator. Instructions also require disjoint
+supporting/contradicting evidence lists. The latest deterministic suite passed
+**111 tests plus eight opt-in live skips and compilation**. A fresh bounded
+exercise is validating that contract fix. Checkpoint 2 remains pending.
+
+The entries below preserve the earlier implementation and validation history;
+their then-current statements about authorization, publication, and CI are
+superseded by this status.
+
 ## Recruiter launch planning
 
 On 2026-10-05 the developer requested exact human steps and a hosting comparison
@@ -43,9 +68,9 @@ captured real stream through the SDK's mocked HTTP transport passed without a
 network request. Four new deterministic regression cases cover this behavior
 and failure-audit retention.
 
-Latest deterministic checks passed: **110 tests, eight opt-in live skips, and
-compilation**. A fresh real exercise with the corrected provider is in progress;
-checkpoint 2 remains pending until a correct diagnosis and human review.
+The provider-fix deterministic checks passed: **110 tests, eight opt-in live
+skips, and compilation**. The subsequent exercise and contract fix are recorded
+in the current status above; checkpoint 2 requires a correct diagnosis and review.
 
 ## Bootstrap work implemented
 

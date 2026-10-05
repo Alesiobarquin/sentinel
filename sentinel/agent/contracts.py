@@ -44,7 +44,26 @@ ToolName = Literal["services", "latency_ranking", "metrics", "logs", "traces", "
                    "runtime_configuration", "source", "pods"]
 
 
+def tool_schema(schema: dict) -> None:
+    # Python validators do not automatically appear in JSON Schema. Expose the
+    # same argument families to strict model output without weakening validation.
+    families = [(["services", "runtime_configuration"], False, False),
+                (["latency_ranking", "dependencies"], False, True),
+                (["metrics", "logs", "traces"], True, True),
+                (["source", "pods"], True, False)]
+    schema["anyOf"] = [{
+        "type": "object", "additionalProperties": False,
+        "properties": {
+            "name": {"type": "string", "enum": names},
+            "service": {"type": "string"} if scoped else {"type": "null"},
+            "period": {"type": "string", "enum": ["incident", "baseline"]} if timed else {"type": "null"},
+        },
+        "required": ["name", "service", "period"],
+    } for names, scoped, timed in families]
+
+
 class ToolRequest(ClosedModel):
+    model_config = ConfigDict(json_schema_extra=tool_schema)
     name: ToolName
     service: str | None
     period: Literal["incident", "baseline"] | None

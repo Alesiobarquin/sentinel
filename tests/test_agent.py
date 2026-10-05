@@ -102,6 +102,21 @@ class AgentTests(unittest.TestCase):
         self.assertEqual(json.loads(artifacts["response-01.json"]), {"terminal": {"output": []}})
         self.assertNotIn("terminal", provider.contexts[0])
 
+    def test_model_schema_exposes_tool_scope_and_period_constraints(self):
+        schema = InvestigationStep.model_json_schema()["$defs"]["ToolRequest"]
+        families = {name: branch for branch in schema["anyOf"]
+                    for name in branch["properties"]["name"]["enum"]}
+        self.assertEqual(set(families), {"services", "runtime_configuration", "latency_ranking",
+                                         "dependencies", "metrics", "logs", "traces", "source", "pods"})
+        global_config = families["runtime_configuration"]["properties"]
+        self.assertEqual(global_config["service"], {"type": "null"})
+        self.assertEqual(global_config["period"], {"type": "null"})
+        self.assertEqual(families["metrics"]["properties"]["service"], {"type": "string"})
+        self.assertEqual(families["source"]["properties"]["period"], {"type": "null"})
+        with self.assertRaises(ValidationError):
+            ToolRequest(name="runtime_configuration", service="payment", period=None)
+        self.assertIsNone(ToolRequest(name="runtime_configuration", service=None, period=None).service)
+
     def test_unknown_or_failed_citations_cannot_be_diagnosed(self):
         for ids, failed in [(["ev_999", "ev_003"], None), (["ev_002", "ev_003"], "logs")]:
             with self.subTest(ids=ids, failed=failed):

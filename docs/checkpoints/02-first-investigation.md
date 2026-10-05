@@ -1,6 +1,6 @@
 # Checkpoint 2: first successful AI investigation
 
-**Status: pending live ChatGPT authorization and diagnosis.** Deterministic
+**Status: sign-in complete; correct diagnosis and review pending.** Deterministic
 fixtures and real telemetry validation do not satisfy this checkpoint. No
 model-produced root cause, token/cost result, or AI accuracy is claimed here.
 

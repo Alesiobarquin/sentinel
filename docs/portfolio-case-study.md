@@ -37,7 +37,7 @@ a fault. There is no automatic model upgrade or endless retry loop.
 
 ## Evidence already recorded
 
-- 110 deterministic tests passed locally, with eight opt-in live tests skipped
+- 111 deterministic tests passed locally, with eight opt-in live tests skipped
   in the ordinary run. Python compilation passed. These tests validate behavior,
   not AI diagnosis accuracy.
 - Six telemetry integration checks passed against the real local backends.
@@ -48,10 +48,14 @@ a fault. There is no automatic model upgrade or endless retry loop.
   not three successful AI diagnoses or an accuracy benchmark.
 - Failed captures and combined Docker-memory failures were preserved. Later
   isolated validation passed without relabeling those earlier failures.
+- [Hosted CI](https://github.com/Alesiobarquin/sentinel/actions/runs/37327673968)
+  passed the then-current 110-test deterministic suite on Python 3.12 and 3.14.
+  Real model runs have exposed transport and argument-contract failures; neither
+  failed investigation is counted as a correct diagnosis.
 
 See [progress](progress.md), [agent validation](validation/read-only-agent.md),
-and [fault evidence](validation/payment-failure.md). Update this section with the
-actual hosted CI result and AI exercise only after they are verified.
+and [fault evidence](validation/payment-failure.md). Add a successful AI exercise
+only after inspecting its actual diagnosis and causal evidence.
 
 ## Engineering lessons supported by this work
 
