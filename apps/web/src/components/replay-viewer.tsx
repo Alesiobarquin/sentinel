@@ -66,13 +66,14 @@ export function ReplayViewer() {
             <span className="status-dot" /> Recorded investigation / October 5,
             2026
           </p>
-          <h1>Follow the evidence.</h1>
+          <h1>Payment investigation</h1>
           <p>
-            A token error is the symptom. Watch Sentinel test what caused it.
+            This local test injected a payment failure. The replay shows the
+            agent&apos;s tool calls, hypotheses, evidence, and diagnosis.
           </p>
         </div>
         <Link href="/project/" className="text-link">
-          How it was built <Icon name="arrow" />
+          Project notes <Icon name="arrow" />
         </Link>
       </div>
       <div className="recording-notice">
@@ -155,7 +156,7 @@ export function ReplayViewer() {
       </div>
       <div className="replay-grid">
         <aside className="timeline">
-          <h2 className="eyebrow">Investigation trail</h2>
+          <h2 className="eyebrow">Investigation steps</h2>
           <ol>
             {replay.steps.map((step, i) => (
               <li
@@ -193,7 +194,7 @@ export function ReplayViewer() {
                 <span className="timeline-index">10</span>
                 <span>
                   <strong>Reset & recovery</strong>
-                  <small>Developer exercise · verified</small>
+                  <small>Test helper · recovery checks</small>
                 </span>
               </button>
             </li>
@@ -218,9 +219,7 @@ export function ReplayViewer() {
                     ? "Investigation outcome"
                     : `Read ${index + 1} of ${replay.tool_calls}`}
               </span>
-              <h2>
-                {isRecovery ? "Sampled recovery verified" : stepTitle(current)}
-              </h2>
+              <h2>{isRecovery ? "Recovery checks" : stepTitle(current)}</h2>
             </div>
             <span className="pill">
               {isRecovery
@@ -232,7 +231,7 @@ export function ReplayViewer() {
           </div>
           <p className="sr-only" aria-live="polite">
             Step {index + 1}:{" "}
-            {isRecovery ? "Recovery verified" : stepTitle(current)}
+            {isRecovery ? "Recovery checks" : stepTitle(current)}
           </p>
           {isRecovery ? (
             <section className="recovery-panel">
@@ -241,9 +240,9 @@ export function ReplayViewer() {
                   <Icon name="check" size={26} />
                 </span>
                 <div>
-                  <h3>Errors returned to the observed baseline.</h3>
+                  <h3>No payment errors in the recovery samples</h3>
                   <p>
-                    The developer helper restored the prior flag at{" "}
+                    The test helper restored the prior flag at{" "}
                     {utc(replay.reset_at)} UTC. Sentinel did not execute
                     remediation.
                   </p>
@@ -315,11 +314,11 @@ export function ReplayViewer() {
                     </span>
                     <p>{replay.diagnosis.recommended_remediation}</p>
                     <span className="pill">
-                      Recommendation only · execution unavailable
+                      The agent cannot execute this recommendation
                     </span>
                   </div>
                   <details className="limitations">
-                    <summary>What this diagnosis cannot establish</summary>
+                    <summary>Diagnosis limitations</summary>
                     <ul>
                       {replay.diagnosis.limitations.map((value) => (
                         <li key={value}>{value}</li>
@@ -379,7 +378,7 @@ export function ReplayViewer() {
             href={`${REPO}/blob/main/docs/checkpoints/02-first-investigation.md`}
             className="text-link"
           >
-            Read the causal review <Icon name="external" size={14} />
+            Investigation review <Icon name="external" size={14} />
           </a>
         </div>
       </div>

@@ -9,23 +9,23 @@ const components = [
     title: "Telemetry lab",
     label: "Prometheus · OpenSearch · Jaeger",
     detail:
-      "The pinned external OpenTelemetry Demo generates real requests, metrics, logs, and distributed traces. Developer-owned helpers inject reversible faults. The model receives an incident window, not the scenario's expected answer.",
+      "OpenTelemetry Demo generates requests, metrics, logs, and traces. Test helpers inject and reset faults. The model receives the service and incident window; the expected cause is kept outside its context.",
     file: "infra/docker/demo.lock.json",
   },
   {
     id: "tools",
-    title: "Native read-only tools",
+    title: "Read-only tools",
     label: "Fixed queries → reduced evidence",
     detail:
-      "Typed adapters parse backend responses. Semantic tools choose fixed queries and deterministic grouping, ranking, span selection, and bounded source excerpts. The application allows observed services; the model cannot choose arbitrary queries, endpoints, files, or commands.",
+      "Python adapters parse backend responses. Tools use fixed queries, group logs, select spans, and limit source excerpts. The model cannot choose arbitrary queries, endpoints, files, or commands.",
     file: "sentinel/agent/diagnostics.py",
   },
   {
     id: "agent",
-    title: "One bounded agent",
+    title: "Investigation loop",
     label: "Read → test hypotheses → cite",
     detail:
-      "The explicit loop validates structured model decisions, enforces tool scope and budgets, and checks that citations refer to successful prior evidence. The model sees at most 32 KB of selected context; omissions remain explicit. A direct model adapter uses the OpenAI SDK. There is no multi-agent framework.",
+      "The loop validates model decisions, checks tool permissions and run limits, and requires citations to successful earlier reads. It sends at most 32 KB of selected context through the OpenAI SDK.",
     file: "sentinel/agent/runner.py",
   },
   {
@@ -33,7 +33,7 @@ const components = [
     title: "Full local audit",
     label: "Results · events · usage · OTel",
     detail:
-      "Full tool payloads, model decisions, contexts, native responses, audit events, usage, and self-trace spans remain outside selected model context in local run files. The current system uses file persistence; PostgreSQL is a later phase. OTLP delivery failed during the showcased run, while its 25 local spans remained.",
+      "Local files retain full tool results, decisions, contexts, model responses, usage, and trace spans. PostgreSQL is not implemented. OTLP export failed during the recorded run; its 25 local spans were retained.",
     file: "sentinel/observability.py",
   },
   {
@@ -41,7 +41,7 @@ const components = [
     title: "Public replay",
     label: "Reviewed export → Next.js → Pages",
     detail:
-      "A developer-acknowledged causal review and source-record hashes admit an offline publication. Field allowlists remove private data. This static Next.js site displays the actual recorded decisions and selected evidence. Browsing does not start model inference or connect to local telemetry.",
+      "A reviewed export selects the recorded decisions and evidence for this Next.js site. Private fields stay local. GitHub Pages serves the recording without running the agent or connecting to telemetry backends.",
     file: "sentinel/replay.py",
   },
 ];
@@ -72,14 +72,14 @@ export function Architecture() {
         ))}
       </div>
       <p className="fine-print arch-caption">
-        Application policy surrounds the tool/agent boundary. Full audit and
-        selected model context are separate. Select a component to inspect it.
+        Select a component for details. Python enforces tool permissions and run
+        limits; full audit files are separate from model context.
       </p>
       <div className="arch-detail" aria-live="polite">
         <span className="eyebrow">{current.title}</span>
         <p>{current.detail}</p>
         <a href={`${REPO}/blob/main/${current.file}`} className="text-link">
-          Read the implementation <Icon name="external" size={14} />
+          Source code <Icon name="external" size={14} />
         </a>
       </div>
     </div>

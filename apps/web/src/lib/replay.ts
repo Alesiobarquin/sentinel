@@ -237,6 +237,6 @@ export function evidenceTitle(e: Evidence): string {
 }
 export function stepTitle(step: Step): string {
   return step.action === "diagnose"
-    ? "Evidence-linked diagnosis"
+    ? "Diagnosis"
     : evidenceTitle(replay.evidence.find((e) => e.id === step.evidence_id)!);
 }

@@ -1,37 +1,30 @@
 import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { ErrorComparison } from "@/components/error-comparison";
-import { number, replay, REPO, seconds, totalTokens } from "@/lib/replay";
+import { number, replay, seconds, totalTokens } from "@/lib/replay";
 
 export default function Home() {
   return (
     <main id="main">
       <section className="hero container">
         <div className="hero-copy">
-          <p className="eyebrow">
-            <span className="status-dot" /> AI incident investigation ·
-            read-only
-          </p>
-          <h1>
-            An incident,
-            <br />
-            <em>investigated.</em>
-          </h1>
+          <p className="eyebrow">Student project · incident investigation</p>
+          <h1>Sentinel</h1>
           <p className="hero-description">
-            Scattered signals become a defensible diagnosis. Sentinel tests
-            hypotheses against real metrics, logs, traces, and source code—then
-            shows its evidence.
+            I built a Python agent that investigates failures in a local
+            distributed system. It reads metrics, logs, traces, source code, and
+            configuration, then records a diagnosis with supporting evidence.
           </p>
           <div className="hero-actions">
             <Link className="button primary" href="/demo/">
-              Explore the investigation <Icon name="arrow" />
+              View demo <Icon name="arrow" />
             </Link>
             <Link className="button secondary" href="/project/">
-              Read the project
+              Project notes
             </Link>
           </div>
           <p className="hero-note">
-            A real recorded run. Explore it without signing in.
+            The demo replays one real investigation. No sign-in required.
           </p>
           <div className="stack-line">
             <span>Python</span>
@@ -52,18 +45,14 @@ export default function Home() {
               <Icon name="signal" size={25} />
             </span>
             <div>
-              <h2>Charge requests are failing.</h2>
+              <h2>Payment failure test</h2>
               <p>October 5, 2026 · local distributed-system lab</p>
             </div>
           </div>
           <ErrorComparison compact />
           <div className="preview-verdict">
-            <span className="eyebrow">Cause supported by evidence</span>
-            <h3>
-              A flag-controlled failure,
-              <br />
-              disguised as a token error.
-            </h3>
+            <span className="eyebrow">Recorded diagnosis</span>
+            <h3>The paymentFailure flag was enabled.</h3>
             <div className="preview-citations">
               <span>Metrics</span>
               <span>Logs</span>
@@ -72,15 +61,14 @@ export default function Home() {
               <span>Config</span>
             </div>
             <p>
-              The source throws the exact observed error when{" "}
-              <code>paymentFailure</code> is active. The current snapshot
-              selects <code>100%</code>.
+              The flag snapshot showed <code>100%</code>. The source branch
+              throws the same token error found in the logs and traces.
             </p>
           </div>
           <div className="preview-bottom">
             <Icon name="check" size={16} />
             <span>
-              Fault reset by the developer helper; sampled recovery verified.
+              The test helper reset the flag. Recovery samples showed no errors.
             </span>
           </div>
         </div>
@@ -95,7 +83,7 @@ export default function Home() {
         </div>
         <div>
           <strong>{seconds(replay.latency_ms)}</strong>
-          <span>recorded investigation</span>
+          <span>investigation duration</span>
         </div>
         <div>
           <strong>{number(totalTokens)}</strong>
@@ -103,99 +91,78 @@ export default function Home() {
         </div>
         <div>
           <strong>1</strong>
-          <span>correct live case · no accuracy claim</span>
+          <span>correct diagnosis recorded</span>
         </div>
       </section>
       <section className="container home-flow">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">From symptom to explanation</p>
-            <h2>Every conclusion needs a trail.</h2>
+            <h2>How it works</h2>
           </div>
           <p>
-            The interesting part is how the agent gets there. Follow what it
-            reads, what it considers, and what the evidence can actually prove.
+            The investigation starts with a service and time window. One model
+            loop chooses read-only tools and compares possible causes.
           </p>
         </div>
         <div className="flow-cards">
           <article>
-            <span className="flow-number">01 / OBSERVE</span>
-            <h3>Read the real system</h3>
+            <span className="flow-number">01</span>
+            <h3>Collect telemetry</h3>
             <p>
-              Fixed telemetry queries and typed adapters reduce backend data
-              before it reaches the model. Evidence keeps its source, window,
-              and coverage.
+              Python adapters query Prometheus, OpenSearch, and Jaeger. Results
+              are grouped and limited before reaching the model.
             </p>
           </article>
           <article>
-            <span className="flow-number">02 / INVESTIGATE</span>
-            <h3>Test competing explanations</h3>
+            <span className="flow-number">02</span>
+            <h3>Compare hypotheses</h3>
             <p>
-              One bounded loop selects a read, updates hypotheses, and cites
-              observations. Application policy validates every decision outside
-              the prompt.
+              The model selects its next read and updates hypotheses. Python
+              validates tool arguments, evidence references, and run limits.
             </p>
           </article>
           <article>
-            <span className="flow-number">03 / REVIEW</span>
-            <h3>Make the cause inspectable</h3>
+            <span className="flow-number">03</span>
+            <h3>Record the result</h3>
             <p>
-              The diagnosis links back to evidence and states its limits.
-              Proposed infrastructure changes need approval; this version cannot
-              execute them.
+              The run saves its diagnosis, evidence, tool calls, timing, and
+              token usage. Remediation is a recommendation; the agent cannot
+              change infrastructure.
             </p>
           </article>
         </div>
       </section>
       <section className="container home-story">
         <div>
-          <p className="eyebrow">The engineering behind it</p>
-          <h2>
-            A small agent.
-            <br />A real systems problem.
-          </h2>
+          <h2>What I built</h2>
           <p>
-            Sentinel&apos;s original work is the tool layer, evidence reduction,
-            contracts, agent loop, authentication, policy, auditing, and this
-            viewer. The OpenTelemetry Demo is the external application under
-            investigation.
+            My work covers the Python tools, data reduction, agent loop,
+            validation, authentication, audit records, tests, and this viewer.
+            The application under test is the existing OpenTelemetry Demo.
           </p>
           <Link href="/project/" className="text-link">
-            Architecture, decisions, lessons, and limitations{" "}
-            <Icon name="arrow" />
+            Architecture and lessons <Icon name="arrow" />
           </Link>
         </div>
         <div className="story-notes">
           <div>
             <Icon name="code" />
-            <h3>An audit you can inspect</h3>
+            <h3>Recorded investigation</h3>
             <p>
-              Original evidence IDs, recorded decisions, measured usage, and
-              source-record hashes—not a scripted diagnosis.
+              The demo includes the original tool calls, hypotheses, evidence,
+              diagnosis, and recovery checks from the local test.
             </p>
           </div>
           <div>
             <Icon name="check" />
-            <h3>Failures stay visible</h3>
+            <h3>Testing and fixes</h3>
             <p>
-              Two earlier investigations failed at transport and validation
-              boundaries. Those outcomes led to concrete fixes and regression
-              tests.
+              Two earlier runs failed in model transport and tool validation. I
+              fixed those issues and added regression tests. One correct case is
+              not an accuracy benchmark.
             </p>
           </div>
         </div>
-      </section>
-      <section className="container closing-banner">
-        <div>
-          <span className="eyebrow">Start with one incident</span>
-          <h2>See the decision. Check the evidence.</h2>
-        </div>
-        <Link href="/demo/" className="button primary">
-          Open the demo <Icon name="arrow" />
-        </Link>
-        <a href={REPO} className="text-link">
-          Browse the source <Icon name="external" size={15} />
-        </a>
       </section>
     </main>
   );

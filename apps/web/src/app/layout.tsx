@@ -7,16 +7,16 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://alesiobarquin.github.io"),
   title: {
-    default: "Sentinel — Evidence-driven incident investigation",
+    default: "Sentinel — Student project",
     template: "%s · Sentinel",
   },
   description:
-    "Explore a real AI incident investigation: read-only telemetry tools, competing hypotheses, cited evidence, and a measured recovery. An engineering project with an open source audit trail.",
+    "A student project: a Python agent that investigates failures using metrics, logs, traces, source code, and configuration. Includes a recorded demo and technical notes.",
   alternates: { canonical: "/sentinel/" },
   openGraph: {
-    title: "Sentinel — An incident, investigated",
+    title: "Sentinel — Student project",
     description:
-      "One real payment failure. Follow the evidence from first signal to a defensible diagnosis.",
+      "A recorded payment-failure investigation, with tool calls, evidence, results, and project notes.",
     type: "website",
     url: "/sentinel/",
     siteName: "Sentinel",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
         url: "/sentinel/social.png",
         width: 1200,
         height: 630,
-        alt: "Sentinel: a recorded, evidence-linked incident investigation",
+        alt: "Sentinel student project: recorded investigation and measurements",
       },
     ],
   },
@@ -49,7 +49,7 @@ export default function Layout({
             <div>
               <strong>Sentinel</strong>
               <span>
-                An engineering project by{" "}
+                Student project by{" "}
                 <a href="https://github.com/Alesiobarquin">Alesiobarquin</a>.
               </span>
             </div>

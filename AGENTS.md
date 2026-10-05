@@ -16,6 +16,11 @@ Read `docs/progress.md` for recorded implementation and validation status.
   cloud lab is not required for this delivery. Preserve the guide's remaining
   scope and label completed versus planned capabilities honestly.
 
+- Public presentation is a student portfolio, not a SaaS sales site. Use concise,
+  factual language about what I built, how it works, tests, limitations, and
+  lessons. Avoid slogans, dramatic headlines, product pitches, and decorative
+  branding icons beside the project name.
+
 - Build an AI production engineer that investigates distributed-system incidents
   using real telemetry, tests hypotheses, cites evidence, recommends remediation,
   and verifies recovery after approved actions.

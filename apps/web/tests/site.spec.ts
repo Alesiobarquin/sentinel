@@ -4,18 +4,14 @@ test("landing page leads to the investigation and explanatory project", async ({
   page,
 }) => {
   await page.goto("/sentinel/");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "An incident,investigated.",
-  );
-  await page
-    .getByRole("link", { name: "Explore the investigation", exact: true })
-    .click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sentinel");
+  await page.getByRole("link", { name: "View demo", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Follow the evidence." }),
+    page.getByRole("heading", { name: "Payment investigation" }),
   ).toBeVisible();
   await page.getByRole("link", { name: "The project", exact: true }).click();
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "The work behind",
+    "Project notes",
   );
   await expect(
     page.getByRole("link", { name: "The project", exact: true }),
@@ -119,7 +115,7 @@ test("recovery clearly distinguishes the helper from agent remediation", async (
 }) => {
   await page.goto("/sentinel/demo/#step-9");
   await expect(
-    page.getByRole("heading", { name: "Sampled recovery verified" }),
+    page.getByRole("heading", { name: "Recovery checks" }),
   ).toBeVisible();
   await expect(
     page.getByRole("region", { name: "Current investigation step" }),
@@ -134,7 +130,7 @@ test("recovery clearly distinguishes the helper from agent remediation", async (
     .getByRole("button", { name: "Previous step", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Evidence-linked diagnosis", level: 2 }),
+    page.getByRole("heading", { name: "Diagnosis", level: 2 }),
   ).toBeVisible();
 });
 
@@ -162,14 +158,14 @@ test("architecture details and current limitations are inspectable", async ({
   await page.goto("/sentinel/project/");
   await page.getByRole("button", { name: /Full local audit/ }).click();
   await expect(page.locator(".arch-detail")).toContainText(
-    "PostgreSQL is a later phase",
+    "PostgreSQL is not implemented",
   );
   await page.getByRole("link", { name: "Limits", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "A useful result has boundaries." }),
+    page.getByRole("heading", { name: "Current limitations" }),
   ).toBeVisible();
   await expect(page.locator("#limits")).toContainText(
-    "complete delivery of that run's self-trace",
+    "complete delivery to Jaeger is unverified",
   );
 });
 
@@ -222,12 +218,10 @@ test("missing routes provide a useful return path", async ({ page }) => {
   const response = await page.goto("/sentinel/unknown/");
   expect(response?.status()).toBe(404);
   await expect(
-    page.getByRole("heading", { name: "This signal leads nowhere." }),
+    page.getByRole("heading", { name: "Page not found" }),
   ).toBeVisible();
-  await page
-    .getByRole("link", { name: "Explore the demo", exact: true })
-    .click();
+  await page.getByRole("link", { name: "View demo", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Follow the evidence." }),
+    page.getByRole("heading", { name: "Payment investigation" }),
   ).toBeVisible();
 });

@@ -60,9 +60,9 @@ h3 {
   line-height: 1.2;
 }
 h1 {
-  font-size: 64px;
+  font-size: 48px;
   font-weight: 550;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.035em;
 }
 h2 {
   font-size: 34px;
@@ -284,14 +284,14 @@ svg {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 76px;
-  align-items: center;
-  padding-top: 76px;
-  padding-bottom: 76px;
+  align-items: start;
+  padding-top: 52px;
+  padding-bottom: 52px;
 }
 .hero h1 {
-  margin: 27px 0 24px;
-  font-size: 86px;
-  line-height: 1.03;
+  margin: 18px 0 20px;
+  font-size: 48px;
+  line-height: 1.15;
 }
 .hero-description {
   max-width: 460px;
@@ -632,7 +632,7 @@ svg {
   margin-bottom: 22px;
 }
 .demo-heading h1 {
-  font-size: 44px;
+  font-size: 38px;
   margin-top: 12px;
 }
 .demo-heading p:last-child {
@@ -1403,7 +1403,7 @@ details[open] > summary {
   margin-bottom: 66px;
 }
 .project-heading h1 {
-  font-size: 64px;
+  font-size: 44px;
   margin: 20px 0 25px;
 }
 .project-heading > p:last-of-type {
@@ -1767,8 +1767,8 @@ td:first-child {
 }
 @media (min-width: 1400px) {
   .hero {
-    padding-top: 92px;
-    padding-bottom: 88px;
+    padding-top: 56px;
+    padding-bottom: 52px;
   }
 }
 @media (max-width: 1100px) {
@@ -1781,7 +1781,7 @@ td:first-child {
     padding-bottom: 55px;
   }
   .hero h1 {
-    font-size: 68px;
+    font-size: 48px;
   }
   .hero-description {
     font-size: 15px;
@@ -1835,10 +1835,6 @@ td:first-child {
     font-size: 18px;
     gap: 8px;
   }
-  .brand > svg {
-    width: 25px;
-    height: 25px;
-  }
   .site-header nav {
     gap: 17px;
   }
@@ -1858,8 +1854,8 @@ td:first-child {
     gap: 34px;
   }
   .hero h1 {
-    font-size: 63px;
-    margin: 22px 0 20px;
+    font-size: 40px;
+    margin: 18px 0;
   }
   .hero-description {
     max-width: 480px;
@@ -2137,7 +2133,7 @@ td:first-child {
     margin-bottom: 37px;
   }
   .project-heading h1 {
-    font-size: 45px;
+    font-size: 34px;
     margin: 17px 0 21px;
   }
   .project-heading > p:last-of-type {
@@ -2246,7 +2242,7 @@ td:first-child {
 }
 @media (max-width: 380px) {
   .hero h1 {
-    font-size: 56px;
+    font-size: 36px;
   }
   .hero-actions .button {
     padding-inline: 15px;

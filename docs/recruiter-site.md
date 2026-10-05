@@ -6,6 +6,11 @@ frontend stack. Playwright is a development dependency for testing navigation,
 recorded interactions, direct routes, resource requests, and responsive layouts.
 No UI framework, chart library, public backend, or hosting account was added.
 
+The public copy uses a student-portfolio tone: concise facts about the
+implementation, results, limitations, and lessons. Use first person for project
+work. Avoid product pitches, slogans, dramatic headlines, and branding symbols
+beside Sentinel. This presentation preference is also recorded in `AGENTS.md`.
+
 ## Purpose and data flow
 
 `apps/web/src/lib/replay.ts` imports the reviewed public recording. Server

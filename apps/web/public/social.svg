@@ -1,26 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="#faf9f5"/>
-  <rect x="64" y="48" width="36" height="36" rx="10" fill="#216652"/>
-  <path d="M75 59h-2v14h2m14-14h2v14h-2m-12-7h2l2-5 2 10 2-5" fill="none" stroke="white" stroke-width="1.6"/>
   <g font-family="Arial, sans-serif" fill="#20352e">
-    <text x="112" y="75" font-size="27" font-weight="600">Sentinel</text>
-    <text x="65" y="155" font-size="11" letter-spacing="2" fill="#637169">EVIDENCE-DRIVEN INCIDENT INVESTIGATION</text>
-    <text x="62" y="246" font-size="78" letter-spacing="-4">An incident,</text>
-    <text x="62" y="330" font-size="87" letter-spacing="-4" font-family="Georgia, serif" font-style="italic" fill="#216652">investigated.</text>
-    <text x="65" y="394" font-size="19" fill="#516159">A real payment failure. Follow the evidence</text>
-    <text x="65" y="425" font-size="19" fill="#516159">from first signal to a defensible diagnosis.</text>
+    <text x="64" y="75" font-size="27" font-weight="600">Sentinel</text>
+    <text x="65" y="155" font-size="12" letter-spacing="1" fill="#637169">STUDENT PROJECT</text>
+    <text x="64" y="239" font-size="42" font-weight="600">Incident investigation</text>
+    <text x="65" y="297" font-size="18" fill="#516159">A Python agent that reads metrics, logs, traces,</text>
+    <text x="65" y="328" font-size="18" fill="#516159">source code, and configuration.</text>
+    <text x="65" y="388" font-size="17" fill="#516159">Recorded demo, test results, and project notes.</text>
     <text x="65" y="526" font-size="13" fill="#637169">Python  ·  OpenTelemetry  ·  OpenAI SDK  ·  Next.js</text>
     <text x="65" y="586" font-size="13" fill="#637169">alesiobarquin.github.io/sentinel</text>
   </g>
   <rect x="662" y="141" width="472" height="390" rx="12" fill="white" stroke="#dedfd6"/>
   <g font-family="Arial, sans-serif" fill="#20352e">
-    <text x="693" y="182" font-size="11" letter-spacing="1.5" fill="#637169">PAYMENT / RECORDED INVESTIGATION</text>
+    <text x="693" y="182" font-size="11" letter-spacing="1" fill="#637169">RECORDED PAYMENT TEST</text>
     <path d="M663 204h470" stroke="#dedfd6"/>
-    <text x="693" y="248" font-size="24" font-weight="600">The fault branch was active.</text>
-    <text x="693" y="283" font-size="14" fill="#516159">Metrics, logs, traces, source, and configuration.</text>
+    <text x="693" y="248" font-size="22" font-weight="600">paymentFailure was enabled.</text>
+    <text x="693" y="283" font-size="14" fill="#516159">The flag selected the recorded error branch.</text>
     <rect x="693" y="312" width="410" height="65" rx="5" fill="#edf2ea"/>
     <text x="711" y="338" font-size="12" fill="#516159">paymentFailure</text>
-    <text x="711" y="362" font-size="19" font-weight="600" fill="#216652">100% → matching error branch</text>
+    <text x="711" y="362" font-size="19" font-weight="600" fill="#216652">Default variant: 100%</text>
     <text x="693" y="424" font-size="32">8</text>
     <text x="835" y="424" font-size="32">120.1s</text>
     <text x="985" y="424" font-size="32">48,380</text>
@@ -28,6 +26,6 @@
     <text x="835" y="447" font-size="11" fill="#637169">recorded run</text>
     <text x="985" y="447" font-size="11" fill="#637169">reported tokens</text>
     <path d="M663 472h470" stroke="#dedfd6"/>
-    <text x="693" y="506" font-size="12" fill="#516159">Developer reset; sampled recovery verified.</text>
+    <text x="693" y="506" font-size="12" fill="#516159">Test helper reset the flag; recovery samples showed no errors.</text>
   </g>
 </svg>

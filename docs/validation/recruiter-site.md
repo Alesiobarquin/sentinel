@@ -77,3 +77,24 @@ documented in [checkpoint 2](../checkpoints/02-first-investigation.md).
 See [delivery review](../checkpoints/05-recruiter-delivery.md),
 [operation and cleanup](../recruiter-site.md), and
 [hosting ADR](../decisions/009-recruiter-demo-hosting.md).
+
+## Student-portfolio copy revision
+
+On October 5, the developer requested plain, concise project descriptions instead
+of promotional language. The revision removes the branding icon, replaces slogans
+across pages and metadata, simplifies headings, shortens project notes, removes
+repeated closing banners, and updates the sharing image/favicon. Recorded
+decisions, evidence, measurements, and source excerpts were not edited.
+
+TypeScript and production static export passed. All 22 existing desktop/mobile
+browser checks passed locally in 8.4 seconds, with retries disabled. Six page
+screenshots were generated; landing on desktop/mobile, desktop project notes,
+and mobile diagnosis were inspected, along with the regenerated sharing image.
+All six screenshot routes had zero branding SVGs and document widths equal to
+their 1440/390 viewport widths.
+
+The first test startup failed because a separate generic HTTP server already
+occupied port 4173 and did not serve `/sentinel/`. That server was left intact.
+Checks used a separate owned preview on 4175. Logs and screenshots are retained
+in `var/site-tests-portfolio-copy-port-conflict.log`,
+`var/site-tests-portfolio-copy.log`, and `var/site-qa-portfolio-copy/`.

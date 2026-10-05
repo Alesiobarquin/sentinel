@@ -1,9 +1,9 @@
 # Sentinel
 
-An AI production engineer that investigates distributed-system incidents using
-real logs, metrics, traces, deployment context, and source changes. Sentinel is
-intended to test competing hypotheses, cite evidence, recommend controlled
-remediation, and verify recovery.
+A student project for investigating failures in a local distributed-system lab.
+Sentinel's Python agent reads metrics, logs, traces, source, and configuration,
+compares hypotheses, and records a diagnosis with evidence references. The site
+contains a recorded investigation and notes on the implementation and lessons.
 
 **Current stage: read-only investigation agent and a tested recruiter website.**
 One real payment investigation identified the injected flag-controlled failure

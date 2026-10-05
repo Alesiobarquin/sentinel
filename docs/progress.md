@@ -66,6 +66,16 @@ asset paths; `var/site-tests-public.log` retains the result. A public landing
 screenshot was inspected. Third-party source/runtime notices and license copies
 are distributed with the site. See [public site validation](validation/recruiter-site.md).
 
+The developer requested a student-portfolio tone rather than product marketing.
+The landing, demo, project, 404 page, metadata, and sharing image now use concise
+factual wording. The icon beside Sentinel was removed, headings were reduced,
+and repeated closing banners were deleted. First-person project notes describe
+implementation, tests, limitations, and lessons. This preference is recorded in
+`AGENTS.md`. TypeScript/static export and all 22 desktop/mobile browser checks
+passed after the revision; screenshots were inspected. The original investigation
+record is unchanged. A pre-existing unrelated server occupied port 4173, so local
+checks used an owned preview on 4175; the failed startup log is retained.
+
 The entries below preserve the earlier implementation and validation history;
 their then-current statements about authorization, publication, and CI are
 superseded by this status.
