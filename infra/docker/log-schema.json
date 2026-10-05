@@ -1,0 +1,8 @@
+{
+  "service_field": "resource.service.name.keyword",
+  "timestamp_field": "@timestamp",
+  "body_field": "body",
+  "severity_field": "severity.text.keyword",
+  "trace_id_field": "traceId",
+  "timestamp_encoding": "iso8601"
+}

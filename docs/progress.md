@@ -1,0 +1,215 @@
+# Implementation progress
+
+## Recruiter launch planning
+
+On 2026-10-05 the developer requested exact human steps and a hosting comparison
+using free plans and their already approved GitHub Student Developer Pack.
+[The launch plan](recruiter-launch-plan.md) records executable local sign-in and
+first-investigation steps, account setup, conditional deployment instructions,
+current official prices/offers, and credit-expiry cleanup. [ADR 009](decisions/009-recruiter-demo-hosting.md)
+proposes a static recruiter viewer with an optional student-funded read-only API.
+The proposal is not an accepted architecture change. No account was connected,
+resource created, inference run, or source published during this planning work.
+Checkpoint 2 and later implementation/permission gates remain pending.
+
+The developer then clarified the public delivery target: one recruiter demo and
+an explanatory project/learning page, with the coding agent executing CLI steps
+and involving the human for browser sign-in. The revised plan and ADR 009 use
+GitHub Pages through the already authenticated CLI, with no separate public
+backend or new hosting account required. This is a delivery decision; unbuilt
+PRD capabilities and AWS deployment are not claimed as complete.
+
+ChatGPT browser authorization completed on 2026-10-05. The account catalog does
+not include the previous default `gpt-6-luna`; `gpt-5.6-luna` was explicitly
+selected for the first exercise. Preflight passed. The first baseline capture
+at `var/first-investigation/20261005T143316.819702Z/` failed its trace read with a
+Jaeger timeout before fault injection or any model request. Six live telemetry
+checks then passed, and a new exercise began with a fresh baseline. Preserve
+that failure record. No successful AI diagnosis is established by sign-in alone.
+The initial real model run `5c30f56e-5171-4f95-a3b3-2be53872e4d1` failed in the
+transport adapter after one response (1,236 input / 335 output tokens). It did
+not produce a diagnosis. Baseline and recovery reads all passed, error samples
+were zero in both, and the developer exercise reset the fault. Two bounded
+transport diagnostics used the same saved context and retained private captures;
+they were not additional incident diagnoses or evaluation successes.
+
+The real subscription stream delivered a finalized namespaced function call in
+`response.output_item.done` but left terminal `response.completed.output` empty.
+The provider now accepts finalized stream items only after successful response
+completion and reported usage. Tool identity/count/size checks, duplicate-index
+rejection, and terminal/stream consistency remain enforced. Native response and
+completed tool records are saved outside selected model context. Replaying the
+captured real stream through the SDK's mocked HTTP transport passed without a
+network request. Four new deterministic regression cases cover this behavior
+and failure-audit retention.
+
+Latest deterministic checks passed: **110 tests, eight opt-in live skips, and
+compilation**. A fresh real exercise with the corrected provider is in progress;
+checkpoint 2 remains pending until a correct diagnosis and human review.
+
+## Bootstrap work implemented
+
+- Official Demo 3.1.0 source commit recorded in `infra/docker/demo.lock.json`.
+- Commit-archive fetch, temporary extraction, cache provenance, and cache checks.
+- Official Compose layers rendered into an isolated local runtime configuration.
+- Loopback store/telemetry endpoints, startup timeout, status, shutdown, and probes.
+- Typed Prometheus tool: instant/range queries and metric discovery.
+- Typed Jaeger compatibility adapter: service discovery, compact traces, and
+  aggregated dependency queries with explicit units and coverage limits.
+- Typed OpenSearch adapter: field discovery, explicit schema preflight, bounded
+  service/time searches, exact message/severity grouping, and correlation IDs.
+- Initial developer CLI commands for all three adapters used the standard library.
+- Local tool-call auditing and one developer-only payment fault/reset helper.
+- Bounded multi-signal capture utility with explicit partial-failure reporting
+  and protection against overwriting prior evidence.
+- Offline tests, opt-in live tests, and deterministic GitHub Actions configuration.
+- Setup, architecture, six ADRs, telemetry notes, runbook, and learning questions.
+
+## Verified locally
+
+Latest `make check` on 2026-10-04: **64 deterministic tests passed; six live
+tests skipped; Python compilation passed**, using Python 3.14.7. Local Markdown
+links and log-schema configurations are checked separately. Tests exercise
+synthetic adapter payloads, request validation, failures, audit events, a synthetic
+upstream archive, Compose isolation, and restoration of a prior fault variant.
+They do not establish diagnosis quality. Live integration is recorded separately.
+CLI tests run actual parsers/adapters with synthetic HTTP responses, including
+log schema preflight, grouped output, request failure, and audit persistence.
+Trace tests cover parent relationships, overlapping durations, missing parents,
+explicit error status, query time units, result limits, and mismatched windows.
+Log tests cover mixed mappings, partial searches, correlation/document identity,
+sample coverage, timestamp formats, and excerpt collisions without false merging.
+
+## Live integration and manual fault evidence
+
+Initial attempts were blocked by sandbox network and Docker-socket access.
+Approved shell access on 2026-10-04 resolved both. The source archive and images
+downloaded, `make demo-up` succeeded, and all configured container health checks
+passed. The full runtime contains 28 Compose services and 19 traced identities.
+The demo is still running locally; no cloud resources were created.
+
+All six live tests (two per backend) passed against real telemetry with
+`SENTINEL_LOG_INDEX='otel-logs*'` and
+`SENTINEL_LOG_SCHEMA=infra/docker/log-schema.json`. The opt-in suite then contained
+68 tests, all passing; the two capture utility tests were added afterwards and
+passed in the latest offline suite. Hosted CI has not run.
+
+Live discovery corrected the readiness assumption: this full target pushes
+metrics over OTLP, and `up` is absent. A positive active-series count now probes
+ingestion. Actual OpenSearch mappings and source paths are checked in; payment
+failure warnings use lowercase `warn`. Jaeger's temporary UI JSON adapter was
+validated against the pinned 2.19.0 runtime.
+
+The payment fault produced ten sampled failing traces and twenty matching warning
+logs. Every returned trace ID appeared in payment logs. The helper restored the
+prior `off` flag; six new traces and six completion logs then showed successful
+behavior without observed errors. The cumulative error counter had a late
+increase before flattening; the validation record retains this timing limitation.
+An optional follow-up warning query did not return and was canceled; no additional
+capture or explanation of that individual counter event is claimed.
+See [measured evidence](validation/payment-failure.md), local captures under
+`var/live-validation/`, and [the runbook](runbooks/payment-failure.md).
+
+That initial stage did not yet include Kubernetes or model-facing contracts.
+The later implementation/validation below records those additions. No real
+model calls, AI accuracy evaluations, or agent remediation permissions exist yet.
+
+## Checkpoint status
+
+[Checkpoint 1](checkpoints/01-architecture.md) was acknowledged on 2026-10-04 by
+the instruction to continue following the guide toward a resume-ready project. It
+presents the architecture, actual services/data flow, local setup, technology
+rationale, five decisions, learning questions, and evidence limits. Acknowledgment
+is recorded; work now proceeds toward checkpoint 2. Later permission, cost,
+and learning gates remain in effect. Checkpoint 2 has not been reached because
+Sentinel has not performed an AI investigation.
+
+## Current work
+
+Implemented read-only Kubernetes state, semantic diagnostic tools, structured
+evidence/hypotheses, a bounded single-agent loop, direct OpenAI integration, and
+Sentinel's own OpenTelemetry spans. Pydantic validates untrusted model inputs;
+the OpenAI SDK isolates model transport; the OTel SDK/exporter observes runs.
+These dependencies follow the approved stack and are locked with uv.
+The developer selected ChatGPT subscription sign-in and prefers a smaller model
+with capped usage. Supported public OAuth login, protected credentials, rotation,
+account catalog, and streaming SDK transport are implemented. No real login is
+configured. Subscription preview limits prevent an exact credit/output-token cap;
+the application stops at bounded calls/bytes/time and reported-token usage.
+Separately billed API mode is optional with known-price admission reservations.
+
+Defaults: eight model calls, ten semantic reads, 50,000 reported tokens, 32 KB
+selected context, 12 KB response, and 300 seconds with per-request timeouts.
+Unknown usage remains explicit. Recommendations cannot execute remediation.
+Run files save full payloads, context selection, hypotheses, decisions, audit,
+tokens, approximate API cost where applicable, latency, and outcome.
+
+All eight semantic tools passed real local reads. Sentinel's own nine-span
+validation trace reached Jaeger. Two live kind tests passed: actual reader token
+reads work, while writes/secrets/other namespaces are denied. The separate kind
+fixture was recreated with a 64 MiB limit after its initial OOM history was
+observed; cleanup releases resources after tests. The application still uses
+Compose. Phase 1's diagnostic script surfaces are now present and demonstrated;
+full application migration to kind remains later work.
+
+Three reversible real scenarios now have setup/cleanup, ground truth, expected
+evidence, acceptable remediation, unsafe actions, and deterministic capture.
+They produced payment, EmptyCart, and intermittent ad error evidence and were
+reset. Validation found/fixed equivalent legacy error-tag handling and retention
+of requested-service spans. Original failed captures are preserved; corrected
+historical reads are separately audited. Missing short-window metrics and a trace
+sample that missed intermittent ad errors remain visible. These are deterministic
+fault/adapter observations, not AI evaluation scores.
+
+`make login`, `make models`, and `make first-investigation` prepare the next real
+diagnosis. The first-run helper checks auth before mutation, uses a preceding
+baseline with a settling gap, resets its owned fault on failure, captures recovery,
+and stops after one agent run. [Checkpoint 2](checkpoints/02-first-investigation.md)
+is pending. Do not claim portfolio readiness or bypass the later guide gates.
+
+See [implementation validation](validation/read-only-agent.md),
+[the loop/auth guide](investigation.md), [Kubernetes notes](kubernetes.md),
+[new decisions](decisions/README.md), and [learning material](learning/investigation.md).
+
+## Latest checks and local resource constraint
+
+On 2026-10-05 the final offline suite contains **106 deterministic tests plus
+eight opt-in live tests**. It passed on Python 3.12.12 and 3.14.7 (live cases
+skipped), and `make check` passed with Python 3.13.5 and compilation. The locked
+environment uses uv; CI installs that lock on Python 3.12/3.14. Hosted CI has not
+run. Local Git was initialized on `main`; no remote or GitHub write was performed.
+
+The combined 111-test live suite later failed its two Kubernetes cases because
+the shared Docker VM's memory/swap was nearly exhausted. Kind's 64 MiB fixture
+and CoreDNS were OOM-killed; controller/scheduler containers also restarted.
+The adapter surfaced timeouts. Failure logs and container termination records
+are retained rather than relabeled as a successful run.
+
+Validation now runs the full Compose demo and kind separately on this shared VM.
+After stopping only Sentinel's Compose services and recreating the isolated kind
+cluster, both Kubernetes tests and all six permission checks passed. The fixture
+was ready with zero restarts; VM available memory rose from about 459 MiB to
+about 3.62 GiB. This is a local resource observation, not a performance benchmark.
+Use `make check-live-telemetry` and `make check-live-kubernetes` for separate live
+checks; stop kind after its checks and restore the demo. Increasing only the
+fixture's limit was insufficient.
+
+Kind was deleted after its isolated checks and Sentinel's full demo was restored.
+Fresh metrics/logs/traces passed all six live checks; all 28 services were running
+and configured container health checks passed. Jaeger's in-memory history can be
+lost on restart; saved raw validation captures remain available.
+
+The final code also rejects telemetry redirects, exposes minimum raw counter
+sample counts, and closes the model transport even if exercise cleanup fails.
+Regression tests cover these paths. Raw payment counter observations were about
+60 seconds apart; coverage rereads of the fresh 180-second fault window returned
+two error-counter samples. Earlier short-window missing metrics remain unknown.
+
+The post-fix batch at `var/scenarios/20261005T050922.978004Z/` completed with all
+45 semantic reads passing, using 180-second windows and 30-second export delays.
+Payment, EmptyCart, and intermittent ad faults each produced real error evidence.
+All recovery windows showed zero sampled error signals; all flags were restored
+to `off`, and no tracked fault remained. New audited metric-coverage reads across
+all nine windows confirmed that the ad incident had only one raw error-counter
+sample, so its missing increase remains unknown. See the fresh-run table in the
+validation record. No live AI request or AI quality score was produced.

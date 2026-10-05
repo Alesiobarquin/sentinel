@@ -1,0 +1,17 @@
+[project]
+name = "sentinel"
+version = "0.1.0"
+description = "Evidence-driven investigation of distributed-system incidents"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.12,<3",
+    "openai>=2,<3",
+    "PyJWT[crypto]>=2.10,<3",
+    "httpx>=0.28,<0.29",
+    "opentelemetry-sdk>=1.37,<2",
+    "opentelemetry-exporter-otlp-proto-http>=1.37,<2",
+]
+
+# Run from the repository with python -m sentinel. Packaging comes with the API.
+[tool.uv]
+package = false

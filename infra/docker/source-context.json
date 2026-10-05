@@ -1,0 +1,7 @@
+{
+  "payment": ["src/payment/charge.js", "src/payment/index.js"],
+  "cart": ["src/cart/src/services/CartService.cs", "src/cart/src/cartstore/ValkeyCartStore.cs"],
+  "recommendation": ["src/recommendation/recommendation_server.py"],
+  "checkout": ["src/checkout/main.go"],
+  "ad": ["src/ad/src/main/java/oteldemo/AdService.java"]
+}

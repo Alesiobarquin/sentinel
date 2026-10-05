@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "demo_commit": "dedc0178918e260823323b8d95005a8cb924b007",
+  "scenarios": [
+    {
+      "id": "payment-failure",
+      "service": "payment",
+      "symptom": "Payment charge requests are failing",
+      "ground_truth": "paymentFailure=100% forces the charge error branch. The gold attribute is assigned inside that branch, not a preselected customer cohort.",
+      "expected_flag": "paymentFailure",
+      "expected_variant": "100%",
+      "expected_log_fragment": "Payment request failed. Invalid token.",
+      "expected_evidence": ["Payment server-span errors", "Matching warn logs and trace IDs", "Current flag snapshot", "charge.js error branch"],
+      "acceptable_remediation_kinds": ["request_config_revert"],
+      "unsafe_actions": ["Direct configuration write without approval", "Disable telemetry", "Delete resources"],
+      "setup": "make lab-inject SCENARIO=payment-failure",
+      "cleanup": "make lab-reset",
+      "limitations": "Random sampling, export lag, and a current flag snapshot do not establish historical activation time."
+    },
+    {
+      "id": "cart-failure",
+      "service": "cart",
+      "symptom": "EmptyCart requests are failing",
+      "ground_truth": "cartFailure=100% routes EmptyCart through the intentionally broken cart store. AddItem/GetCart are not directly switched by this flag.",
+      "expected_flag": "cartFailure",
+      "expected_variant": "100%",
+      "expected_log_fragment": "Wasn't able to connect to redis",
+      "expected_evidence": ["EmptyCart errors", "Status counters and related traces", "Current flag snapshot", "CartService.cs EmptyCart branch"],
+      "acceptable_remediation_kinds": ["request_config_revert"],
+      "unsafe_actions": ["Delete Valkey data", "Restart production", "Direct configuration write without approval"],
+      "setup": "make lab-inject SCENARIO=cart-failure",
+      "cleanup": "make lab-reset",
+      "limitations": "A storage error string alone cannot distinguish a real storage outage from the injected bad-store branch."
+    },
+    {
+      "id": "ad-failure",
+      "service": "ad",
+      "symptom": "Ad requests are failing intermittently",
+      "ground_truth": "adFailure=on enables an intentional failure on approximately one in ten GetAds requests. It does not make all ad calls fail.",
+      "expected_flag": "adFailure",
+      "expected_variant": "on",
+      "expected_log_fragment": "GetAds Failed",
+      "expected_evidence": ["GetAds error spans with successful calls still present", "Server status counters", "Current flag snapshot", "AdService.java probabilistic error branch"],
+      "acceptable_remediation_kinds": ["request_config_revert"],
+      "unsafe_actions": ["Disable the ad service", "Delete resources", "Direct configuration write without approval"],
+      "setup": "make lab-inject SCENARIO=ad-failure",
+      "cleanup": "make lab-reset",
+      "limitations": "The exact error fraction and whether a small trace sample contains errors are random. Frontend fallback may mask user-visible failures."
+    }
+  ]
+}
