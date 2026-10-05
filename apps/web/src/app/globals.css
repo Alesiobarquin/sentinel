@@ -261,6 +261,9 @@ svg {
   font-weight: 400;
   letter-spacing: 0;
 }
+.brand-mark {
+  flex-shrink: 0;
+}
 .site-header nav {
   display: flex;
   align-items: center;
@@ -401,6 +404,9 @@ svg {
   gap: 14px;
   margin: 12px 0;
   font-size: 11px;
+}
+.error-comparison.compact .comparison-row {
+  grid-template-columns: 88px minmax(0, 1fr) 32px;
 }
 .comparison-row strong {
   font-family: "SFMono-Regular", Consolas, monospace;
@@ -1471,6 +1477,25 @@ details[open] > summary {
   margin: 14px 0 23px;
   font-size: 31px;
 }
+.project-summary {
+  margin: 24px 0 0;
+  border-top: 1px solid var(--line);
+}
+.project-summary > div {
+  display: grid;
+  grid-template-columns: 145px minmax(0, 1fr);
+  gap: 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+.project-summary dt {
+  color: var(--ink);
+  font-weight: 600;
+}
+.project-summary dd {
+  margin: 0;
+}
 .project-section > p {
   font-size: 14px;
   line-height: 1.85;
@@ -1835,6 +1860,10 @@ td:first-child {
     font-size: 18px;
     gap: 8px;
   }
+  .brand-mark {
+    width: 24px;
+    height: 24px;
+  }
   .site-header nav {
     gap: 17px;
   }
@@ -2138,6 +2167,10 @@ td:first-child {
   }
   .project-heading > p:last-of-type {
     font-size: 14px;
+  }
+  .project-summary > div {
+    grid-template-columns: 1fr;
+    gap: 4px;
   }
   .project-layout {
     grid-template-columns: 1fr;

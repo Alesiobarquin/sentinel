@@ -8,23 +8,27 @@ export default function Home() {
     <main id="main">
       <section className="hero container">
         <div className="hero-copy">
-          <p className="eyebrow">Student project · incident investigation</p>
+          <p className="eyebrow">
+            Student project · AI and software reliability
+          </p>
           <h1>Sentinel</h1>
           <p className="hero-description">
-            I built a Python agent that investigates failures in a local
-            distributed system. It reads metrics, logs, traces, source code, and
-            configuration, then records a diagnosis with supporting evidence.
+            I built an AI-assisted tool to investigate why a service failed. It
+            checks error logs, performance data, and application code, compares
+            possible causes, and returns an explanation linked to the data it
+            used.
           </p>
           <div className="hero-actions">
-            <Link className="button primary" href="/demo/">
+            <Link className="button primary" href="/demo/#step-8">
               View demo <Icon name="arrow" />
             </Link>
             <Link className="button secondary" href="/project/">
-              Project notes
+              Project overview
             </Link>
           </div>
           <p className="hero-note">
-            The demo replays one real investigation. No sign-in required.
+            The demo opens at the result of one recorded local test. No sign-in
+            required.
           </p>
           <div className="stack-line">
             <span>Python</span>
@@ -52,7 +56,7 @@ export default function Home() {
           <ErrorComparison compact />
           <div className="preview-verdict">
             <span className="eyebrow">Recorded diagnosis</span>
-            <h3>The paymentFailure flag was enabled.</h3>
+            <h3>A test setting caused the payment errors.</h3>
             <div className="preview-citations">
               <span>Metrics</span>
               <span>Logs</span>
@@ -61,8 +65,9 @@ export default function Home() {
               <span>Config</span>
             </div>
             <p>
-              The flag snapshot showed <code>100%</code>. The source branch
-              throws the same token error found in the logs and traces.
+              The <code>paymentFailure</code> setting was at <code>100%</code>.
+              The agent linked the payment errors to this setting using logs,
+              request traces, and source code.
             </p>
           </div>
           <div className="preview-bottom">
@@ -101,24 +106,26 @@ export default function Home() {
           </div>
           <p>
             The investigation starts with a service and time window. One model
-            loop chooses read-only tools and compares possible causes.
+            loop chooses data reads and compares possible causes. It can read
+            the test system, but cannot change it.
           </p>
         </div>
         <div className="flow-cards">
           <article>
             <span className="flow-number">01</span>
-            <h3>Collect telemetry</h3>
+            <h3>Read system data</h3>
             <p>
-              Python adapters query Prometheus, OpenSearch, and Jaeger. Results
-              are grouped and limited before reaching the model.
+              Logs record events, metrics measure errors and timing, and traces
+              follow a request across services. Python tools collect and reduce
+              this data before sending it to the model.
             </p>
           </article>
           <article>
             <span className="flow-number">02</span>
-            <h3>Compare hypotheses</h3>
+            <h3>Compare possible causes</h3>
             <p>
-              The model selects its next read and updates hypotheses. Python
-              validates tool arguments, evidence references, and run limits.
+              The model compares possible causes and chooses its next read.
+              Python checks each tool request and enforces limits.
             </p>
           </article>
           <article>
@@ -126,8 +133,7 @@ export default function Home() {
             <h3>Record the result</h3>
             <p>
               The run saves its diagnosis, evidence, tool calls, timing, and
-              token usage. Remediation is a recommendation; the agent cannot
-              change infrastructure.
+              model usage. Suggested fixes are recorded for human review.
             </p>
           </article>
         </div>

@@ -98,3 +98,25 @@ occupied port 4173 and did not serve `/sentinel/`. That server was left intact.
 Checks used a separate owned preview on 4175. Logs and screenshots are retained
 in `var/site-tests-portfolio-copy-port-conflict.log`,
 `var/site-tests-portfolio-copy.log`, and `var/site-qa-portfolio-copy/`.
+
+## Recruiter readability polish
+
+The developer subsequently permitted the original logo and requested polish for
+technical and nontechnical recruiters. The latest version restores the logo,
+uses a plain-language introduction, defines logs/metrics/traces, adds an ownership
+and result summary, and opens demo entry links at the diagnosis. The original
+model explanation remains available through a disclosure rather than being
+rewritten. Configuration evidence is selected initially at the diagnosis; every
+original citation and replay step remains accessible.
+
+TypeScript and static export passed. All 22 desktop/mobile browser cases passed
+after the final layout adjustment in 11.7 seconds, with retries disabled. Existing
+cases now verify result-first entry and exact preservation of the original model
+explanation against the downloadable JSON. Six routes were captured with one
+logo each and matching document/viewport widths of 1440/390. Desktop/mobile
+landing, desktop overview, mobile result, and the sharing image were inspected.
+Final compact chart labels fit on one line in both viewports.
+
+Logs/screenshots are under `var/site-tests-recruiter-polish-final.log` and
+`var/site-qa-recruiter-polish/`. The source recording, measured results, and
+read-only agent permissions were not changed.

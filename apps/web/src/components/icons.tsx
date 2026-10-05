@@ -44,3 +44,25 @@ export function Icon({ name, size = 18, style }: Props) {
     </svg>
   );
 }
+
+export function Mark() {
+  return (
+    <svg
+      className="brand-mark"
+      viewBox="0 0 32 32"
+      width="28"
+      height="28"
+      fill="none"
+      aria-hidden="true"
+    >
+      <rect width="32" height="32" rx="9" fill="currentColor" />
+      <path
+        d="M10 10H8v12h2m12-12h2v12h-2M12 16h2l2-5 2 10 2-5"
+        stroke="#fff"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

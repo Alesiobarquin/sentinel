@@ -8,8 +8,16 @@ No UI framework, chart library, public backend, or hosting account was added.
 
 The public copy uses a student-portfolio tone: concise facts about the
 implementation, results, limitations, and lessons. Use first person for project
-work. Avoid product pitches, slogans, dramatic headlines, and branding symbols
-beside Sentinel. This presentation preference is also recorded in `AGENTS.md`.
+work. Avoid product pitches, slogans, and dramatic headlines. A small logo is
+allowed. Summarize purpose, ownership, and results in plain language before
+technical details. This preference is also recorded in `AGENTS.md`.
+
+The landing/project demo links open at the recorded diagnosis; direct `/demo/`
+navigation still starts the original read sequence. The overview explains purpose,
+ownership, result, and scope before architecture details. The result has a short
+summary and an expandable original model explanation. Its text is checked against
+the unchanged public record. Curated entry links refer to this known case's
+diagnosis step and must be reviewed when replacing the recording.
 
 ## Purpose and data flow
 

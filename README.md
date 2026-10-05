@@ -18,7 +18,7 @@ failures, and lessons. Visitors need no sign-in or model credits. The selected
 public recording is validated and filtered; credentials and full private audit
 files stay local. Published on GitHub Pages:
 [the site](https://alesiobarquin.github.io/sentinel/),
-[demo](https://alesiobarquin.github.io/sentinel/demo/), and
+[demo](https://alesiobarquin.github.io/sentinel/demo/#step-8), and
 [project page](https://alesiobarquin.github.io/sentinel/project/).
 
 The bounded agent, typed telemetry tools, policy, ChatGPT authentication, local

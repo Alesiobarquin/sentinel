@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: "%s · Sentinel",
   },
   description:
-    "A student project: a Python agent that investigates failures using metrics, logs, traces, source code, and configuration. Includes a recorded demo and technical notes.",
+    "A student project: an AI-assisted tool for investigating service failures. Includes a recorded payment test, project overview, technical notes, and measured results.",
   alternates: { canonical: "/sentinel/" },
   openGraph: {
     title: "Sentinel — Student project",

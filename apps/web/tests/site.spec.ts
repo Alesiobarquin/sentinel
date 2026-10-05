@@ -9,9 +9,10 @@ test("landing page leads to the investigation and explanatory project", async ({
   await expect(
     page.getByRole("heading", { name: "Payment investigation" }),
   ).toBeVisible();
+  await expect(page.locator(".diagnosis-panel")).toBeVisible();
   await page.getByRole("link", { name: "The project", exact: true }).click();
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Project notes",
+    "Project overview",
   );
   await expect(
     page.getByRole("link", { name: "The project", exact: true }),
@@ -54,14 +55,25 @@ test("step controls show the original metric read and reset coherently", async (
 
 test("a diagnosis citation opens the actual global flag evidence", async ({
   page,
+  request,
 }) => {
   await page.goto("/sentinel/demo/");
-  await page.getByRole("button", { name: "Jump to diagnosis" }).click();
+  await page.getByRole("button", { name: "View result", exact: true }).click();
   await expect(
     page.getByRole("heading", {
-      name: "The paymentFailure fault branch is active.",
+      name: "Payment failure setting enabled",
     }),
   ).toBeVisible();
+  const original = page.locator(".diagnosis-panel details").filter({
+    has: page.getByText("Original model explanation", { exact: true }),
+  });
+  await expect(original.locator("p")).toBeHidden();
+  await original.locator("summary").click();
+  const response = await request.get("/sentinel/investigation.json");
+  const recording = await response.json();
+  await expect(original.locator("p")).toHaveText(
+    recording.diagnosis.root_cause,
+  );
   await page
     .locator(".diagnosis-panel")
     .getByRole("button", { name: "Inspect evidence ev_006" })

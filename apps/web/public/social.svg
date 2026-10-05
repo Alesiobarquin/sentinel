@@ -1,12 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="#faf9f5"/>
+  <rect x="64" y="48" width="36" height="36" rx="10" fill="#216652"/>
+  <path d="M75 59h-2v14h2m14-14h2v14h-2m-12-7h2l2-5 2 10 2-5" fill="none" stroke="white" stroke-width="1.6"/>
   <g font-family="Arial, sans-serif" fill="#20352e">
-    <text x="64" y="75" font-size="27" font-weight="600">Sentinel</text>
+    <text x="112" y="75" font-size="27" font-weight="600">Sentinel</text>
     <text x="65" y="155" font-size="12" letter-spacing="1" fill="#637169">STUDENT PROJECT</text>
     <text x="64" y="239" font-size="42" font-weight="600">Incident investigation</text>
-    <text x="65" y="297" font-size="18" fill="#516159">A Python agent that reads metrics, logs, traces,</text>
-    <text x="65" y="328" font-size="18" fill="#516159">source code, and configuration.</text>
-    <text x="65" y="388" font-size="17" fill="#516159">Recorded demo, test results, and project notes.</text>
+    <text x="65" y="297" font-size="18" fill="#516159">An AI-assisted tool to investigate service failures.</text>
+    <text x="65" y="328" font-size="18" fill="#516159">Python data tools, recorded results, and tests.</text>
+    <text x="65" y="388" font-size="17" fill="#516159">Project overview and technical implementation notes.</text>
     <text x="65" y="526" font-size="13" fill="#637169">Python  ·  OpenTelemetry  ·  OpenAI SDK  ·  Next.js</text>
     <text x="65" y="586" font-size="13" fill="#637169">alesiobarquin.github.io/sentinel</text>
   </g>

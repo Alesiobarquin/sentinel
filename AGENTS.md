@@ -18,8 +18,9 @@ Read `docs/progress.md` for recorded implementation and validation status.
 
 - Public presentation is a student portfolio, not a SaaS sales site. Use concise,
   factual language about what I built, how it works, tests, limitations, and
-  lessons. Avoid slogans, dramatic headlines, product pitches, and decorative
-  branding icons beside the project name.
+  lessons. Avoid slogans, dramatic headlines, and product pitches. A small
+  project logo is allowed. Explain the purpose, ownership, and result in plain
+  language first; retain technical evidence and details for closer review.
 
 - Build an AI production engineer that investigates distributed-system incidents
   using real telemetry, tests hypotheses, cites evidence, recommends remediation,

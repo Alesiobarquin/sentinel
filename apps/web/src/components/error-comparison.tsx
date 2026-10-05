@@ -9,11 +9,16 @@ export function ErrorComparison({ compact = false }: { compact?: boolean }) {
   return (
     <figure className={`error-comparison ${compact ? "compact" : ""}`}>
       <figcaption>
-        Estimated payment server errors{" "}
-        <span>Three recorded 180-second windows</span>
+        {compact
+          ? "Payment errors during the test"
+          : "Estimated payment server errors"}{" "}
+        <span>Three recorded 3-minute windows</span>
       </figcaption>
       <div className="comparison-bars">
-        {["Baseline", "Incident", "Recovery"].map((label, index) => (
+        {(compact
+          ? ["Before failure", "During failure", "After reset"]
+          : ["Baseline", "Incident", "Recovery"]
+        ).map((label, index) => (
           <div
             className={`comparison-row ${index === 1 ? "incident" : ""}`}
             key={label}
@@ -37,8 +42,9 @@ export function ErrorComparison({ compact = false }: { compact?: boolean }) {
         ))}
       </div>
       <p className="fine-print">
-        Span-derived estimates; export delay and extrapolation apply. Recovery
-        followed the developer helper&apos;s reset.
+        {compact
+          ? "Estimates from recorded requests. The test helper reset the failure setting before checking recovery."
+          : "Span-derived estimates; export delay and extrapolation apply. Recovery followed the test helper's reset."}
       </p>
     </figure>
   );

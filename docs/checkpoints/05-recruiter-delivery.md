@@ -49,6 +49,7 @@ Verified public URLs:
 
 1. Open the landing page, explain the incident and the distinction between the
    external target and original Sentinel code, then enter the investigation.
+   The demo opens at the result; use Reset replay to follow the original reads.
 2. Step from inventory to metrics, logs, and traces. Inspect original tool
    arguments, three raw counter samples, correlation IDs, and omitted spans.
 3. Open source/configuration: the matching error branch and enabled 100% flag

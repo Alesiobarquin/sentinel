@@ -76,6 +76,16 @@ passed after the revision; screenshots were inspected. The original investigatio
 record is unchanged. A pre-existing unrelated server occupied port 4173, so local
 checks used an owned preview on 4175; the failed startup log is retained.
 
+The developer then allowed the original logo to return and requested polish for
+technical and nontechnical recruiters. The logo is restored in the header,
+favicon, and sharing preview. The landing explains the task and data types in
+plain language; the project overview summarizes ownership, result, and scope.
+Demo entry links open at the result. A brief diagnosis summary is followed by
+the unchanged original model explanation in an expandable section, with evidence
+and the full replay still available. TypeScript/static export and all 22 updated
+browser checks passed locally; desktop/mobile screenshots were inspected. The
+final suite took 11.7 seconds without retries. The original recording is unchanged.
+
 The entries below preserve the earlier implementation and validation history;
 their then-current statements about authorization, publication, and CI are
 superseded by this status.

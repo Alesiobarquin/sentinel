@@ -40,7 +40,7 @@ export function ReplayViewer() {
   useEffect(() => {
     setEvidence(
       replay.steps[index]?.evidence_id ??
-        (index === recoveryIndex ? null : "ev_005"),
+        (index === recoveryIndex ? null : "ev_006"),
     );
     if (index === recoveryIndex) setPlaying(false);
     window.history.replaceState(null, "", `#step-${index}`);
@@ -68,19 +68,21 @@ export function ReplayViewer() {
           </p>
           <h1>Payment investigation</h1>
           <p>
-            This local test injected a payment failure. The replay shows the
-            agent&apos;s tool calls, hypotheses, evidence, and diagnosis.
+            This recording shows how Sentinel identified the cause of a failed
+            payment test. View the result, or step through the original
+            investigation.
           </p>
         </div>
         <Link href="/project/" className="text-link">
-          Project notes <Icon name="arrow" />
+          Project overview <Icon name="arrow" />
         </Link>
       </div>
       <div className="recording-notice">
         <span className="pill recorded">Recorded · real telemetry</span>
         <p>
-          This replays the original local run. Playback is condensed; recorded
-          timings and decisions are preserved.
+          Use the step controls to see the original reads. Evidence buttons open
+          the data behind a decision. Playback is condensed; measurements are
+          from the recorded run.
         </p>
       </div>
       <div className="demo-stats">
@@ -151,7 +153,7 @@ export function ReplayViewer() {
           className="text-button"
           onClick={() => selectStep(recoveryIndex - 1)}
         >
-          Jump to diagnosis <Icon name="arrow" size={15} />
+          View result <Icon name="arrow" size={15} />
         </button>
       </div>
       <div className="replay-grid">
@@ -301,8 +303,16 @@ export function ReplayViewer() {
                       probability
                     </span>
                   </div>
-                  <h3>The paymentFailure fault branch is active.</h3>
-                  <p>{replay.diagnosis.root_cause}</p>
+                  <h3>Payment failure setting enabled</h3>
+                  <p>
+                    A test setting was causing payment requests to fail. The
+                    agent matched the errors to the enabled setting and the
+                    corresponding source-code branch.
+                  </p>
+                  <details className="limitations">
+                    <summary>Original model explanation</summary>
+                    <p>{replay.diagnosis.root_cause}</p>
+                  </details>
                   <div className="citation-row">
                     {replay.diagnosis.evidence_ids.map((id) => (
                       <Citation key={id} id={id} onSelect={setEvidence} />

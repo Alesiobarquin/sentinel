@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Icon } from "./icons";
+import { Icon, Mark } from "./icons";
 import { REPO } from "@/lib/replay";
 
 export function Nav() {
@@ -13,6 +13,7 @@ export function Nav() {
     <header className="site-header">
       <div className="container nav-wrap">
         <Link href="/" className="brand" aria-label="Sentinel home">
+          <Mark />
           Sentinel<span className="brand-note">/ student project</span>
         </Link>
         <nav aria-label="Main navigation">

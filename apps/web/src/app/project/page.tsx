@@ -13,7 +13,7 @@ import {
 } from "@/lib/replay";
 
 export const metadata: Metadata = {
-  title: "Project notes",
+  title: "Project overview",
   alternates: { canonical: "/sentinel/project/" },
 };
 const sections = [
@@ -89,14 +89,14 @@ export default function Project() {
     <main id="main" className="container project-shell">
       <header className="project-heading">
         <p className="eyebrow">Sentinel · student project</p>
-        <h1>Project notes</h1>
+        <h1>Project overview</h1>
         <p>
-          I built a read-only incident investigation agent and tested it against
-          the OpenTelemetry Demo. These notes cover my implementation, design
-          choices, test results, and lessons from the project.
+          I built a tool that uses an AI model to investigate service failures.
+          This page summarizes my work and the recorded result, followed by
+          architecture, tests, and technical lessons.
         </p>
         <div className="hero-actions">
-          <Link href="/demo/" className="button primary">
+          <Link href="/demo/#step-8" className="button primary">
             View demo <Icon name="arrow" />
           </Link>
           <a href={REPO} className="button secondary">
@@ -130,21 +130,49 @@ export default function Project() {
             <p className="eyebrow">01 / Problem</p>
             <h2>Project goal</h2>
             <p>
-              The goal was to diagnose an injected service failure using
-              telemetry, without giving the agent the expected answer. It
-              receives a service, symptom, and time window, chooses diagnostic
-              reads, and returns a cause with evidence references and
-              limitations.
+              I tested whether an AI agent could identify why payments failed by
+              checking data from a running application. The expected cause was
+              not included in the model&apos;s input.
             </p>
+            <dl className="project-summary" aria-label="Project summary">
+              <div>
+                <dt>My work</dt>
+                <dd>
+                  Python data tools, an investigation loop, validation and
+                  permissions, run records, tests, and this Next.js viewer.
+                </dd>
+              </div>
+              <div>
+                <dt>Test application</dt>
+                <dd>
+                  The existing OpenTelemetry Demo. I did not build its services.
+                </dd>
+              </div>
+              <div>
+                <dt>Recorded result</dt>
+                <dd>
+                  The agent identified the payment failure setting. A separate
+                  test helper reset it, and recovery samples showed no errors.
+                </dd>
+              </div>
+              <div>
+                <dt>Current scope</dt>
+                <dd>
+                  A read-only local agent and a recorded browser demo. One
+                  correct case does not establish an accuracy rate.
+                </dd>
+              </div>
+            </dl>
           </section>
           <section id="architecture" className="project-section">
             <p className="eyebrow">02 / Architecture</p>
             <h2>Architecture</h2>
             <Architecture />
             <p>
-              The model sees a bounded evidence selection. Full audit history
-              stays outside that context. Typed provider adapters separate
-              backend parsing and model transport from the investigation loop.
+              The model receives selected data, called its context, with a size
+              limit. Full results remain in local audit files. Typed adapters
+              separate data parsing and model requests from the investigation
+              loop.
             </p>
             <div className="architecture-stack">
               <span>Python + Pydantic</span>
