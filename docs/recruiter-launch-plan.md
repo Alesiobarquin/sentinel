@@ -22,8 +22,9 @@ while being browsed. Model credentials and the telemetry lab stay local.
 
 Use GitHub Pages and GitHub Actions for the static Next.js/React/TypeScript site.
 The GitHub CLI is already authenticated as `Alesiobarquin`, so this can be created
-and published through the CLI without a second hosting-account sign-in. Planned
-repository: `Alesiobarquin/sentinel`. Planned site:
+and published through the CLI without a second hosting-account sign-in. Published
+repository: [Alesiobarquin/sentinel](https://github.com/Alesiobarquin/sentinel).
+Pages is configured for workflow deployment. Target site:
 `https://alesiobarquin.github.io/sentinel/` (not live until deployment is verified).
 
 GitHub Pages supports public repositories on GitHub Free and public/private
@@ -56,13 +57,15 @@ not enable Sentinel's investigation agent to write to GitHub or infrastructure.
    consent. Completed on October 5; protected local credentials are configured.
 3. Confirm available models and use an explicitly selected small account model
    for one real investigation. The available catalog includes `gpt-5.6-luna`;
-   the previous default `gpt-6-luna` was unavailable. Do not silently upgrade.
+   the previous default `gpt-6-luna` was unavailable. The corrected investigation
+   succeeded within the existing budgets; no model upgrade was performed.
 4. Preserve baseline, incident, run, and recovery artifacts. Review a successful
    diagnosis at [checkpoint 2](checkpoints/02-first-investigation.md) before major
-   web/product implementation. A status string alone does not prove correctness.
+   web/product implementation. The diagnosis and sampled recovery are verified;
+   developer acknowledgment is pending. A status string alone does not prove correctness.
 5. Prepare source publication without local credentials, raw private run files,
    cached upstream source, generated assets, or paid-service configuration.
-   Create the public repository with `gh`, commit tested source, and push it.
+   Repository creation, source push, and hosted deterministic CI are complete.
 6. Build the focused Next.js viewer after the required review. Export sanitized
    real data with original evidence IDs, timestamps, model, usage, outcome, and
    coverage limits. Build the explanatory page from evidence-backed content.

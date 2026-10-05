@@ -14,7 +14,8 @@ the resources of a small free web service. Public recruiter access should be
 reliable without requiring the developer's computer to remain available or
 funding continuous telemetry generation and inference. The PRD still requires
 the full operator product and a disposable AWS/Terraform/EKS demonstration.
-The first successful AI investigation and checkpoint 2 review remain pending.
+The first correct live AI investigation and sampled recovery are verified;
+checkpoint 2 developer review remains pending.
 
 ## Decision
 
