@@ -86,6 +86,23 @@ and the full replay still available. TypeScript/static export and all 22 updated
 browser checks passed locally; desktop/mobile screenshots were inspected. The
 final suite took 11.7 seconds without retries. The original recording is unchanged.
 
+The developer requested a second review from an experienced engineer's perspective.
+The landing is now a concise project write-up instead of a dashboard preview,
+headline statistics, generic feature cards, and technology badges. It describes
+the actual payment experiment and links directly to its logs, source branch, and
+configuration snapshot. Project notes link implementation and regression tests,
+describe failed attempts and telemetry/resource issues, acknowledge AI coding
+assistance, and keep run measurements with their scope. A misleading claim that
+private failure captures were public was corrected. The next evaluation gap is
+stated without adding a technology roadmap to the page.
+
+The reviewed recording remains unchanged. TypeScript/static export and all 22
+desktop/mobile browser checks passed after the final readability adjustment
+(10.6 seconds, retries disabled). Six routes had no horizontal overflow, and 24
+linked source/test/document paths resolved in the checkout. Screenshots of the
+landing, implementation, development, validation, result, and sharing image were
+inspected. See the latest [site validation](validation/recruiter-site.md).
+
 The entries below preserve the earlier implementation and validation history;
 their then-current statements about authorization, publication, and CI are
 superseded by this status.

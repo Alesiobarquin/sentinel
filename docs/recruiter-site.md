@@ -6,15 +6,22 @@ frontend stack. Playwright is a development dependency for testing navigation,
 recorded interactions, direct routes, resource requests, and responsive layouts.
 No UI framework, chart library, public backend, or hosting account was added.
 
-The public copy uses a student-portfolio tone: concise facts about the
-implementation, results, limitations, and lessons. Use first person for project
-work. Avoid product pitches, slogans, and dramatic headlines. A small logo is
-allowed. Summarize purpose, ownership, and results in plain language before
-technical details. This preference is also recorded in `AGENTS.md`.
+The public site reads as an engineering write-up, with a concise introduction,
+one concrete experiment, implementation links, failed attempts, tests, and open
+questions. The landing has no headline statistics, dashboard mockup, technology
+badges, or generic feature cards. Measurements belong with their actual run and
+coverage limits, rather than a promotional scorecard. A small logo is allowed.
+Keep original versus external work and AI coding assistance clear. Do not invent
+personal learning claims or imply unaided authorship. This preference is recorded
+in `AGENTS.md`.
 
 The landing/project demo links open at the recorded diagnosis; direct `/demo/`
-navigation still starts the original read sequence. The overview explains purpose,
-ownership, result, and scope before architecture details. The result has a short
+navigation still starts the original read sequence. Landing links to logs, source,
+and configuration open those recorded steps directly. Project notes explain the
+experiment before architecture details, link source and tests for the implementation
+and fixes, and distinguish fixture tests, live reads, fault captures, and the one
+model diagnosis. Single-run usage/timing is in a disclosure; the model's confidence
+is available with its original explanation. The result has a short
 summary and an expandable original model explanation. Its text is checked against
 the unchanged public record. Curated entry links refer to this known case's
 diagnosis step and must be reviewed when replacing the recording.

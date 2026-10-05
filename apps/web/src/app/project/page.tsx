@@ -13,15 +13,15 @@ import {
 } from "@/lib/replay";
 
 export const metadata: Metadata = {
-  title: "Project overview",
+  title: "Project notes",
   alternates: { canonical: "/sentinel/project/" },
 };
 const sections = [
-  "Problem",
+  "Experiment",
   "Architecture",
-  "Original work",
+  "Implementation",
   "Decisions",
-  "Lessons",
+  "Development",
   "Validation",
   "Limits",
   "Reproduce",
@@ -50,37 +50,68 @@ const decisions = [
   },
   {
     title: "Local execution, public replay",
-    why: "The 28-service lab and model run locally. GitHub Pages hosts the recorded demo and project notes.",
+    why: "The lab and Python agent run locally; model requests go to the provider. GitHub Pages hosts the recorded demo and project notes.",
     alternative:
       "A public lab would require more resources. The static site needs no backend, but cannot run a new investigation.",
     link: "docs/decisions/009-recruiter-demo-hosting.md",
   },
 ];
+const implementation = [
+  {
+    title: "Telemetry tools and reduction",
+    body: "Adapters parse Prometheus, OpenSearch, and Jaeger responses. Diagnostic tools use fixed queries, group repeated logs, select relevant spans, and report missing samples and omissions.",
+    source: "sentinel/agent/diagnostics.py",
+    tests: "tests/test_diagnostics.py",
+  },
+  {
+    title: "Investigation loop and policy",
+    body: "Pydantic validates model decisions. The loop checks service scope, citations to earlier successful reads, duplicate requests, and run budgets. Decisions and full results are written to local files.",
+    source: "sentinel/agent/runner.py",
+    tests: "tests/test_agent.py",
+  },
+  {
+    title: "Model adapter",
+    body: "The direct OpenAI SDK handles requests. Sentinel's adapter validates completed tool calls, retains reported usage, and surfaces incomplete or invalid responses. Sign-in credentials remain local.",
+    source: "sentinel/agent/provider.py",
+    tests: "tests/test_provider.py",
+  },
+  {
+    title: "Public recording and viewer",
+    body: "The exporter checks the reviewed run and selects allowed fields for publication. Next.js displays that record. Browser tests exercise replay controls, evidence links, direct routes, and mobile layouts.",
+    source: "sentinel/replay.py",
+    tests: "tests/test_replay.py",
+  },
+];
 const lessons = [
   {
-    number: "01",
     title: "Streaming response parsing",
-    body: "The first run failed because the function call arrived in output_item.done while the terminal response's output was empty. I updated the adapter to assemble finalized stream items after successful completion and usage reporting. The captured response became an offline regression fixture.",
+    body: "The first model investigation failed: the function call arrived in output_item.done, while the terminal response's output was empty. The adapter now accepts finalized stream items only after successful completion and reported usage. Regression tests reproduce that response shape and reject incomplete, oversized, or inconsistent streams.",
+    source: "sentinel/agent/provider.py",
+    tests: "tests/test_provider.py",
   },
   {
-    number: "02",
     title: "Tool argument schemas",
-    body: "The second run supplied a service argument to a global configuration tool. Python rejected it, but the model-facing JSON Schema had not expressed that rule. I added argument families for global, service-scoped, timed, and untimed reads. The next run completed with the same model and budgets.",
+    body: "The second investigation supplied a service argument to a global configuration tool. Python rejected it, but the model-facing JSON Schema had not expressed that rule. The schema now describes global, service-scoped, timed, and untimed argument families. The next investigation completed with the same model and budgets.",
+    source: "sentinel/agent/contracts.py",
+    tests: "tests/test_agent.py",
   },
   {
-    number: "03",
     title: "Telemetry coverage",
-    body: "An absent metric is not a zero, and a trace sample can miss intermittent failures. I added raw counter sample counts and explicit trace/span omissions. Configuration reads are labeled as current snapshots because they cannot establish the historical state.",
+    body: "An intermittent ad fault had a warning log but only one raw error-counter sample, so its increase remained unknown. A cart fault was visible in logs and metrics but missed by the bounded trace sample. The tools expose raw sample counts and omitted traces/spans. Configuration reads are labeled as current snapshots, which cannot establish historical state.",
+    source: "docs/validation/read-only-agent.md",
+    tests: "tests/test_diagnostics.py",
   },
   {
-    number: "04",
     title: "Checking errors against source",
-    body: "The “Invalid token” message initially suggested a credential issue. Source inspection showed that paymentFailure deliberately throws it. The baseline and enabled flag supported that cause. The gold attribute is assigned inside the failure branch; it does not identify a pre-existing customer group.",
+    body: "The “Invalid token” message could suggest a credential issue. Source inspection showed that paymentFailure deliberately throws it. The baseline and enabled flag supported that cause. The gold loyalty attribute is assigned inside the failure branch; it does not identify a pre-existing customer group.",
+    source: "docs/checkpoints/02-first-investigation.md",
+    tests: null,
   },
   {
-    number: "05",
     title: "Docker memory limits",
-    body: "Running the Compose lab and kind together exhausted the shared Docker VM and killed Kubernetes components. Increasing the fixture's memory limit did not fix the VM-wide shortage. I ran telemetry and Kubernetes checks separately and retained the failed results.",
+    body: "Running the Compose lab and kind together exhausted the shared Docker VM and killed Kubernetes components. Increasing the fixture's memory limit did not resolve the VM-wide shortage. Running telemetry and Kubernetes checks separately passed. This validates a separate reader fixture; the application still runs in Compose.",
+    source: "docs/validation/read-only-agent.md",
+    tests: "tests/test_live_kubernetes.py",
   },
 ];
 
@@ -89,33 +120,26 @@ export default function Project() {
     <main id="main" className="container project-shell">
       <header className="project-heading">
         <p className="eyebrow">Sentinel · student project</p>
-        <h1>Project overview</h1>
+        <h1>Project notes</h1>
         <p>
-          I built a tool that uses an AI model to investigate service failures.
-          This page summarizes my work and the recorded result, followed by
-          architecture, tests, and technical lessons.
+          The experiment, implementation, and failures behind the recorded
+          payment investigation. Code and tests are linked alongside the changes
+          they cover.
         </p>
-        <div className="hero-actions">
-          <Link href="/demo/#step-8" className="button primary">
-            View demo <Icon name="arrow" />
-          </Link>
-          <a href={REPO} className="button secondary">
-            Source & documentation <Icon name="external" size={15} />
-          </a>
+        <div className="intro-links">
+          <Link href="/demo/#step-8">View demo</Link>
+          <a href={REPO}>Source on GitHub</a>
         </div>
       </header>
       <div className="project-layout">
         <aside className="project-index">
           <span className="eyebrow">On this page</span>
           <nav aria-label="Project sections">
-            {sections.map((name, index) => (
+            {sections.map((name) => (
               <a
                 key={name}
                 href={`#${name.toLowerCase().replaceAll(" ", "-")}`}
               >
-                <span className="mono" aria-hidden="true">
-                  0{index + 1}
-                </span>
                 {name}
               </a>
             ))}
@@ -126,46 +150,49 @@ export default function Project() {
           </div>
         </aside>
         <div className="project-content">
-          <section id="problem" className="project-section">
-            <p className="eyebrow">01 / Problem</p>
-            <h2>Project goal</h2>
+          <section id="experiment" className="project-section">
+            <h2>The experiment</h2>
             <p>
-              I tested whether an AI agent could identify why payments failed by
-              checking data from a running application. The expected cause was
-              not included in the model&apos;s input.
+              The question was whether a model could work from a running
+              application&apos;s telemetry to identify a service failure. The
+              local test used OpenTelemetry Demo&apos;s deliberate payment
+              fault. The model received the symptom, service, and time window.
+              The scenario&apos;s expected cause was kept outside its input.
             </p>
             <dl className="project-summary" aria-label="Project summary">
               <div>
-                <dt>My work</dt>
+                <dt>Setup</dt>
                 <dd>
-                  Python data tools, an investigation loop, validation and
-                  permissions, run records, tests, and this Next.js viewer.
+                  Capture a healthy baseline, enable <code>paymentFailure</code>
+                  , wait for telemetry, then start one investigation.
                 </dd>
               </div>
               <div>
-                <dt>Test application</dt>
+                <dt>Observation</dt>
                 <dd>
-                  The existing OpenTelemetry Demo. I did not build its services.
+                  Logs and traces carried an invalid-token error. The source
+                  contained the matching flag-controlled branch, and the current
+                  configuration selected <code>100%</code>.
                 </dd>
               </div>
               <div>
-                <dt>Recorded result</dt>
+                <dt>Result</dt>
                 <dd>
                   The agent identified the payment failure setting. A separate
                   test helper reset it, and recovery samples showed no errors.
                 </dd>
               </div>
               <div>
-                <dt>Current scope</dt>
+                <dt>What this establishes</dt>
                 <dd>
-                  A read-only local agent and a recorded browser demo. One
-                  correct case does not establish an accuracy rate.
+                  One correct diagnosis of a controlled fault, with readable
+                  source and an available configuration snapshot. The cause is
+                  more direct than many production incidents.
                 </dd>
               </div>
             </dl>
           </section>
           <section id="architecture" className="project-section">
-            <p className="eyebrow">02 / Architecture</p>
             <h2>Architecture</h2>
             <Architecture />
             <p>
@@ -174,71 +201,51 @@ export default function Project() {
               separate data parsing and model requests from the investigation
               loop.
             </p>
-            <div className="architecture-stack">
-              <span>Python + Pydantic</span>
-              <span>Direct OpenAI SDK</span>
-              <span>OpenTelemetry SDK</span>
-              <span>Next.js + React + TypeScript</span>
-            </div>
+            <p>
+              Python runs the tools and loop, Pydantic validates their
+              contracts, and the OpenAI SDK connects the model. OpenTelemetry
+              instruments Sentinel itself. Next.js, React, and TypeScript render
+              the public recording on GitHub Pages.
+            </p>
           </section>
-          <section id="original-work" className="project-section">
-            <p className="eyebrow">03 / Original work</p>
-            <h2>What I implemented</h2>
-            <div className="contribution-grid">
-              <article>
-                <span className="eyebrow">Project code</span>
-                <ul>
-                  <li>Typed telemetry adapters and fixed diagnostic tools.</li>
-                  <li>
-                    Deterministic reduction, structured evidence, and explicit
-                    omissions.
-                  </li>
-                  <li>
-                    Hypothesis loop, decision validation, citation policy, and
-                    bounded budgets.
-                  </li>
-                  <li>
-                    Protected OAuth sign-in, account catalog, and direct model
-                    transport.
-                  </li>
-                  <li>
-                    Full local audit, usage records, and self-instrumentation.
-                  </li>
-                  <li>
-                    Reproducible fault fixtures, deterministic tests, and
-                    integration checks.
-                  </li>
-                  <li>
-                    Reviewed replay export, this interactive site, and
-                    deployment workflow.
-                  </li>
-                </ul>
-              </article>
-              <article>
-                <span className="eyebrow">Existing software</span>
-                <p>
-                  The official <a href={UPSTREAM}>OpenTelemetry Demo 3.1.0</a>{" "}
-                  supplies the application and fault scenarios. I pinned its
-                  version for reproducible tests.
-                </p>
-                <p>
-                  Prometheus, OpenSearch, Jaeger, Kubernetes, the OpenTelemetry
-                  SDK, and the OpenAI SDK are dependencies used by Sentinel.
-                </p>
-              </article>
+          <section id="implementation" className="project-section">
+            <h2>Implementation</h2>
+            <p>
+              Sentinel&apos;s code covers the investigation tooling and viewer.
+              The official <a href={UPSTREAM}>OpenTelemetry Demo 3.1.0</a>{" "}
+              supplies the application services and fault mechanisms; its
+              version is pinned. Prometheus, OpenSearch, Jaeger, and the SDKs
+              are existing dependencies. I used AI coding assistance for
+              implementation and debugging.
+            </p>
+            <div className="implementation-list">
+              {implementation.map((part) => (
+                <article key={part.title}>
+                  <h3>{part.title}</h3>
+                  <p>{part.body}</p>
+                  <div className="inline-links">
+                    <a href={`${REPO}/blob/main/${part.source}`}>
+                      {part.source.split("/").at(-1)}
+                    </a>
+                    <a href={`${REPO}/blob/main/${part.tests}`}>
+                      {part.tests.split("/").at(-1)}
+                    </a>
+                  </div>
+                </article>
+              ))}
             </div>
           </section>
           <section id="decisions" className="project-section">
-            <p className="eyebrow">04 / Decisions & alternatives</p>
             <h2>Design choices</h2>
-            <div className="decision-cards">
+            <div className="decision-list">
               {decisions.map((d) => (
                 <article key={d.title}>
                   <h3>{d.title}</h3>
                   <p>{d.why}</p>
                   <p className="tradeoff">{d.alternative}</p>
                   <a href={`${REPO}/blob/main/${d.link}`} className="text-link">
-                    Code and notes <Icon name="external" size={13} />
+                    Related code or decision record{" "}
+                    <Icon name="external" size={13} />
                   </a>
                 </article>
               ))}
@@ -257,116 +264,191 @@ export default function Project() {
               </p>
             </div>
           </section>
-          <section id="lessons" className="project-section">
-            <p className="eyebrow">05 / Lessons from the build</p>
-            <h2>What I learned</h2>
+          <section id="development" className="project-section">
+            <h2>What broke during development</h2>
             <div className="lesson-list">
               {lessons.map((l) => (
-                <article key={l.number}>
-                  <span className="lesson-number mono">{l.number}</span>
+                <article key={l.title}>
                   <div>
                     <h3>{l.title}</h3>
                     <p>{l.body}</p>
+                    <div className="inline-links">
+                      <a href={`${REPO}/blob/main/${l.source}`}>
+                        {l.source.split("/").at(-1)}
+                      </a>
+                      {l.tests && (
+                        <a href={`${REPO}/blob/main/${l.tests}`}>
+                          {l.tests.split("/").at(-1)}
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </article>
               ))}
             </div>
             <p className="fine-print">
-              The repository contains the failure records, fixes, and learning
-              notes.
+              The repository documents the failure history and contains the
+              fixes and tests. Full run records and provider captures remain
+              local; the site publishes selected evidence from the reviewed
+              successful run.
             </p>
             <a
               href={`${REPO}/blob/main/docs/learning/investigation.md`}
               className="text-link"
             >
-              Learning notes & interview questions{" "}
-              <Icon name="external" size={14} />
+              Learning notes <Icon name="external" size={14} />
             </a>
           </section>
           <section id="validation" className="project-section">
-            <p className="eyebrow">06 / Measured validation</p>
-            <h2>Test results</h2>
-            <div className="validation-grid">
-              <div>
-                <strong>122</strong>
-                <span>deterministic Python tests passed</span>
-              </div>
-              <div>
-                <strong>6 + 2</strong>
-                <span>live telemetry + isolated Kubernetes checks</span>
-              </div>
-              <div>
-                <strong>3</strong>
-                <span>real faults with deterministic captures</span>
-              </div>
-              <div>
-                <strong>1</strong>
-                <span>correct live AI diagnosis</span>
-              </div>
-            </div>
+            <h2>What was tested</h2>
             <p>
-              Eight live checks are separate from ordinary Python tests. Three
-              faults were captured and reset: payment, EmptyCart, and
-              intermittent ad errors. Only the payment case has a correct AI
-              diagnosis. The site also passed 22 desktop/mobile browser checks.
+              Ordinary tests use fixtures to check implementation behavior. Live
+              checks exercise the local backends separately. Neither is a
+              measure of model diagnosis accuracy.
             </p>
-            <ErrorComparison />
             <div className="table-scroll">
-              <table>
-                <caption>Recorded investigation · {replay.run_id}</caption>
+              <table className="validation-table">
+                <caption>Validation recorded on October 5, 2026</caption>
                 <thead>
                   <tr>
-                    <th>Measurement</th>
-                    <th>Recorded result</th>
+                    <th>Check</th>
+                    <th>Observed result and scope</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Model calls / read-only tools</td>
                     <td>
-                      {replay.model_calls} / {replay.tool_calls}
+                      <a href={`${REPO}/tree/main/tests`}>
+                        Deterministic Python tests
+                      </a>
+                    </td>
+                    <td>
+                      122 passed; eight opt-in live tests skipped. Covers
+                      parsing, context, contracts, policy, auth, transport,
+                      audit, and export behavior with fixtures.
                     </td>
                   </tr>
                   <tr>
-                    <td>Reported input / output tokens</td>
                     <td>
-                      {number(replay.input_tokens)} /{" "}
-                      {number(replay.output_tokens)}
+                      <a
+                        href={`${REPO}/blob/main/docs/validation/read-only-agent.md`}
+                      >
+                        Live integrations
+                      </a>
+                    </td>
+                    <td>
+                      Six telemetry checks and two isolated Kubernetes checks
+                      passed. The Kubernetes reader fixture was tested
+                      separately from the Compose application.
                     </td>
                   </tr>
                   <tr>
-                    <td>Total tokens / budget</td>
                     <td>
-                      {number(totalTokens)} /{" "}
-                      {number(replay.budget.max_total_tokens)}
+                      <a href={`${REPO}/blob/main/evals/scenarios.json`}>
+                        Fault exercises
+                      </a>
+                    </td>
+                    <td>
+                      Payment, EmptyCart, and intermittent ad faults were
+                      injected, captured, and reset. These three captures did
+                      not use the model.
                     </td>
                   </tr>
                   <tr>
-                    <td>Investigation latency</td>
-                    <td>{seconds(replay.latency_ms)}</td>
-                  </tr>
-                  <tr>
-                    <td>Baseline / recovery reads</td>
-                    <td>5/5 succeeded in each phase</td>
-                  </tr>
-                  <tr>
-                    <td>Recovery error signals</td>
                     <td>
-                      Zero estimated server errors, selected payment error
-                      spans, and sampled warning/error logs
+                      <a
+                        href={`${REPO}/blob/main/docs/checkpoints/02-first-investigation.md`}
+                      >
+                        Model investigation
+                      </a>
+                    </td>
+                    <td>
+                      One correct payment diagnosis after two failed development
+                      runs. No repeated trial or accuracy rate has been
+                      established.
                     </td>
                   </tr>
                   <tr>
-                    <td>Remediation execution</td>
-                    <td>Developer exercise reset; agent recommendation only</td>
+                    <td>
+                      <a href={`${REPO}/blob/main/apps/web/tests/site.spec.ts`}>
+                        Browser checks
+                      </a>
+                    </td>
+                    <td>
+                      22 passed across desktop and mobile Chromium. Checks
+                      navigation, evidence selection, playback, downloads, and
+                      layout; it does not certify every browser.
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <p>
-              Two earlier model runs failed. One correct case does not establish
-              an accuracy rate. The public record includes usage, selected
-              evidence, and source-record hashes.
+              These are the payment test&apos;s before/failure/after-reset
+              observations. Recovery followed the helper&apos;s reset, not an
+              agent action. The chart uses sampled telemetry estimates.
+            </p>
+            <ErrorComparison />
+            <details className="run-measurements">
+              <summary>Recorded model usage and timing</summary>
+              <div className="table-scroll">
+                <table>
+                  <caption>Recorded investigation · {replay.run_id}</caption>
+                  <thead>
+                    <tr>
+                      <th>Measurement</th>
+                      <th>Recorded result</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Model calls / read-only tools</td>
+                      <td>
+                        {replay.model_calls} / {replay.tool_calls}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Reported input / output tokens</td>
+                      <td>
+                        {number(replay.input_tokens)} /{" "}
+                        {number(replay.output_tokens)}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Total tokens / budget</td>
+                      <td>
+                        {number(totalTokens)} /{" "}
+                        {number(replay.budget.max_total_tokens)}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Investigation latency</td>
+                      <td>{seconds(replay.latency_ms)}</td>
+                    </tr>
+                    <tr>
+                      <td>Baseline / recovery reads</td>
+                      <td>5/5 succeeded in each phase</td>
+                    </tr>
+                    <tr>
+                      <td>Recovery error signals</td>
+                      <td>
+                        Zero estimated server errors, selected payment error
+                        spans, and sampled warning/error logs
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Remediation execution</td>
+                      <td>
+                        Developer exercise reset; agent recommendation only
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </details>
+            <p>
+              The public record includes selected evidence, reported usage, and
+              source-record hashes. Full private artifacts remain local.
             </p>
             <div className="inline-links">
               <a
@@ -383,9 +465,14 @@ export default function Project() {
             </div>
           </section>
           <section id="limits" className="project-section">
-            <p className="eyebrow">07 / Failure modes & current limits</p>
             <h2>Current limitations</h2>
             <ul className="limits-list">
+              <li>
+                <strong>Controlled example.</strong> The tested cause is a known
+                fault mechanism. Source files and configuration reads are
+                allowlisted, and the recorded diagnosis was reviewed against
+                that scenario. General investigation quality remains unmeasured.
+              </li>
               <li>
                 <strong>Incomplete telemetry.</strong> Samples can miss faults.
                 Late exports and insufficient counter samples can leave metrics
@@ -411,18 +498,19 @@ export default function Project() {
                 responses.
               </li>
             </ul>
-            <div className="roadmap">
-              <span className="eyebrow">Planned work</span>
-              <p>
-                FastAPI/PostgreSQL persistence, incident chat, GitHub deployment
-                context, ten or more evaluated AI scenarios, controlled
-                remediation with human approval, MCP integration, and a
-                temporary AWS/Terraform deployment are not implemented.
-              </p>
-            </div>
+            <h3 className="next-experiment">Next experiment</h3>
+            <p>
+              Repeated runs across different faults, including missing and
+              conflicting evidence, would help measure when the model adds
+              useful interpretation to the deterministic tools. That evaluation
+              has not been run. Broader planned capabilities are tracked in the{" "}
+              <a href={`${REPO}/blob/main/docs/progress.md`}>
+                implementation notes
+              </a>
+              .
+            </p>
           </section>
           <section id="reproduce" className="project-section">
-            <p className="eyebrow">08 / Reproduce</p>
             <h2>Run locally</h2>
             <p>
               Clone the repository, install its locked Python environment, start

@@ -5,6 +5,11 @@ test("landing page leads to the investigation and explanatory project", async ({
 }) => {
   await page.goto("/sentinel/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sentinel");
+  await page.getByRole("link", { name: "Source branch", exact: true }).click();
+  await expect(
+    page.getByRole("region", { name: "Selected evidence" }),
+  ).toContainText("Math.random() < numberVariant");
+  await page.getByRole("link", { name: "Sentinel home", exact: true }).click();
   await page.getByRole("link", { name: "View demo", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Payment investigation" }),
@@ -12,7 +17,7 @@ test("landing page leads to the investigation and explanatory project", async ({
   await expect(page.locator(".diagnosis-panel")).toBeVisible();
   await page.getByRole("link", { name: "The project", exact: true }).click();
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Project overview",
+    "Project notes",
   );
   await expect(
     page.getByRole("link", { name: "The project", exact: true }),

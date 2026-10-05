@@ -11,12 +11,12 @@ export const metadata: Metadata = {
     template: "%s · Sentinel",
   },
   description:
-    "A student project: an AI-assisted tool for investigating service failures. Includes a recorded payment test, project overview, technical notes, and measured results.",
+    "A student experiment in AI incident investigation: a recorded local payment fault, implementation notes, failed attempts, source code, and tests.",
   alternates: { canonical: "/sentinel/" },
   openGraph: {
     title: "Sentinel — Student project",
     description:
-      "A recorded payment-failure investigation, with tool calls, evidence, results, and project notes.",
+      "A local payment-failure experiment with its recorded investigation, implementation, failed attempts, and tests.",
     type: "website",
     url: "/sentinel/",
     siteName: "Sentinel",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
         url: "/sentinel/social.png",
         width: 1200,
         height: 630,
-        alt: "Sentinel student project: recorded investigation and measurements",
+        alt: "Sentinel student project: payment experiment and implementation notes",
       },
     ],
   },

@@ -23,6 +23,12 @@ boundaries before describing the project in an interview.
    Why do these results not establish an accuracy rate?
 7. Explain deployment permissions and cleanup. Why does publishing through a
    developer's CLI not enable Sentinel's investigation agent to write to GitHub?
+8. Follow one development failure from its recorded observation to the code and
+   regression test. Which parts of the investigation are deterministic, which
+   decisions come from the model, and what would a repeatable comparison measure?
+9. Distinguish your project direction and ability to explain the implementation
+   from AI coding assistance and the external demo application's authorship.
+   Explain a design choice, reproduce a failure, and make a small change yourself.
 
 Use [the delivery review](../checkpoints/05-recruiter-delivery.md) for demo flow,
 current limitations, and resume wording that matches demonstrated behavior.

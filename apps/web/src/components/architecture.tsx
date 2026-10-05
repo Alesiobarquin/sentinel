@@ -23,7 +23,7 @@ const components = [
   {
     id: "agent",
     title: "Investigation loop",
-    label: "Read → test hypotheses → cite",
+    label: "Model decision → read → next decision",
     detail:
       "The loop validates model decisions, checks tool permissions and run limits, and requires citations to successful earlier reads. It sends at most 32 KB of selected context through the OpenAI SDK.",
     file: "sentinel/agent/runner.py",

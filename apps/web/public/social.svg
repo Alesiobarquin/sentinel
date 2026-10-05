@@ -5,29 +5,25 @@
   <g font-family="Arial, sans-serif" fill="#20352e">
     <text x="112" y="75" font-size="27" font-weight="600">Sentinel</text>
     <text x="65" y="155" font-size="12" letter-spacing="1" fill="#637169">STUDENT PROJECT</text>
-    <text x="64" y="239" font-size="42" font-weight="600">Incident investigation</text>
-    <text x="65" y="297" font-size="18" fill="#516159">An AI-assisted tool to investigate service failures.</text>
-    <text x="65" y="328" font-size="18" fill="#516159">Python data tools, recorded results, and tests.</text>
-    <text x="65" y="388" font-size="17" fill="#516159">Project overview and technical implementation notes.</text>
-    <text x="65" y="526" font-size="13" fill="#637169">Python  ·  OpenTelemetry  ·  OpenAI SDK  ·  Next.js</text>
+    <text x="64" y="239" font-size="37" font-weight="600">Incident investigation</text>
+    <text x="65" y="297" font-size="18" fill="#516159">A local experiment with an AI agent</text>
+    <text x="65" y="328" font-size="18" fill="#516159">and the OpenTelemetry Demo.</text>
+    <text x="65" y="388" font-size="17" fill="#516159">Recorded investigation, implementation notes,</text>
+    <text x="65" y="417" font-size="17" fill="#516159">failed attempts, source code, and tests.</text>
+    <text x="65" y="526" font-size="13" fill="#637169">Student project by Alesiobarquin</text>
     <text x="65" y="586" font-size="13" fill="#637169">alesiobarquin.github.io/sentinel</text>
   </g>
-  <rect x="662" y="141" width="472" height="390" rx="12" fill="white" stroke="#dedfd6"/>
+  <path d="M651 142v390" stroke="#dedfd6"/>
   <g font-family="Arial, sans-serif" fill="#20352e">
-    <text x="693" y="182" font-size="11" letter-spacing="1" fill="#637169">RECORDED PAYMENT TEST</text>
-    <path d="M663 204h470" stroke="#dedfd6"/>
-    <text x="693" y="248" font-size="22" font-weight="600">paymentFailure was enabled.</text>
-    <text x="693" y="283" font-size="14" fill="#516159">The flag selected the recorded error branch.</text>
-    <rect x="693" y="312" width="410" height="65" rx="5" fill="#edf2ea"/>
-    <text x="711" y="338" font-size="12" fill="#516159">paymentFailure</text>
-    <text x="711" y="362" font-size="19" font-weight="600" fill="#216652">Default variant: 100%</text>
-    <text x="693" y="424" font-size="32">8</text>
-    <text x="835" y="424" font-size="32">120.1s</text>
-    <text x="985" y="424" font-size="32">48,380</text>
-    <text x="693" y="447" font-size="11" fill="#637169">read-only tools</text>
-    <text x="835" y="447" font-size="11" fill="#637169">recorded run</text>
-    <text x="985" y="447" font-size="11" fill="#637169">reported tokens</text>
-    <path d="M663 472h470" stroke="#dedfd6"/>
-    <text x="693" y="506" font-size="12" fill="#516159">Test helper reset the flag; recovery samples showed no errors.</text>
+    <text x="690" y="166" font-size="11" letter-spacing="1" fill="#637169">PAYMENT EXPERIMENT</text>
+    <text x="690" y="216" font-size="13" fill="#637169">Logs</text>
+    <text x="690" y="246" font-size="21">Invalid token</text>
+    <text x="690" y="296" font-size="13" fill="#637169">Source</text>
+    <text x="690" y="326" font-size="18">A flag-controlled branch throws the error.</text>
+    <text x="690" y="376" font-size="13" fill="#637169">Current configuration</text>
+    <text x="690" y="406" font-size="21">paymentFailure: 100%</text>
+    <text x="690" y="456" font-size="13" fill="#637169">Recorded result</text>
+    <text x="690" y="486" font-size="17">The agent identified the flag.</text>
+    <text x="690" y="514" font-size="17">A separate test helper reset it.</text>
   </g>
 </svg>

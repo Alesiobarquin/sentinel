@@ -120,3 +120,37 @@ Final compact chart labels fit on one line in both viewports.
 Logs/screenshots are under `var/site-tests-recruiter-polish-final.log` and
 `var/site-qa-recruiter-polish/`. The source recording, measured results, and
 read-only agent permissions were not changed.
+
+## Engineering presentation review
+
+The developer asked for a review by the standard of an experienced peer: a
+concrete experiment and implementation history rather than product marketing.
+The landing dashboard preview, statistic strip, technology badges, and generic
+feature cards were removed. Its text explains the controlled payment experiment
+and links to actual recorded log/source/configuration reads. Project notes link
+the implementation and tests alongside parser/schema fixes, coverage limits,
+and the Docker resource failure. Development used AI coding assistance; the
+external target's authorship is explicit.
+
+Review also corrected two factual presentation problems: full private failure
+captures are retained locally rather than published in the repository, and the
+model is accessed through its provider rather than running locally. Fixture
+tests, real backend reads, deterministic fault captures, and the one successful
+model investigation have separate scopes in a normal table. Model usage/timing
+and confidence remain inspectable without being headline claims. The recorded
+JSON, decisions, measurements, and permissions were not edited.
+
+TypeScript and production export passed. The final local browser suite passed
+all 22 cases in 10.6 seconds without retries. The landing navigation case now
+also verifies the source-branch deep link. Six page routes returned 200, retained
+one logo, and matched their 1440/390 viewport widths. Twenty-four repository
+source/test/document targets and every project contents anchor resolved. Usage
+disclosure exposed the original recorded values. Desktop/mobile landing,
+development, mobile implementation/validation/result, and the sharing image were
+inspected. The final mobile validation text uses 12 px rather than 10 px.
+
+Artifacts remain under `var/site-qa-peer-review/`,
+`var/site-build-peer-review-final.log`, and `var/site-tests-peer-review-final.log`.
+The earlier passing suite and screenshots are retained separately from the final
+readability adjustment. This review does not add another AI evaluation or
+establish production reliability.

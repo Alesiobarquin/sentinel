@@ -68,9 +68,10 @@ export function ReplayViewer() {
           </p>
           <h1>Payment investigation</h1>
           <p>
-            This recording shows how Sentinel identified the cause of a failed
-            payment test. View the result, or step through the original
-            investigation.
+            A saved investigation from the local OpenTelemetry Demo. A test
+            helper injected a known payment fault; the agent received the
+            symptom and time window. View the result or follow its original
+            reads.
           </p>
         </div>
         <Link href="/project/" className="text-link">
@@ -78,7 +79,7 @@ export function ReplayViewer() {
         </Link>
       </div>
       <div className="recording-notice">
-        <span className="pill recorded">Recorded · real telemetry</span>
+        <span className="mono">Saved local run</span>
         <p>
           Use the step controls to see the original reads. Evidence buttons open
           the data behind a decision. Playback is condensed; measurements are
@@ -297,11 +298,7 @@ export function ReplayViewer() {
               {diagnosed && (
                 <article className="diagnosis-panel">
                   <div>
-                    <span className="pill success">Cause supported</span>
-                    <span className="fine-print">
-                      Model ranking score {replay.diagnosis.confidence} · not a
-                      probability
-                    </span>
+                    <span className="eyebrow">Recorded diagnosis</span>
                   </div>
                   <h3>Payment failure setting enabled</h3>
                   <p>
@@ -312,6 +309,10 @@ export function ReplayViewer() {
                   <details className="limitations">
                     <summary>Original model explanation</summary>
                     <p>{replay.diagnosis.root_cause}</p>
+                    <span className="fine-print">
+                      Model confidence: {replay.diagnosis.confidence}. This is a
+                      ranking score, not a calibrated probability.
+                    </span>
                   </details>
                   <div className="citation-row">
                     {replay.diagnosis.evidence_ids.map((id) => (
@@ -390,6 +391,9 @@ export function ReplayViewer() {
           >
             Investigation review <Icon name="external" size={14} />
           </a>
+          <Link href="/project/#development" className="text-link">
+            Earlier failures and fixes <Icon name="arrow" size={14} />
+          </Link>
         </div>
       </div>
     </div>

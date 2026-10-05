@@ -20,7 +20,11 @@ Read `docs/progress.md` for recorded implementation and validation status.
   factual language about what I built, how it works, tests, limitations, and
   lessons. Avoid slogans, dramatic headlines, and product pitches. A small
   project logo is allowed. Explain the purpose, ownership, and result in plain
-  language first; retain technical evidence and details for closer review.
+  language first. Present the site as an engineering write-up: concrete
+  experiments, failures, changes, code, tests, and unresolved questions. Avoid
+  headline statistics and generic feature-card layouts. Keep measurements with
+  their experiment and limitations. Be honest about AI coding assistance and
+  external software; do not invent personal learning or unaided authorship.
 
 - Build an AI production engineer that investigates distributed-system incidents
   using real telemetry, tests hypotheses, cites evidence, recommends remediation,

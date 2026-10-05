@@ -50,6 +50,8 @@ Verified public URLs:
 1. Open the landing page, explain the incident and the distinction between the
    external target and original Sentinel code, then enter the investigation.
    The demo opens at the result; use Reset replay to follow the original reads.
+   The landing now introduces a local experiment rather than a product, with
+   direct links to its logs, source branch, and configuration snapshot.
 2. Step from inventory to metrics, logs, and traces. Inspect original tool
    arguments, three raw counter samples, correlation IDs, and omitted spans.
 3. Open source/configuration: the matching error branch and enabled 100% flag
@@ -58,8 +60,10 @@ Verified public URLs:
    Explain the baseline comparison, confidence limitation, usage, and budgets.
 5. Open recovery. The developer helper reset the fault; five recovery reads
    succeeded with zero sampled payment errors. Sentinel did not execute changes.
-6. Open the project page: architecture, design choices, failed attempts, lessons,
-   validation, limitations, and reproducible commands. Link the source for depth.
+6. Open the project notes: architecture, design choices, failed attempts,
+   validation, limitations, and reproducible commands. Follow the linked code
+   and tests for a concrete fix. Test counts appear with their scope, and usage
+   measurements are under a disclosure. AI coding assistance is acknowledged.
 
 Playback is condensed presentation; displayed timestamps and timings are the
 original recording. The downloadable public record retains evidence IDs, selected

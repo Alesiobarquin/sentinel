@@ -5,15 +5,17 @@ Sentinel's Python agent reads metrics, logs, traces, source, and configuration,
 compares hypotheses, and records a diagnosis with evidence references. The site
 contains a recorded investigation and notes on the implementation and lessons.
 
-**Current stage: read-only investigation agent and a tested recruiter website.**
+**Current stage: a read-only local agent and a recorded investigation viewer.**
 One real payment investigation identified the injected flag-controlled failure
-using eight model calls and eight read-only tools, reporting 48,380 tokens and
-120.076 seconds. The developer-owned exercise reset the fault and measured
-sampled recovery. Sentinel recommended remediation without executing it. This
-single correct case does not establish a general diagnosis accuracy rate.
+using logs, traces, metrics, source, and configuration. The developer-owned
+exercise reset the fault and measured sampled recovery. Sentinel recommended
+remediation without executing it. This
+single controlled case does not establish general diagnosis quality. Two earlier
+model investigations failed in transport and tool validation; their history,
+fixes, and regression tests are documented. Development used AI coding assistance.
 
 The Next.js/React/TypeScript site includes an interactive replay of that actual
-run and a project page explaining the architecture, original work, decisions,
+run and project notes explaining the architecture, original work, decisions,
 failures, and lessons. Visitors need no sign-in or model credits. The selected
 public recording is validated and filtered; credentials and full private audit
 files stay local. Published on GitHub Pages:
