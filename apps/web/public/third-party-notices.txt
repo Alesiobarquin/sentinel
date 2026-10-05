@@ -1,0 +1,28 @@
+Sentinel public replay: third-party notices
+
+OpenTelemetry Demo 3.1.0
+Copyright The OpenTelemetry Authors
+License: Apache License, Version 2.0
+Copy: ./licenses/opentelemetry-demo.txt
+Source: https://github.com/open-telemetry/opentelemetry-demo/tree/dedc0178918e260823323b8d95005a8cb924b007
+
+The public recording contains selected source from src/payment/charge.js and
+src/payment/index.js at that pinned commit. Source text is retained with its
+copyright/license headers, numbered for inspection, and serialized into JSON.
+The external application is maintained by the OpenTelemetry authors and is not
+original Sentinel work. This attribution does not imply their endorsement.
+
+Next.js 16.3.8
+Copyright (c) 2025 Vercel, Inc.
+License: MIT
+Copy: ./licenses/next.txt
+Source: https://github.com/vercel/next.js
+
+React and React DOM 19.3.0, Scheduler
+Copyright (c) Meta Platforms, Inc. and affiliates.
+License: MIT
+Copy: ./licenses/react.txt
+Source: https://github.com/facebook/react
+
+The referenced license copies are distributed with this static site under
+/sentinel/licenses/. Exact installed dependencies are recorded in package-lock.json.

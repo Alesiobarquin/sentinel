@@ -4,9 +4,13 @@
 
 The source is public at [Alesiobarquin/sentinel](https://github.com/Alesiobarquin/sentinel).
 The first [hosted deterministic CI run](https://github.com/Alesiobarquin/sentinel/actions/runs/37327673968)
-passed on Python 3.12 and 3.14. GitHub Pages is configured for Actions deployment.
-The focused recruiter site is built and tested locally; its first public
-deployment is now being verified.
+passed on Python 3.12 and 3.14. The focused recruiter site is now public:
+[landing](https://alesiobarquin.github.io/sentinel/),
+[interactive demo](https://alesiobarquin.github.io/sentinel/demo/), and
+[project/learning page](https://alesiobarquin.github.io/sentinel/project/).
+[The first Pages deployment](https://github.com/Alesiobarquin/sentinel/actions/runs/37349717998)
+passed Python, web, and deploy jobs. All 22 browser checks also passed against
+the actual HTTPS site. The repository About field links the verified homepage.
 
 ChatGPT sign-in is complete. Real model run
 `968a752f-8f1d-4dd5-acab-c95076d4a96e` passed the corrected streaming transport,
@@ -54,6 +58,13 @@ now gates Pages deployment on Python and web checks. Visitors make no model or
 telemetry requests. See [site operation](recruiter-site.md),
 [site learning material](learning/recruiter-site.md), and
 [the delivery review](checkpoints/05-recruiter-delivery.md).
+
+Public endpoint checks returned HTTP 200 for the landing/demo/project pages,
+recording JSON, and sharing image. The public browser suite passed all 22 cases
+in 17.1 seconds without retries, including the real Pages 404 and repository
+asset paths; `var/site-tests-public.log` retains the result. A public landing
+screenshot was inspected. Third-party source/runtime notices and license copies
+are distributed with the site. See [public site validation](validation/recruiter-site.md).
 
 The entries below preserve the earlier implementation and validation history;
 their then-current statements about authorization, publication, and CI are

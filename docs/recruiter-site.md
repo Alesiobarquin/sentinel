@@ -28,6 +28,8 @@ of evidence or source paths need explicit publication schemas and review.
 Pattern screening does not replace privacy review of a new recording. This
 sample contains synthetic demo traffic; source excerpts are attributed to the
 external OpenTelemetry application. Full private artifacts stay in `var/`.
+The footer links third-party notices, and the static export distributes the
+pinned demo's Apache license alongside the main frontend runtime MIT notices.
 
 ## Local development and checks
 

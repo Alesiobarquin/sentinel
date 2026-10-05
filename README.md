@@ -16,7 +16,7 @@ The Next.js/React/TypeScript site includes an interactive replay of that actual
 run and a project page explaining the architecture, original work, decisions,
 failures, and lessons. Visitors need no sign-in or model credits. The selected
 public recording is validated and filtered; credentials and full private audit
-files stay local. GitHub Pages deployment is being verified at
+files stay local. Published on GitHub Pages:
 [the site](https://alesiobarquin.github.io/sentinel/),
 [demo](https://alesiobarquin.github.io/sentinel/demo/), and
 [project page](https://alesiobarquin.github.io/sentinel/project/).
@@ -257,10 +257,11 @@ Six real telemetry checks and two isolated kind integration checks passed
 separately. These counts describe different validation layers, not AI accuracy.
 
 GitHub Actions checks Python 3.12/3.14, validates the public recording, builds the
-site, and runs browser checks before deploying main to Pages. Earlier
-[hosted Python CI](https://github.com/Alesiobarquin/sentinel/actions/runs/37331291849)
-passed; the website's initial deployment is being verified. Live/costly AI runs
-remain outside ordinary CI.
+site, and runs browser checks before deploying main to Pages.
+[The first website deployment](https://github.com/Alesiobarquin/sentinel/actions/runs/37349717998)
+passed every job; all 22 browser checks also passed against the actual public
+HTTPS site. Live/costly AI runs remain outside ordinary CI. See
+[the site validation record](docs/validation/recruiter-site.md).
 
 The [first diagnosis review](docs/checkpoints/02-first-investigation.md) records
 actual evidence, usage, recovery, and limitations. Exact subscription credit

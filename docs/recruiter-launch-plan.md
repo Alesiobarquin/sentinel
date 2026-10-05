@@ -24,8 +24,8 @@ Use GitHub Pages and GitHub Actions for the static Next.js/React/TypeScript site
 The GitHub CLI is already authenticated as `Alesiobarquin`, so this can be created
 and published through the CLI without a second hosting-account sign-in. Published
 repository: [Alesiobarquin/sentinel](https://github.com/Alesiobarquin/sentinel).
-Pages is configured for workflow deployment. Target site:
-`https://alesiobarquin.github.io/sentinel/` (not live until deployment is verified).
+Pages is configured for workflow deployment. Verified public site:
+[alesiobarquin.github.io/sentinel](https://alesiobarquin.github.io/sentinel/).
 
 GitHub Pages supports public repositories on GitHub Free and public/private
 repositories on GitHub Pro. The developer's Student Pack provides Pro while
@@ -64,7 +64,7 @@ not enable Sentinel's investigation agent to write to GitHub or infrastructure.
    web/product implementation. The diagnosis and sampled recovery are verified;
    the developer acknowledged checkpoint 2 on October 5. A status string alone does not prove correctness.
 5. Prepare source publication without local credentials, raw private run files,
-   cached upstream source, generated assets, or paid-service configuration.
+   cached upstream source, local build output, or paid-service configuration.
    Repository creation, source push, and hosted deterministic CI are complete.
 6. Build the focused Next.js viewer after the required review. Export sanitized
    real data with original evidence IDs, timestamps, model, usage, outcome, and
@@ -80,8 +80,12 @@ not enable Sentinel's investigation agent to write to GitHub or infrastructure.
    as successful diagnoses. Missing routes have a custom return path.
 8. Configure Pages through `gh api` with workflow builds, publish the tested
    release, observe the hosted checks, and inspect the actual HTTPS pages.
+   Completed: all first-deployment jobs passed, public endpoints returned HTTP
+   200, and all 22 desktop/mobile browser checks passed against GitHub Pages.
 9. Put the verified demo URL in the repository About field and README. Present
    completed capabilities and defensible resume wording with their limitations.
+   Completed: About/README link the live site; the delivery review provides
+   demo flow, measurements, tradeoffs, limitations, resume bullets, and questions.
 
 [Pages REST API](https://docs.github.com/en/rest/pages/pages#create-a-github-pages-site),
 [Next.js static export](https://nextjs.org/docs/app/guides/static-exports).

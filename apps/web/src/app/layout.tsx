@@ -20,7 +20,14 @@ export const metadata: Metadata = {
     type: "website",
     url: "/sentinel/",
     siteName: "Sentinel",
-    images: [{ url: "/sentinel/social.png", width: 1200, height: 630, alt: "Sentinel: a recorded, evidence-linked incident investigation" }],
+    images: [
+      {
+        url: "/sentinel/social.png",
+        width: 1200,
+        height: 630,
+        alt: "Sentinel: a recorded, evidence-linked incident investigation",
+      },
+    ],
   },
   robots: { index: true, follow: true },
   icons: { icon: "/sentinel/icon.svg" },
@@ -53,6 +60,9 @@ export default function Layout({
               <span>
                 External target: <a href={UPSTREAM}>OpenTelemetry Demo 3.1.0</a>
               </span>
+              <a href="/sentinel/third-party-notices.txt">
+                Third-party notices
+              </a>
             </div>
           </div>
         </footer>

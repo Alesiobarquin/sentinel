@@ -1,6 +1,6 @@
 # Recruiter delivery review
 
-**Status: focused delivery implemented and tested; public deployment being verified.**
+**Status: focused recruiter delivery published and verified on October 5, 2026.**
 This review covers the developer's clarified goal: one recruiter demo and an
 explanatory project/learning page. It supplies the architecture, demo flow,
 measurements, deployment, tradeoffs, limitations, resume wording, and interview
@@ -38,7 +38,7 @@ is available while eligible, but this public-repository path also works on Free.
 [Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages),
 [Actions billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions).
 
-Target URLs, pending initial deployment verification:
+Verified public URLs:
 
 - [Landing](https://alesiobarquin.github.io/sentinel/).
 - [Interactive investigation](https://alesiobarquin.github.io/sentinel/demo/).
@@ -70,8 +70,9 @@ data, coverage, and source-record hashes. Full private records remain local.
 | --- | --- | --- |
 | Deterministic Python | 122 passed; eight opt-in live skips; compilation passed | Contracts, reductions, policy, auth/transport, audits, fixtures, publication checks. |
 | Frontend | TypeScript and static export passed | The actual repository-path production export builds. |
-| Browser | 22 Chromium checks passed locally, desktop and mobile | Navigation, playback, citations, direct routes, downloads, recovery, responsive layout, useful 404, and no external execution requests. |
-| Visual review | Six screenshots inspected | Landing, diagnosis, and project on desktop/mobile. |
+| Browser | 22 Chromium checks passed locally and on public Pages, desktop and mobile | Navigation, playback, citations, direct routes, downloads, recovery, responsive layout, useful 404, and no external execution requests. |
+| Visual review | Six local screenshots plus public landing inspected | Landing, diagnosis, and project on desktop/mobile; actual public rendering. |
+| Hosted release | Python 3.12/3.14, web, and Pages jobs passed | Tested source was deployed through the gated workflow. |
 | Real telemetry | Six integration checks passed | Actual local metrics/log/trace adapter compatibility. |
 | Kubernetes | Two integration checks passed separately | Read-only fixture works; writes, secrets, and other namespaces denied. |
 | Deterministic scenarios | Three real faults captured and reset | Payment, EmptyCart, and intermittent ad ground truth and evidence, without AI quality scores. |
@@ -83,6 +84,8 @@ are preserved. This development sequence is not a controlled accuracy benchmark.
 Exact subscription credit/dollar consumption is unavailable; the token total is
 reported usage, not a price. See [checkpoint 2](02-first-investigation.md),
 [progress](../progress.md), and [real adapter validation](../validation/read-only-agent.md).
+The [public site validation record](../validation/recruiter-site.md) links the
+successful deployment and records endpoint/browser checks.
 
 ## Tradeoffs and limitations
 
@@ -123,7 +126,6 @@ Choose wording that you can explain and demonstrate yourself:
   case study through gated GitHub Actions/Pages, using reviewed evidence exports
   and 22 desktop/mobile browser checks without inference costs per visit.
 
-The publication bullet becomes applicable once the public deployment is verified.
 Avoid claiming production deployment, an accuracy percentage, calibrated
 confidence, autonomous remediation, full AWS infrastructure, or original authorship
 of the OpenTelemetry Demo. Do not claim every component was written unaided;

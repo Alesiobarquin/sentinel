@@ -1,6 +1,6 @@
 # ADR 009: inexpensive public recruiter delivery
 
-**Status: accepted and implemented; public deployment being verified.**
+**Status: accepted, implemented, and publicly verified on October 5, 2026.**
 
 Prepared October 5, 2026 and revised after the developer requested one public
 demo plus an explanatory page, with CLI execution and browser sign-in handoffs.
@@ -73,7 +73,9 @@ review was completed before major web/product implementation.
 
 The publication exporter, static frontend, and gated Actions workflow are now
 implemented. Python checks passed 122 deterministic cases, and 22 desktop/mobile
-browser checks passed locally. See [site operations](../recruiter-site.md) and
+browser checks passed locally and against the public Pages site. The gated
+[first deployment](https://github.com/Alesiobarquin/sentinel/actions/runs/37349717998)
+passed. See [site operations](../recruiter-site.md) and
 [the delivery review](../checkpoints/05-recruiter-delivery.md).
 
 ## When to reconsider
