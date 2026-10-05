@@ -2,8 +2,8 @@
 
 **Draft for the planned public project page.** Claims below describe implemented
 work and recorded validation. This draft is not a declaration that the full PRD
-portfolio acceptance criteria have been met. A browser-authenticated AI exercise
-is now being attempted; its result must be added after manual causal review.
+portfolio acceptance criteria have been met. One correct browser-authenticated
+AI investigation is recorded and awaiting the developer's checkpoint review.
 
 ## Problem and original contribution
 
@@ -52,10 +52,17 @@ a fault. There is no automatic model upgrade or endless retry loop.
   passed the then-current 110-test deterministic suite on Python 3.12 and 3.14.
   Real model runs have exposed transport and argument-contract failures; neither
   failed investigation is counted as a correct diagnosis.
+- The [first correct live investigation](checkpoints/02-first-investigation.md)
+  identified the injected payment-failure branch using eight model calls and
+  eight read-only tools. It reported 48,380 total tokens and 120.076 seconds.
+  All baseline/recovery reads succeeded with zero sampled payment errors. The
+  developer helper reset the fault; the agent did not execute remediation.
+- A self-trace export timed out during that run. Twenty-five local spans were
+  retained; complete delivery of that run's self-trace to Jaeger is unverified.
 
 See [progress](progress.md), [agent validation](validation/read-only-agent.md),
-and [fault evidence](validation/payment-failure.md). Add a successful AI exercise
-only after inspecting its actual diagnosis and causal evidence.
+and [fault evidence](validation/payment-failure.md). These are measured observations
+and deterministic checks, not a measured general AI diagnosis accuracy rate.
 
 ## Engineering lessons supported by this work
 

@@ -18,8 +18,21 @@ the fault. All baseline/recovery reads succeeded, with zero sampled errors.
 Tool scope/time argument families now appear in the model-facing JSON Schema,
 matching the existing Python validator. Instructions also require disjoint
 supporting/contradicting evidence lists. The latest deterministic suite passed
-**111 tests plus eight opt-in live skips and compilation**. A fresh bounded
-exercise is validating that contract fix. Checkpoint 2 remains pending.
+**111 tests plus eight opt-in live skips and compilation**, also passing
+[hosted CI](https://github.com/Alesiobarquin/sentinel/actions/runs/37329418839).
+
+The corrected exercise produced the first causally correct live AI diagnosis:
+`b4e5c4bc-ad01-4fde-b147-6446762705e2`, `gpt-5.6-luna`, eight model calls and
+eight read-only tools, 45,171 input / 3,209 output tokens, 120,076.353 ms latency.
+It identified the enabled payment-failure branch, cited metrics/logs/traces/source
+and current configuration, compared the baseline, and recommended a human-reviewed
+flag revert. Recommendations were not executed. All baseline/recovery reads
+succeeded with zero sampled payment errors; the exercise restored all flags to
+`off` and left no tracked fault. An OTLP export timeout occurred; 25 local
+self-trace spans remain, but this run's complete Jaeger delivery is unverified.
+See [checkpoint 2's concrete review](checkpoints/02-first-investigation.md).
+Developer acknowledgment is pending before major API/web work. This single
+correct case does not establish an AI accuracy rate or full portfolio readiness.
 
 The entries below preserve the earlier implementation and validation history;
 their then-current statements about authorization, publication, and CI are
@@ -146,8 +159,8 @@ the instruction to continue following the guide toward a resume-ready project. I
 presents the architecture, actual services/data flow, local setup, technology
 rationale, five decisions, learning questions, and evidence limits. Acknowledgment
 is recorded; work now proceeds toward checkpoint 2. Later permission, cost,
-and learning gates remain in effect. Checkpoint 2 has not been reached because
-Sentinel has not performed an AI investigation.
+and learning gates remain in effect. Checkpoint 2 now records the first correct
+live diagnosis and recovery; its developer acknowledgment remains pending.
 
 ## Current work
 
@@ -158,8 +171,9 @@ the OpenAI SDK isolates model transport; the OTel SDK/exporter observes runs.
 These dependencies follow the approved stack and are locked with uv.
 The developer selected ChatGPT subscription sign-in and prefers a smaller model
 with capped usage. Supported public OAuth login, protected credentials, rotation,
-account catalog, and streaming SDK transport are implemented. No real login is
-configured. Subscription preview limits prevent an exact credit/output-token cap;
+account catalog, and streaming SDK transport are implemented. Browser login is
+configured; the current status above records the selected model and live result.
+Subscription preview limits prevent an exact credit/output-token cap;
 the application stops at bounded calls/bytes/time and reported-token usage.
 Separately billed API mode is optional with known-price admission reservations.
 

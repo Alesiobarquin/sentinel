@@ -5,16 +5,19 @@ real logs, metrics, traces, deployment context, and source changes. Sentinel is
 intended to test competing hypotheses, cite evidence, recommend controlled
 remediation, and verify recovery.
 
-**Current stage: read-only investigation CLI; live AI validation in progress.**
+**Current stage: read-only CLI; first correct live AI diagnosis and recovery verified.**
 The bounded agent, structured evidence/hypotheses, OpenAI adapter, ChatGPT login,
 local audit trail, and Sentinel tracing are implemented and tested. Browser
-sign-in is configured; the first real AI exercise is underway. Metrics, logs,
+sign-in is configured. Metrics, logs,
 traces, and restricted Kubernetes reads passed live checks. Three developer-owned
-fault scenarios produced real error evidence and were reset. No live AI diagnosis
-or accuracy benchmark is claimed yet. The API, database, web product, controlled
+fault scenarios produced real error evidence and were reset. One live payment
+investigation correctly identified the injected flag-controlled failure using
+eight model calls and eight read-only tools. This is not an accuracy benchmark.
+The API, database, web product, controlled
 remediation, and cloud deployment follow later guide phases. The full scope is
 in [the PRD](prd.md); repository constraints are in [AGENTS.md](AGENTS.md).
-Checkpoint 1 is acknowledged. The next gate is [the first investigation](docs/checkpoints/02-first-investigation.md).
+Checkpoint 1 is acknowledged. [Checkpoint 2's measured result](docs/checkpoints/02-first-investigation.md)
+awaits developer review before major web work.
 
 The [recruiter launch plan](docs/recruiter-launch-plan.md) targets one free GitHub
 Pages site with a real investigation replay and an explanatory project page.
@@ -153,12 +156,13 @@ Connect your account from a desktop terminal, then list its available models:
 ```bash
 make login
 make models
-make first-investigation
+SENTINEL_MODEL=gpt-5.6-luna make first-investigation
 ```
 
 The last command runs one bounded AI investigation against a real payment fault,
 resets the developer lab even when diagnosis fails, and captures recovery. It
-checks sign-in and model availability before injection. The default is
+checks sign-in and model availability before injection. The example selects the
+small model available to the validated account. The default is
 `gpt-6-luna`; if it is unavailable, select an available smaller model explicitly
 with `SENTINEL_MODEL`. No automatic upgrade occurs. The exercise takes several
 minutes and stops at checkpoint 2 for review. Login requires your browser consent.
