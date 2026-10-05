@@ -9,6 +9,10 @@ __pycache__/
 var/
 node_modules/
 .next/
+out/
+*.tsbuildinfo
+playwright-report/
+test-results/
 dist/
 build/
 *.egg-info/

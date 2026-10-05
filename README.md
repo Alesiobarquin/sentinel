@@ -5,23 +5,48 @@ real logs, metrics, traces, deployment context, and source changes. Sentinel is
 intended to test competing hypotheses, cite evidence, recommend controlled
 remediation, and verify recovery.
 
-**Current stage: read-only CLI; first correct live AI diagnosis and recovery verified.**
-The bounded agent, structured evidence/hypotheses, OpenAI adapter, ChatGPT login,
-local audit trail, and Sentinel tracing are implemented and tested. Browser
-sign-in is configured. Metrics, logs,
-traces, and restricted Kubernetes reads passed live checks. Three developer-owned
-fault scenarios produced real error evidence and were reset. One live payment
-investigation correctly identified the injected flag-controlled failure using
-eight model calls and eight read-only tools. This is not an accuracy benchmark.
-The API, database, web product, controlled
-remediation, and cloud deployment follow later guide phases. The full scope is
-in [the PRD](prd.md); repository constraints are in [AGENTS.md](AGENTS.md).
-Checkpoint 1 is acknowledged. [Checkpoint 2's measured result](docs/checkpoints/02-first-investigation.md)
-awaits developer review before major web work.
+**Current stage: read-only investigation agent and a tested recruiter website.**
+One real payment investigation identified the injected flag-controlled failure
+using eight model calls and eight read-only tools, reporting 48,380 tokens and
+120.076 seconds. The developer-owned exercise reset the fault and measured
+sampled recovery. Sentinel recommended remediation without executing it. This
+single correct case does not establish a general diagnosis accuracy rate.
 
-The [recruiter launch plan](docs/recruiter-launch-plan.md) targets one free GitHub
-Pages site with a real investigation replay and an explanatory project page.
-CLI execution is authorized; implementation/public deployment remain pending.
+The Next.js/React/TypeScript site includes an interactive replay of that actual
+run and a project page explaining the architecture, original work, decisions,
+failures, and lessons. Visitors need no sign-in or model credits. The selected
+public recording is validated and filtered; credentials and full private audit
+files stay local. GitHub Pages deployment is being verified at
+[the site](https://alesiobarquin.github.io/sentinel/),
+[demo](https://alesiobarquin.github.io/sentinel/demo/), and
+[project page](https://alesiobarquin.github.io/sentinel/project/).
+
+The bounded agent, typed telemetry tools, policy, ChatGPT authentication, local
+audit, and self-instrumentation are implemented. Metrics/logs/traces and restricted
+Kubernetes reads passed real integration checks. Three deterministic fault
+scenarios are reproducible; broader AI evaluations, FastAPI/PostgreSQL persistence,
+incident chat, controlled remediation, MCP, and disposable AWS deployment remain
+later guide work. Checkpoints 1 and 2 are acknowledged. See
+[the delivery review](docs/checkpoints/05-recruiter-delivery.md),
+[the full PRD](prd.md), and [repository constraints](AGENTS.md).
+
+## Website development
+
+```bash
+cd apps/web
+npm ci
+npx playwright install chromium
+npm run typecheck
+npm run build
+npm test
+npm run preview
+```
+
+Open `http://127.0.0.1:4173/sentinel/`. The static site works independently of
+Docker, Python services, and model credentials. Python is used by the local
+preview server and publication validator. Read
+[site operation and maintenance](docs/recruiter-site.md) for the export boundary,
+development commands, deployment, failure modes, and cleanup.
 
 ## Local setup
 
@@ -218,22 +243,31 @@ Results are adapter and fault validation, not AI accuracy. The
 [scenario catalog](evals/scenarios.json) holds ground truth outside model context.
 See [measured validation](docs/validation/read-only-agent.md).
 
-## Validation and next milestone
+## Measured validation
 
 ```bash
 make check
 make check-live-telemetry
 ```
 
-Ordinary tests are deterministic and run offline. Live tests are opt-in and need
-a running demo. The live target uses the verified local log schema. GitHub Actions is configured
-for Python 3.12 and 3.14; this
-workflow has not yet been exercised in a hosted repository.
+The latest local suite passed **122 deterministic tests**, with eight opt-in
+live tests skipped, plus Python compilation. The website passed **22 Chromium
+browser checks** across desktop and mobile, TypeScript checks, and static export.
+Six real telemetry checks and two isolated kind integration checks passed
+separately. These counts describe different validation layers, not AI accuracy.
 
-Live bootstrap validation, adapter compatibility checks, and manual fault
-evidence are recorded in [checkpoint 1](docs/checkpoints/01-architecture.md).
-The first live model diagnosis awaits ChatGPT browser sign-in. No AI diagnosis
-accuracy, investigation cost benchmark, or portfolio-ready claim has been measured.
+GitHub Actions checks Python 3.12/3.14, validates the public recording, builds the
+site, and runs browser checks before deploying main to Pages. Earlier
+[hosted Python CI](https://github.com/Alesiobarquin/sentinel/actions/runs/37331291849)
+passed; the website's initial deployment is being verified. Live/costly AI runs
+remain outside ordinary CI.
+
+The [first diagnosis review](docs/checkpoints/02-first-investigation.md) records
+actual evidence, usage, recovery, and limitations. Exact subscription credit
+consumption is unknown; the recorded run's OTLP export timed out, while its local
+audit and 25 self-trace spans remained. Two earlier failed AI investigations are
+retained and are not counted as successes. Full PRD portfolio acceptance is
+still future work. See [the delivery review](docs/checkpoints/05-recruiter-delivery.md).
 
 Read [the architecture](docs/architecture.md), [telemetry guide](docs/telemetry.md),
 [decisions](docs/decisions/README.md), [learning questions](docs/learning/bootstrap.md),

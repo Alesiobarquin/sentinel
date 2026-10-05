@@ -1,9 +1,9 @@
 # Sentinel project case study
 
-**Draft for the planned public project page.** Claims below describe implemented
-work and recorded validation. This draft is not a declaration that the full PRD
-portfolio acceptance criteria have been met. One correct browser-authenticated
-AI investigation is recorded and awaiting the developer's checkpoint review.
+**Case study supporting the implemented public project page.** Claims describe
+implemented work and recorded validation. Checkpoint 2 was acknowledged on
+October 5, 2026. This focused recruiter delivery does not fulfill every PRD
+portfolio acceptance criterion; broader operator features remain documented below.
 
 ## Problem and original contribution
 
@@ -14,7 +14,8 @@ decisions. It persists the investigation audit and instruments itself.
 
 The original work is Sentinel's Python adapters, deterministic reduction,
 contracts, model loop, policy, authentication, auditing, evaluation fixtures,
-bootstrap scripts, tests, and documentation. The pinned OpenTelemetry Demo is
+bootstrap scripts, the reviewed publication exporter, interactive Next.js viewer,
+tests, and documentation. The pinned OpenTelemetry Demo is
 the external target application, maintained by the OpenTelemetry authors.
 
 ## Implemented architecture
@@ -29,6 +30,12 @@ bounded selection with evidence IDs and explicit omissions. Recommendations
 cannot execute infrastructure changes. Sentinel exports its own OTel spans to
 the local telemetry stack.
 
+The public website statically exports a reviewed, field-allowlisted recording.
+Its evidence buttons, original tool trail, hypotheses, timing, citations, and
+recovery make this result inspectable without a live lab or new model request.
+The explanatory page covers architecture, lessons, measured checks, limitations,
+and local reproduction. Full private run files are never deployed.
+
 The model transport uses the public OpenAI Responses API with supported ChatGPT
 OAuth sign-in. It validates state, PKCE, nonce, JWT signatures, permissions, and
 account identity; credentials are stored outside the repository with owner-only
@@ -37,9 +44,13 @@ a fault. There is no automatic model upgrade or endless retry loop.
 
 ## Evidence already recorded
 
-- 111 deterministic tests passed locally, with eight opt-in live tests skipped
+- 122 deterministic tests passed locally, with eight opt-in live tests skipped
   in the ordinary run. Python compilation passed. These tests validate behavior,
   not AI diagnosis accuracy.
+- 22 Chromium browser checks passed across desktop and mobile. Static export
+  and TypeScript checks passed, and six page screenshots were inspected. Initial
+  checks caught a mobile grid overflow that also broke tap hit-testing; correcting
+  its minimum column width fixed both failures. Browser retries are disabled.
 - Six telemetry integration checks passed against the real local backends.
 - Two Kubernetes integration checks passed in a separate kind fixture; reader
   credentials were denied writes, secrets, and other namespaces.
@@ -103,11 +114,12 @@ The public demo is a retained investigation, not a live incident-response servic
 ChatGPT subscription preview does not provide an exact server-side credit cap.
 Tool/call/byte/time limits and reported-token accounting remain explicit.
 
-FastAPI/PostgreSQL persistence, the web product, incident chat, expanded AI
+FastAPI/PostgreSQL persistence, a live operator dashboard, incident chat, expanded AI
 evaluations, GitHub deployment context, controlled remediation, MCP, and a
 temporary AWS/Terraform/EKS deployment remain later guide work. Describe each
 as completed only when its implementation and validation are recorded.
 
-The public project page should link original code, measured validation, runbook,
-and architecture. It should invite evidence inspection and local reproduction
-without promising capabilities that the implementation does not yet have.
+The implemented project page links original code, measured validation, runbook,
+and architecture. It supports evidence inspection and local reproduction. See
+[the recruiter-delivery review](checkpoints/05-recruiter-delivery.md) for demo flow,
+defensible resume wording, and interview questions.

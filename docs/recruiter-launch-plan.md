@@ -62,16 +62,22 @@ not enable Sentinel's investigation agent to write to GitHub or infrastructure.
 4. Preserve baseline, incident, run, and recovery artifacts. Review a successful
    diagnosis at [checkpoint 2](checkpoints/02-first-investigation.md) before major
    web/product implementation. The diagnosis and sampled recovery are verified;
-   developer acknowledgment is pending. A status string alone does not prove correctness.
+   the developer acknowledged checkpoint 2 on October 5. A status string alone does not prove correctness.
 5. Prepare source publication without local credentials, raw private run files,
    cached upstream source, generated assets, or paid-service configuration.
    Repository creation, source push, and hosted deterministic CI are complete.
 6. Build the focused Next.js viewer after the required review. Export sanitized
    real data with original evidence IDs, timestamps, model, usage, outcome, and
    coverage limits. Build the explanatory page from evidence-backed content.
+   Completed: the real recording, interactive tool/evidence trail, recovery view,
+   architecture explorer, lessons, limitations, and reproduction are implemented.
 7. Configure Next.js static export, the repository base path, trailing-slash
    routes, and deployment through GitHub Actions. Test navigation, direct URLs,
    mobile layout, evidence links, empty/failed states, and asset paths locally.
+   Completed: TypeScript/static export and all 22 desktop/mobile browser checks
+   passed; screenshots were reviewed. The viewer intentionally publishes one
+   successful case; failed investigations remain documented rather than replayed
+   as successful diagnoses. Missing routes have a custom return path.
 8. Configure Pages through `gh api` with workflow builds, publish the tested
    release, observe the hosted checks, and inspect the actual HTTPS pages.
 9. Put the verified demo URL in the repository About field and README. Present
@@ -96,4 +102,5 @@ Retain failed runs and unknown usage instead of converting them into successes.
 AWS/Terraform/EKS remains a later disposable demonstration under checkpoint 4
 if pursuing the full PRD portfolio scope. It is not the target of this public
 website deployment. Read [ADR 009](decisions/009-recruiter-demo-hosting.md),
-[progress](progress.md), and the [case-study draft](portfolio-case-study.md).
+[progress](progress.md), [case study](portfolio-case-study.md), and
+[delivery review](checkpoints/05-recruiter-delivery.md).

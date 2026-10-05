@@ -1,6 +1,6 @@
 # ADR 009: inexpensive public recruiter delivery
 
-**Status: accepted delivery scope; implementation and publication pending.**
+**Status: accepted and implemented; public deployment being verified.**
 
 Prepared October 5, 2026 and revised after the developer requested one public
 demo plus an explanatory page, with CLI execution and browser sign-in handoffs.
@@ -15,7 +15,7 @@ reliable without requiring the developer's computer to remain available or
 funding continuous telemetry generation and inference. The PRD still requires
 the full operator product and a disposable AWS/Terraform/EKS demonstration.
 The first correct live AI investigation and sampled recovery are verified;
-checkpoint 2 developer review remains pending.
+the developer acknowledged checkpoint 2 on October 5, 2026.
 
 ## Decision
 
@@ -50,26 +50,31 @@ Recorded interactions and results are visibly identified as recordings.
 
 ## Rationale
 
-This solves recruiter availability with the existing Next.js/FastAPI/PostgreSQL
-architecture and a selected data export. GitHub already hosts the source and
-provides the authenticated publication path. Public evidence browsing and full operator execution
-have different resource needs. A deliberate restricted delivery mode lets a
-recruiter inspect actual engineering outcomes at low recurring cost while the
-code and temporary lab demonstrate the complete system.
+This solves recruiter availability with the prescribed Next.js frontend and a
+selected data export, without requiring the planned FastAPI/PostgreSQL services
+for static browsing. GitHub already hosts the source and provides authenticated
+publication. Public evidence browsing and local investigation execution have
+different resource needs. The recording shows measured engineering outcomes;
+the code and reproducible local lab demonstrate the implemented pipeline.
 
 ## Consequences
 
 The UI needs an explicit viewer mode, validated export schema, sanitization,
-evidence provenance, and API failure behavior. It must not imply recorded runs
+evidence provenance, and useful navigation failures. It must not imply recorded runs
 are current incidents. Static exports do not provide request-time Next.js server
 features. Repository-relative routes and asset paths need explicit verification.
 The public viewer does not execute Python services or provide new inference.
 
-This proposal does not satisfy MVP or portfolio acceptance criteria on its own.
+This delivery does not satisfy full PRD portfolio acceptance on its own.
 The implementation order, evidence requirements, agent permission review, cloud
 approval, and final portfolio review remain in effect. The developer authorized
 CLI execution and clarified this delivery scope on October 5. Checkpoint 2
-review remains required before major web/product implementation.
+review was completed before major web/product implementation.
+
+The publication exporter, static frontend, and gated Actions workflow are now
+implemented. Python checks passed 122 deterministic cases, and 22 desktop/mobile
+browser checks passed locally. See [site operations](../recruiter-site.md) and
+[the delivery review](../checkpoints/05-recruiter-delivery.md).
 
 ## When to reconsider
 

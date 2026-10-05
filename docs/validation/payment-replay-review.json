@@ -1,0 +1,36 @@
+{
+  "run_id": "b4e5c4bc-ad01-4fde-b147-6446762705e2",
+  "acknowledged_on": "2026-10-05",
+  "checkpoint_acknowledged": true,
+  "causal_review": "accepted",
+  "expected_cause": "The enabled paymentFailure flag selects the intentional charge-failure branch.",
+  "note": "The coding agent inspected causal evidence and recovery; the developer acknowledged checkpoint 2 after receiving the review. This is one correct case after two failed investigations, not a diagnosis accuracy benchmark.",
+  "limitations": [
+    "OTLP self-trace export timed out during the run. Twenty-five local spans were retained; complete Jaeger delivery is unverified.",
+    "Recovery was performed by the developer exercise helper. Sentinel did not execute remediation."
+  ],
+  "source_hashes": {
+    "result.json": "1b9e0bc4b4c79e012249c13d2bb2bcb376131f38b00f549864868d8047510cd8",
+    "input.json": "286e1f5df6100af86d4ef48bc0d3e8727444448a011d7c8e19a3f742e408c3ed",
+    "events.jsonl": "d3d2b08b04ce2f96ba8f217aef9a7d2c5b3b792ca44d8f0ae80363d7c658e167",
+    "tools.jsonl": "1b6c9e368d5b472b3b2ae79eba3b6c49bb5fb3a2c27bb4b24351f530d9dc64dd",
+    "ev_001.json": "75c509f1e00eb649abc7ef7d99a3f460c147211e4578969d23539fc31d376fc5",
+    "ev_002.json": "b077dfbcc474d2ae5978b6e96582a5c00f3a6f8f40fefafdf85ce75bf75708fe",
+    "ev_003.json": "8682e07b244aeea447581c9dd9ab2668d678f13472631a6aca0eeb5e4938105d",
+    "ev_004.json": "f7ea6fe10b7d10ffc0e23a5cf2d75c5c6e7c15d28ff6536a8d83af17535c7d3e",
+    "ev_005.json": "80110bde717c14e0a1753563836f04315c389fd57f1d125e1525d3f0f5f2d120",
+    "ev_006.json": "6d943acdf21faaa3bf99f344aeb759b0643450a66701d94a8a5e9b00ab59b7c5",
+    "ev_007.json": "89d72f701904ea8c60798a968bbdd208cff43e6d3417ce63ab9b88660ad408ab",
+    "ev_008.json": "2d48cb3806ce845ecd21c4e6fa988883be4a9d98ab3a8003fc726ff31ae283ba",
+    "decision-01.json": "02f83754420f0d839c43f4e2cd7826985e8d5c43376113be6e800df577d7ede2",
+    "decision-02.json": "33b025e30b9084946d789a41e6362d76e39904eac23aeb8aa8e512f70dfc74f3",
+    "decision-03.json": "53bd1456ae4f797292e227b942a30879ba36939478714fc2a94e8053c6e73431",
+    "decision-04.json": "beda0cbe04a54c8313f567b97f3f1fb6d74f777e5b8d05cae24ada8e8480a10f",
+    "decision-05.json": "874c0039caad03c24ca94e09590bc9ebfce6c09d6efcb84bbda17802b853adad",
+    "decision-06.json": "dc9411d459138a533cb02399dc20225e78a2fae87af7bdd0b4f9fb3e9f58f7e3",
+    "decision-07.json": "e42ce7506d95599af3a1d8b2a62ff930a694d16544b8367d12f98e81f9d246e3",
+    "decision-08.json": "adc3bd71cca9a8d8b6ca9914b1d9ee1cdbc2ecd1bc2be1f941c3b4a8411f98f7",
+    "exercise-exercise-report.json": "8559caf82a1d1f579c4d7c7d8403add0e7311b5e85132acd6440fe0025983469",
+    "exercise-agent-result.json": "1b9e0bc4b4c79e012249c13d2bb2bcb376131f38b00f549864868d8047510cd8"
+  }
+}

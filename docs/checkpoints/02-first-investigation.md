@@ -1,7 +1,8 @@
 # Checkpoint 2: first correct live AI investigation
 
-**Status: correct diagnosis and recovery verified; developer acknowledgment
-pending.** This uses real telemetry from the pinned external OpenTelemetry Demo.
+**Status: acknowledged by the developer on 2026-10-05.** The developer replied
+“Acknowledged” after receiving this concrete review. Correct diagnosis and sampled
+recovery are verified. This uses real telemetry from the pinned external OpenTelemetry Demo.
 It is one correct case after two failed model investigations, not an accuracy benchmark.
 
 ## Result to review
@@ -129,6 +130,6 @@ for independent queries. A repeat can fail; preserve that outcome.
 [AGENTS.md](../../AGENTS.md) requires: “stop after diagnosing one real injected
 incident.” It requires the evidence, cause, code, reproduction, and five questions
 at this checkpoint. Review this concrete result before acknowledging continuation
-to the public replay and explanation page. Major API/web implementation awaits
-that acknowledgment. Later write/cloud permissions and full portfolio acceptance
+to the public replay and explanation page. That acknowledgment is now recorded;
+work proceeds to the focused recruiter site. Later write/cloud permissions and full portfolio acceptance
 criteria remain separately gated.

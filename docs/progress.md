@@ -4,8 +4,9 @@
 
 The source is public at [Alesiobarquin/sentinel](https://github.com/Alesiobarquin/sentinel).
 The first [hosted deterministic CI run](https://github.com/Alesiobarquin/sentinel/actions/runs/37327673968)
-passed on Python 3.12 and 3.14. GitHub Pages is configured for Actions deployment;
-the recruiter site has **not** been built or deployed yet.
+passed on Python 3.12 and 3.14. GitHub Pages is configured for Actions deployment.
+The focused recruiter site is built and tested locally; its first public
+deployment is now being verified.
 
 ChatGPT sign-in is complete. Real model run
 `968a752f-8f1d-4dd5-acab-c95076d4a96e` passed the corrected streaming transport,
@@ -31,8 +32,28 @@ succeeded with zero sampled payment errors; the exercise restored all flags to
 `off` and left no tracked fault. An OTLP export timeout occurred; 25 local
 self-trace spans remain, but this run's complete Jaeger delivery is unverified.
 See [checkpoint 2's concrete review](checkpoints/02-first-investigation.md).
-Developer acknowledgment is pending before major API/web work. This single
-correct case does not establish an AI accuracy rate or full portfolio readiness.
+The developer acknowledged checkpoint 2 on 2026-10-05. The focused static recruiter
+site can now proceed. This single
+correct case does not establish an AI accuracy rate or full PRD portfolio readiness.
+
+The prescribed Next.js/React/TypeScript frontend now includes a landing page,
+interactive replay, and explanatory project/learning page. Replay exposes original
+read order, hypotheses, reasons, evidence IDs, timing, usage, diagnosis, and
+developer-helper recovery. The public recording comes from the real successful
+run through a reviewed exporter with source-record hashes, prior-citation checks,
+field allowlists, bounds, and credential-pattern screening. Private audit files,
+SDK responses, endpoints, and model credentials are excluded.
+
+The latest local checks passed **122 deterministic tests plus eight opt-in live
+skips and compilation**, TypeScript checks, and static export. All **22 Chromium
+browser checks** passed across desktop and mobile after fixing a genuine mobile
+grid overflow/tap failure and an indexed navigation accessible name. Original
+failure logs are retained in `var/site-tests.log`; the corrected result is in
+`var/site-tests-fixed.log`. Six screenshots were inspected. The Actions workflow
+now gates Pages deployment on Python and web checks. Visitors make no model or
+telemetry requests. See [site operation](recruiter-site.md),
+[site learning material](learning/recruiter-site.md), and
+[the delivery review](checkpoints/05-recruiter-delivery.md).
 
 The entries below preserve the earlier implementation and validation history;
 their then-current statements about authorization, publication, and CI are
@@ -160,7 +181,7 @@ presents the architecture, actual services/data flow, local setup, technology
 rationale, five decisions, learning questions, and evidence limits. Acknowledgment
 is recorded; work now proceeds toward checkpoint 2. Later permission, cost,
 and learning gates remain in effect. Checkpoint 2 now records the first correct
-live diagnosis and recovery; its developer acknowledgment remains pending.
+live diagnosis and recovery; the developer acknowledged its review on 2026-10-05.
 
 ## Current work
 

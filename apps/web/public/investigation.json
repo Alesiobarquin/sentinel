@@ -1,0 +1,1343 @@
+{
+  "schema_version": 1,
+  "run_id": "b4e5c4bc-ad01-4fde-b147-6446762705e2",
+  "recorded_at": "2026-10-05T15:03:50.539370+00:00",
+  "model": "gpt-5.6-luna",
+  "billing_mode": "chatgpt",
+  "model_calls": 8,
+  "tool_calls": 8,
+  "input_tokens": 45171,
+  "output_tokens": 3209,
+  "cached_input_tokens": 0,
+  "approximate_api_cost_usd": null,
+  "usage_unknown": false,
+  "latency_ms": 120076.353,
+  "incident": {
+    "service": "payment",
+    "symptom": "Payment charge requests are failing",
+    "start": 1791212420.3825579,
+    "end": 1791212600.3825579,
+    "baseline_start": 1791212198.889771,
+    "baseline_end": 1791212378.889771
+  },
+  "budget": {
+    "max_model_calls": 8,
+    "max_tool_calls": 10,
+    "max_total_tokens": 50000,
+    "max_context_bytes": 32000,
+    "max_response_bytes": 12000,
+    "max_seconds": 300.0
+  },
+  "diagnosis": {
+    "root_cause": "Payment charge failures are most consistent with the intentional paymentFailure fault path being active. During the incident, payment produced 9 estimated server errors versus 0 in the baseline (ev_002, ev_007); all sampled failures logged and traced the exact message \u201cPayment request failed. Invalid token...\u201d (ev_003, ev_004). The pinned payment source shows that exact message is thrown when paymentFailure evaluates to a positive value (ev_005), and the current runtime snapshot sets paymentFailure's default variant to 100% (ev_006). This is stronger evidence than an upstream/dependency failure because the error is generated inside payment and propagated outward through checkout (ev_004).",
+    "confidence": 0.94,
+    "evidence_ids": [
+      "ev_002",
+      "ev_003",
+      "ev_004",
+      "ev_005",
+      "ev_006",
+      "ev_007"
+    ],
+    "affected_services": [
+      "payment",
+      "checkout",
+      "frontend-proxy",
+      "load-generator"
+    ],
+    "recommended_remediation": "Request human review to temporarily revert paymentFailure to the reversible off variant, then verify payment error rate and successful charge traces against baseline. Do not assume the current snapshot proves historical activation; confirm the effective flag evaluation or deployment state before and after the change.",
+    "remediation_kind": "request_config_revert",
+    "limitations": [
+      "The runtime configuration is a current mounted snapshot, not historical evidence of effective flag evaluation during the incident.",
+      "The source snapshot is pinned local source and does not prove the deployed image contents.",
+      "Metrics are span-derived estimates and may be affected by export delay, extrapolation, and incomplete coverage.",
+      "The bounded trace read reached its limit and omitted spans/traces, so unrelated dependency issues cannot be absolutely excluded."
+    ],
+    "requires_human_approval": true,
+    "requires_human_review": true,
+    "remediation_execution_available": false,
+    "remediation_executed": false
+  },
+  "evidence": [
+    {
+      "id": "ev_001",
+      "kind": "inventory",
+      "source": "jaeger",
+      "observed_at": 1791212630.752536,
+      "tool": {
+        "name": "services",
+        "service": null,
+        "period": null
+      },
+      "success": true,
+      "summary": {
+        "services": [
+          "accounting",
+          "ad",
+          "cart",
+          "checkout",
+          "currency",
+          "email",
+          "flagd",
+          "fraud-detection",
+          "frontend",
+          "frontend-proxy",
+          "frontend-web",
+          "image-provider",
+          "load-generator",
+          "payment",
+          "product-catalog",
+          "quote",
+          "recommendation",
+          "sentinel",
+          "shipping",
+          "telemetry-docs"
+        ]
+      },
+      "payload_sha256": "75c509f1e00eb649abc7ef7d99a3f460c147211e4578969d23539fc31d376fc5",
+      "latency_ms": 210.757
+    },
+    {
+      "id": "ev_002",
+      "kind": "metric",
+      "source": "prometheus",
+      "observed_at": 1791212640.06607,
+      "tool": {
+        "name": "metrics",
+        "service": "payment",
+        "period": "incident"
+      },
+      "success": true,
+      "summary": {
+        "service": "payment",
+        "window": {
+          "start": 1791212420.3825579,
+          "end": 1791212600.3825579
+        },
+        "calls": {
+          "query": "sum by (status_code) (increase(traces_span_metrics_calls_total{span_kind=\"SPAN_KIND_SERVER\",service_name=\"payment\"}[180s]))",
+          "warnings": [],
+          "series_count": 2,
+          "values": [
+            {
+              "labels": {
+                "status_code": "STATUS_CODE_ERROR"
+              },
+              "timestamp": 1791212600.383,
+              "value": 8.99977500562486
+            },
+            {
+              "labels": {
+                "status_code": "STATUS_CODE_UNSET"
+              },
+              "timestamp": 1791212600.383,
+              "value": 0.0
+            }
+          ],
+          "omitted_series": 0
+        },
+        "p95_duration_ms": {
+          "query": "histogram_quantile(0.95, sum by (le, service_name) (rate(traces_span_metrics_duration_milliseconds_bucket{span_kind=\"SPAN_KIND_SERVER\",service_name=\"payment\"}[180s])))",
+          "warnings": [],
+          "series_count": 1,
+          "values": [
+            {
+              "labels": {
+                "service_name": "payment"
+              },
+              "timestamp": 1791212600.383,
+              "value": 48.0
+            }
+          ],
+          "omitted_series": 0
+        },
+        "minimum_counter_samples": {
+          "query": "min by (status_code) (count_over_time(traces_span_metrics_calls_total{span_kind=\"SPAN_KIND_SERVER\",service_name=\"payment\"}[180s]))",
+          "warnings": [],
+          "series_count": 2,
+          "values": [
+            {
+              "labels": {
+                "status_code": "STATUS_CODE_ERROR"
+              },
+              "timestamp": 1791212600.383,
+              "value": 3.0
+            },
+            {
+              "labels": {
+                "status_code": "STATUS_CODE_UNSET"
+              },
+              "timestamp": 1791212600.383,
+              "value": 3.0
+            }
+          ],
+          "omitted_series": 0,
+          "interpretation": "Minimum raw counter samples per underlying series, grouped by status. These are telemetry samples, not requests. Fewer than two samples cannot support increase/rate; absence is unknown. Two or more samples do not prove complete coverage."
+        },
+        "interpretation": "Span-derived estimates; null/missing values are not zero. Export delay and extrapolation apply."
+      },
+      "payload_sha256": "b077dfbcc474d2ae5978b6e96582a5c00f3a6f8f40fefafdf85ce75bf75708fe",
+      "latency_ms": 600.757
+    },
+    {
+      "id": "ev_003",
+      "kind": "log",
+      "source": "opensearch",
+      "observed_at": 1791212655.102829,
+      "tool": {
+        "name": "logs",
+        "service": "payment",
+        "period": "incident"
+      },
+      "success": true,
+      "summary": {
+        "service": "payment",
+        "window": {
+          "start": 1791212420.3825579,
+          "end": 1791212600.3825579
+        },
+        "matched_count": 12,
+        "matched_count_relation": "eq",
+        "returned_count": 12,
+        "sample_complete": true,
+        "omitted_groups": 0,
+        "record_examples_per_group": 3,
+        "groups": [
+          {
+            "severity": "warn",
+            "message_excerpt": "Payment request failed. Invalid token. demo.user_context.loyalty_level=gold",
+            "message_truncated": false,
+            "message_sha256": "3a20d232a61e0dcd6d701a8096876d3d38fadf0bf94ea2b3db284fc89f0ea956",
+            "sample_count": 6,
+            "first_seen": 1791212422.169,
+            "last_seen": 1791212533.316,
+            "records": [
+              {
+                "timestamp": 1791212422.169,
+                "trace_id": "4e8fdb56d923e8e96920ea6f95ee27a0"
+              },
+              {
+                "timestamp": 1791212455.78,
+                "trace_id": "07c916c0b0628d5bfc3866fedfdc49a0"
+              },
+              {
+                "timestamp": 1791212472.899,
+                "trace_id": "13c72bd23948ea925506cd89e1d0eb30"
+              }
+            ]
+          },
+          {
+            "severity": "info",
+            "message_excerpt": "Charge request received.",
+            "message_truncated": false,
+            "message_sha256": "86225b72f6901bb23e42578ccaabc2b245af73054c542809dba707c6a82e464b",
+            "sample_count": 6,
+            "first_seen": 1791212422.146,
+            "last_seen": 1791212533.307,
+            "records": [
+              {
+                "timestamp": 1791212422.146,
+                "trace_id": "4e8fdb56d923e8e96920ea6f95ee27a0"
+              },
+              {
+                "timestamp": 1791212455.764,
+                "trace_id": "07c916c0b0628d5bfc3866fedfdc49a0"
+              },
+              {
+                "timestamp": 1791212472.881,
+                "trace_id": "13c72bd23948ea925506cd89e1d0eb30"
+              }
+            ]
+          }
+        ]
+      },
+      "payload_sha256": "8682e07b244aeea447581c9dd9ab2668d678f13472631a6aca0eeb5e4938105d",
+      "latency_ms": 1855.916
+    },
+    {
+      "id": "ev_004",
+      "kind": "trace",
+      "source": "jaeger",
+      "observed_at": 1791212666.7580328,
+      "tool": {
+        "name": "traces",
+        "service": "payment",
+        "period": "incident"
+      },
+      "success": true,
+      "summary": {
+        "service": "payment",
+        "window": {
+          "start": 1791212420.3825579,
+          "end": 1791212600.3825579
+        },
+        "limit": 6,
+        "limit_reached": true,
+        "trace_count": 6,
+        "omitted_traces": 3,
+        "traces": [
+          {
+            "trace_id": "07c916c0b0628d5bfc3866fedfdc49a0",
+            "start_time": 1791211806.719438,
+            "observed_duration_ms": 649455.994,
+            "span_count": 82,
+            "error_span_count": 8,
+            "services": [
+              "cart",
+              "checkout",
+              "currency",
+              "frontend",
+              "frontend-proxy",
+              "load-generator",
+              "payment",
+              "product-catalog",
+              "quote",
+              "shipping"
+            ],
+            "root_span_ids": [
+              "8efd32c7f5ad1972"
+            ],
+            "unresolved_parent_count": 0,
+            "omitted_span_count": 77,
+            "warnings": [],
+            "spans": [
+              {
+                "span_id": "d15b68134aeba145",
+                "service": "payment",
+                "operation": "oteldemo.PaymentService/Charge",
+                "start_time": 1791212455.761,
+                "duration_ms": 21.872,
+                "is_error": true,
+                "references": [
+                  {
+                    "kind": "CHILD_OF",
+                    "trace_id": "07c916c0b0628d5bfc3866fedfdc49a0",
+                    "span_id": "8a1b8ab9fbcf0d59"
+                  }
+                ],
+                "attributes": {
+                  "rpc.method": "Charge",
+                  "span.kind": "server",
+                  "error": true,
+                  "otel.status_code": 2,
+                  "otel.status_description": "Payment request failed. Invalid token. demo.user_context.loyalty_level=gold"
+                }
+              },
+              {
+                "span_id": "ff12f2c9ccc186f2",
+                "service": "payment",
+                "operation": "charge",
+                "start_time": 1791212455.77,
+                "duration_ms": 9.633,
+                "is_error": true,
+                "references": [
+                  {
+                    "kind": "CHILD_OF",
+                    "trace_id": "07c916c0b0628d5bfc3866fedfdc49a0",
+                    "span_id": "d15b68134aeba145"
+                  }
+                ],
+                "attributes": {
+                  "span.kind": "internal",
+                  "error": true,
+                  "otel.status_code": 2,
+                  "otel.status_description": "Payment request failed. Invalid token. demo.user_context.loyalty_level=gold"
+                }
+              },
+              {
+                "span_id": "f6aa88f904290f05",
+                "service": "checkout",
+                "operation": "oteldemo.CheckoutService/PlaceOrder",
+                "start_time": 1791212451.347027,
+                "duration_ms": 4782.633,
+                "is_error": true,
+                "references": [
+                  {
+                    "kind": "CHILD_OF",
+                    "trace_id": "07c916c0b0628d5bfc3866fedfdc49a0",
+                    "span_id": "f7ebe8d15d52a5e9"
+                  }
+                ],
+                "attributes": {
+                  "rpc.method": "oteldemo.CheckoutService/PlaceOrder",
+                  "span.kind": "server",
+                  "error": true,
+                  "otel.status_code": 2,
+                  "otel.status_description": "failed to charge card: could not charge the card: rpc error: code = Unknown desc = Payment request failed. Invalid token. demo.user_context.loyalty_level=gold",
+                  "rpc.response.status_code": "INTERNAL"
+                }
+              },
+              {
+                "span_id": "d02241826ba81f41",
+                "service": "load-generator",
+                "operation": "POST",
+                "start_time": 1791212451.236993,
+                "duration_ms": 4922.182,
+                "is_error": true,
+                "references": [
+                  {
+                    "kind": "CHILD_OF",
+                    "trace_id": "07c916c0b0628d5bfc3866fedfdc49a0",
+                    "span_id": "8efd32c7f5ad1972"
+                  }
+                ],
+                "attributes": {
+                  "span.kind": "client",
+                  "error": true,
+                  "otel.status_code": 2,
+                  "http.status_code": 422
+                }
+              },
+              {
+                "span_id": "a9a33f750ee2ce17",
+                "service": "frontend-proxy",
+                "operation": "router frontend egress",
+                "start_time": 1791212451.240321,
+                "duration_ms": 4908.624,
+                "is_error": true,
+                "references": [
+                  {
+                    "kind": "CHILD_OF",
+                    "trace_id": "07c916c0b0628d5bfc3866fedfdc49a0",
+                    "span_id": "409f94aa95d1d0ca"
+                  }
+                ],
+                "attributes": {
+                  "span.kind": "client",
+                  "error": true,
+                  "otel.status_code": 2,
+                  "http.status_code": "422"
+                }
+              }
+            ]
+          },
+          {
+            "trace_id": "82f9c5655d1f4ec2efca92ab8a254ac5",
+            "start_time": 1791211870.575536,
+            "observed_duration_ms": 648719.939,
+            "span_count": 135,
+            "error_span_count": 8,
+            "services": [
+              "cart",
+              "checkout",
+              "currency",
+              "frontend",
+              "frontend-proxy",
+              "load-generator",
+              "payment",
+              "product-catalog",
+              "quote",
+              "shipping"
+            ],
+            "root_span_ids": [
+              "246a621a70f1f1a2"
+            ],
+            "unresolved_parent_count": 0,
+            "omitted_span_count": 130,
+            "warnings": [],
+            "spans": [
+              {
+                "span_id": "f825fd88e27de987",
+                "service": "payment",
+                "operation": "oteldemo.PaymentService/Charge",
+                "start_time": 1791212518.819,
+                "duration_ms": 24.001,
+                "is_error": true,
+                "references": [
+                  {
+                    "kind": "CHILD_OF",
+                    "trace_id": "82f9c5655d1f4ec2efca92ab8a254ac5",
+                    "span_id": "b865fbc225653108"
+                  }
+                ],
+                "attributes": {
+                  "rpc.method": "Charge",
+                  "span.kind": "server",
+                  "error": true,
+                  "otel.status_code": 2,
+                  "otel.status_description": "Payment request failed. Invalid token. demo.user_context.loyalty_level=gold"
+                }
+              },
+              {
+                "span_id": "26283e78de3e1a34",
+                "service": "payment",
+                "operation": "charge",
+                "start_time": 1791212518.835,
+                "duration_ms": 10.118,
+                "is_error": true,
+                "references": [
+                  {
+                    "kind": "CHILD_OF",
+                    "trace_id": "82f9c5655d1f4ec2efca92ab8a254ac5",
+                    "span_id": "f825fd88e27de987"
+                  }
+                ],
+                "attributes": {
+                  "span.kind": "internal",
+                  "error": true,
+                  "otel.status_code": 2,
+                  "otel.status_description": "Payment request failed. Invalid token. demo.user_context.loyalty_level=gold"
+                }
+              },
+              {
+                "span_id": "43add2f180854188",
+                "service": "checkout",
+                "operation": "oteldemo.CheckoutService/PlaceOrder",
+                "start_time": 1791212516.621516,
+                "duration_ms": 2273.641,
+                "is_error": true,
+                "references": [
+                  {
+                    "kind": "CHILD_OF",
+                    "trace_id": "82f9c5655d1f4ec2efca92ab8a254ac5",
+                    "span_id": "46cf78d0fa1ff4cb"
+                  }
+                ],
+                "attributes": {
+                  "rpc.method": "oteldemo.CheckoutService/PlaceOrder",
+                  "span.kind": "server",
+                  "error": true,
+                  "otel.status_code": 2,
+                  "otel.status_description": "failed to charge card: could not charge the card: rpc error: code = Unknown desc = Payment request failed. Invalid token. demo.user_context.loyalty_level=gold",
+                  "rpc.response.status_code": "INTERNAL"
+                }
+              },
+              {
+                "span_id": "1ba4c29b206d341e",
+                "service": "load-generator",
+                "operation": "POST",
+                "start_time": 1791212516.363826,
+                "duration_ms": 2905.789,
+                "is_error": true,
+                "references": [
+                  {
+                    "kind": "CHILD_OF",
+                    "trace_id": "82f9c5655d1f4ec2efca92ab8a254ac5",
+                    "span_id": "246a621a70f1f1a2"
+                  }
+                ],
+                "attributes": {
+                  "span.kind": "client",
+                  "error": true,
+                  "otel.status_code": 2,
+                  "http.status_code": 422
+                }
+              },
+              {
+                "span_id": "a16471128d71b619",
+                "service": "frontend-proxy",
+                "operation": "router frontend egress",
+                "start_time": 1791212516.413311,
+                "duration_ms": 2719.708,
+                "is_error": true,
+                "references": [
+                  {
+                    "kind": "CHILD_OF",
+                    "trace_id": "82f9c5655d1f4ec2efca92ab8a254ac5",
+                    "span_id": "7dd8ff13bff5c5eb"
+                  }
+                ],
+                "attributes": {
+                  "span.kind": "client",
+                  "error": true,
+                  "otel.status_code": 2,
+                  "http.status_code": "422"
+                }
+              }
+            ]
+          },
+          {
+            "trace_id": "bf26b3d994d1ae2d83d565104e07cdbe",
+            "start_time": 1791211881.716455,
+            "observed_duration_ms": 648520.128,
+            "span_count": 106,
+            "error_span_count": 8,
+            "services": [
+              "cart",
+              "checkout",
+              "currency",
+              "frontend",
+              "frontend-proxy",
+              "load-generator",
+              "payment",
+              "product-catalog",
+              "quote",
+              "shipping"
+            ],
+            "root_span_ids": [
+              "bc964890a95154b6"
+            ],
+            "unresolved_parent_count": 0,
+            "omitted_span_count": 101,
+            "warnings": [],
+            "spans": [
+              {
+                "span_id": "9a2b20e03486d735",
+                "service": "payment",
+                "operation": "oteldemo.PaymentService/Charge",
+                "start_time": 1791212529.981,
+                "duration_ms": 43.672,
+                "is_error": true,
+                "references": [
+                  {
+                    "kind": "CHILD_OF",
+                    "trace_id": "bf26b3d994d1ae2d83d565104e07cdbe",
+                    "span_id": "6ee514237293f061"
+                  }
+                ],
+                "attributes": {
+                  "rpc.method": "Charge",
+                  "span.kind": "server",
+                  "error": true,
+                  "otel.status_code": 2,
+                  "otel.status_description": "Payment request failed. Invalid token. demo.user_context.loyalty_level=gold"
+                }
+              },
+              {
+                "span_id": "da8836e8e587d217",
+                "service": "payment",
+                "operation": "charge",
+                "start_time": 1791212529.989,
+                "duration_ms": 34.876,
+                "is_error": true,
+                "references": [
+                  {
+                    "kind": "CHILD_OF",
+                    "trace_id": "bf26b3d994d1ae2d83d565104e07cdbe",
+                    "span_id": "9a2b20e03486d735"
+                  }
+                ],
+                "attributes": {
+                  "span.kind": "internal",
+                  "error": true,
+                  "otel.status_code": 2,
+                  "otel.status_description": "Payment request failed. Invalid token. demo.user_context.loyalty_level=gold"
+                }
+              },
+              {
+                "span_id": "e1f80400295e6802",
+                "service": "checkout",
+                "operation": "oteldemo.CheckoutService/PlaceOrder",
+                "start_time": 1791212528.016078,
+                "duration_ms": 2017.128,
+                "is_error": true,
+                "references": [
+                  {
+                    "kind": "CHILD_OF",
+                    "trace_id": "bf26b3d994d1ae2d83d565104e07cdbe",
+                    "span_id": "bd6a753acc568670"
+                  }
+                ],
+                "attributes": {
+                  "rpc.method": "oteldemo.CheckoutService/PlaceOrder",
+                  "span.kind": "server",
+                  "error": true,
+                  "otel.status_code": 2,
+                  "otel.status_description": "failed to charge card: could not charge the card: rpc error: code = Unknown desc = Payment request failed. Invalid token. demo.user_context.loyalty_level=gold",
+                  "rpc.response.status_code": "INTERNAL"
+                }
+              },
+              {
+                "span_id": "a7da573c967acf70",
+                "service": "load-generator",
+                "operation": "POST",
+                "start_time": 1791212527.996712,
+                "duration_ms": 2217.237,
+                "is_error": true,
+                "references": [
+                  {
+                    "kind": "CHILD_OF",
+                    "trace_id": "bf26b3d994d1ae2d83d565104e07cdbe",
+                    "span_id": "bc964890a95154b6"
+                  }
+                ],
+                "attributes": {
+                  "span.kind": "client",
+                  "error": true,
+                  "otel.status_code": 2,
+                  "http.status_code": 422
+                }
+              },
+              {
+                "span_id": "08953c925e467c64",
+                "service": "frontend-proxy",
+                "operation": "router frontend egress",
+                "start_time": 1791212527.999004,
+                "duration_ms": 2171.396,
+                "is_error": true,
+                "references": [
+                  {
+                    "kind": "CHILD_OF",
+                    "trace_id": "bf26b3d994d1ae2d83d565104e07cdbe",
+                    "span_id": "cb2ac0c33b44c5ce"
+                  }
+                ],
+                "attributes": {
+                  "span.kind": "client",
+                  "error": true,
+                  "otel.status_code": 2,
+                  "http.status_code": "422"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "payload_sha256": "f7ea6fe10b7d10ffc0e23a5cf2d75c5c6e7c15d28ff6536a8d83af17535c7d3e",
+      "latency_ms": 632.605
+    },
+    {
+      "id": "ev_005",
+      "kind": "source_code",
+      "source": "opentelemetry_demo",
+      "observed_at": 1791212677.025544,
+      "tool": {
+        "name": "source",
+        "service": "payment",
+        "period": null
+      },
+      "success": true,
+      "summary": {
+        "service": "payment",
+        "commit": "dedc0178918e260823323b8d95005a8cb924b007",
+        "limitation": "Pinned local source snapshot; not proof of the deployed image contents or current runtime execution.",
+        "files": [
+          {
+            "file": "src/payment/charge.js",
+            "sha256": "0b69b56d3d1151f5e9e2bf5f130d5fab49199afa4692f2112f3a208c493e4d80",
+            "excerpt": "1: // Copyright The OpenTelemetry Authors\n2: // SPDX-License-Identifier: Apache-2.0\n3: const { context, propagation, trace, metrics, SpanStatusCode } = require('@opentelemetry/api');\n4: const { ATTR_ERROR_TYPE } = require('@opentelemetry/semantic-conventions');\n5: const cardValidator = require('simple-card-validator');\n6: const { v4: uuidv4 } = require('uuid');\n7: \n8: const { OpenFeature } = require('@openfeature/server-sdk');\n9: const { FlagdProvider } = require('@openfeature/flagd-provider');\n10: const flagProvider = new FlagdProvider();\n11: \n12: const logger = require('./logger');\n13: const tracer = trace.getTracer('payment');\n14: const meter = metrics.getMeter('payment');\n15: const transactionsCounter = meter.createCounter('demo.payment.transactions', {\n16:   unit: '{transaction}',\n17: });\n18: \n19: const LOYALTY_LEVEL = ['platinum', 'gold', 'silver', 'bronze'];\n20: \n21: /** Return random element from given array */\n22: function random(arr) {\n23:   const index = Math.floor(Math.random() * arr.length);\n24:   return arr[index];\n25: }\n26: \n27: module.exports.charge = async request => {\n28:   const span = tracer.startSpan('charge');\n29: \n30:   try {\n31:     const baggage = propagation.getBaggage(context.active());\n32:     const syntheticRequest = baggage?.getEntry('synthetic_request')?.value === 'true';\n33: \n34:     if (syntheticRequest) {\n35:       span.setAttribute('user_agent.synthetic.type', 'test');\n36:     }\n37: \n38:     await OpenFeature.setProviderAndWait(flagProvider);\n39: \n40:     const numberVariant = await OpenFeature.getClient().getNumberValue(\"paymentFailure\", 0);\n41:     const emitRawPii = await OpenFeature.getClient().getBooleanValue(\"emitRawPii\", false);\n42: \n43:     if (numberVariant > 0) {\n44:       // n% chance to fail with demo.user_context.loyalty_level=gold\n45:       if (Math.random() < numberVariant) {\n46:         span.setAttributes({'demo.user_context.loyalty_level': 'gold' });\n47: \n48:         throw new Error('Payment request failed. Invalid token. demo.user_context.loyalty_level=gold');\n49:       }\n50:     }\n51: \n52:     const {\n53:       creditCardNumber: number,\n54:       creditCardCvv: cvv,\n55:       creditCardExpirationYear: year,\n56:       creditCardExpirationMonth: month\n57:     } = request.creditCard;\n58:     const currentMonth = new Date().getMonth() + 1;\n59:     const currentYear = new Date().getFullYear();\n60:     const lastFourDigits = number.substr(-4);\n61:     const transactionId = uuidv4();\n62: \n63:     const card = cardValidator(number);\n64:     const { card_type: cardType, valid } = card.getCardDetails();\n65: \n66:     const loyalty_level = random(LOYALTY_LEVEL);\n67: \n68:     span.setAttributes({\n69:       'demo.payment.card_type': cardType,\n70:       'demo.payment.card_valid': valid,\n71:       'demo.user_context.loyalty_level': loyalty_level,\n72:       ...(emitRawPii && {\n73:         'demo.payment.card_number': number,\n74:         'demo.payment.card_cvv': cvv\n75:       })\n76:     });\n77: \n78:     if (!valid) {\n79:       throw new Error('Credit card info is invalid.');\n80:     }\n81: \n82:     if (!['visa', 'mastercard'].includes(cardType)) {\n83:       throw new Error(`Sorry, we cannot process ${cardType} credit cards. Only VISA or MasterCard is accepted.`);\n84:     }\n85: \n86:     if ((currentYear * 12 + currentMonth) > (year * 12 + month)) {\n87:       throw new Error(`The credit card (ending ${lastFourDigits}) expired on ${month}/${year}.`);\n88:     }\n89: \n90:     // Do not charge synthetic requests.\n91:     if (syntheticRequest) {\n92:       span.setAttribute('demo.payment.charged', false);\n93:     } else {\n94:       span.setAttribute('demo.payment.charged', true);\n95:     }\n96: \n97:     const enduserId = baggage?.getEntry('enduser.id')?.value;\n98:     if (enduserId) {\n99:       span.setAttribute('enduser.id', enduserId);\n100:     }\n101: \n102:     const { units, nanos, currencyCode } = request.amount;\n103:     logger.info({ transactionId, cardType, lastFourDigits, amount: { units, nanos, currencyCode }, loyalty_level }, 'Transaction complete.');\n104:     transactionsCounter.add(1, { 'demo.payment.currency': currencyCode });\n105: \n106:     return { transactionId };\n107:   } catch (err) {\n108:     span.recordException(err);\n109:     span.setStatus({ code: SpanStatusCode.ERROR, message: err.message });\n110:     span.setAttribute(ATTR_ERROR_TYPE, err.name || 'Error');\n111: \n112:     throw err;\n113:   } finally {\n114:     span.end();\n115:   }\n116: };",
+            "total_lines": 116,
+            "selected_lines": 116,
+            "complete": true,
+            "excerpt_truncated": false
+          },
+          {
+            "file": "src/payment/index.js",
+            "sha256": "b3ed7f8319f2af6b5a115d0d88b59101b78cee35acc7ae9531fc2bda80e55dda",
+            "excerpt": "1: // Copyright The OpenTelemetry Authors\n2: // SPDX-License-Identifier: Apache-2.0\n3: const grpc = require('@grpc/grpc-js')\n4: const protoLoader = require('@grpc/proto-loader')\n5: const health = require('grpc-js-health-check')\n6: const opentelemetry = require('@opentelemetry/api')\n7: const { ATTR_ERROR_TYPE } = require('@opentelemetry/semantic-conventions')\n8: \n9: const charge = require('./charge')\n10: const logger = require('./logger')\n11: \n12: async function chargeServiceHandler(call, callback) {\n13:   const span = opentelemetry.trace.getActiveSpan();\n14: \n15:   try {\n16:     const amount = call.request.amount\n17:     span?.setAttributes({\n18:       'demo.payment.amount': (Number(amount.units) + amount.nanos / 1000000000).toFixed(2)\n19:     })\n20:     logger.info(\"Charge request received.\")\n21: \n22:     const response = await charge.charge(call.request)\n23:     callback(null, response)\n24: \n25:   } catch (err) {\n26:     logger.warn({ err })\n27: \n28:     span?.setStatus({ code: opentelemetry.SpanStatusCode.ERROR, message: err.message })\n29:     span?.setAttribute(ATTR_ERROR_TYPE, err.name || 'Error')\n30:     callback(err)\n31:   }\n32: }\n33: \n34: async function closeGracefully(signal) {\n35:   server.forceShutdown()\n36:   process.kill(process.pid, signal)\n37: }\n38: \n39: const otelDemoPackage = grpc.loadPackageDefinition(protoLoader.loadSync('demo.proto'))\n40: const server = new grpc.Server()\n41: \n42: server.addService(health.service, new health.Implementation({\n43:   '': health.servingStatus.SERVING\n44: }))\n45: \n46: server.addService(otelDemoPackage.oteldemo.PaymentService.service, { charge: chargeServiceHandler })\n47: \n48: \n49: let ip = \"0.0.0.0\";\n50: \n51: const ipv6_enabled = process.env.IPV6_ENABLED;\n52: \n53: if (ipv6_enabled == \"true\") {\n54:   ip = \"[::]\";\n55:   logger.info(`Overwriting Localhost IP: ${ip}`)\n56: }\n57: \n58: const address = ip + `:${process.env['PAYMENT_PORT']}`;\n59: \n60: server.bindAsync(address, grpc.ServerCredentials.createInsecure(), (err, port) => {\n61:   if (err) {\n62:     return logger.error({ err })\n63:   }\n64: \n65:   server.start()\n66:   logger.info(`payment gRPC server started on ${address}`)\n67: })\n68: \n69: process.once('SIGINT', closeGracefully)\n70: process.once('SIGTERM', closeGracefully)",
+            "total_lines": 70,
+            "selected_lines": 70,
+            "complete": true,
+            "excerpt_truncated": false
+          }
+        ]
+      },
+      "payload_sha256": "80110bde717c14e0a1753563836f04315c389fd57f1d125e1525d3f0f5f2d120",
+      "latency_ms": 2.811
+    },
+    {
+      "id": "ev_006",
+      "kind": "configuration",
+      "source": "local_runtime",
+      "observed_at": 1791212687.1827378,
+      "tool": {
+        "name": "runtime_configuration",
+        "service": null,
+        "period": null
+      },
+      "success": true,
+      "summary": {
+        "observed_at": 1791212687.1816242,
+        "limitation": "Current mounted file snapshot; targeting/evaluation and historical activation are not established by this read.",
+        "flags": [
+          {
+            "name": "paymentFailure",
+            "state": "ENABLED",
+            "default_variant": "100%",
+            "has_targeting": false,
+            "variants": {
+              "off": 0,
+              "10%": 0.1,
+              "25%": 0.25,
+              "50%": 0.5,
+              "75%": 0.75,
+              "90%": 0.95,
+              "100%": 1
+            }
+          }
+        ]
+      },
+      "payload_sha256": "6d943acdf21faaa3bf99f344aeb759b0643450a66701d94a8a5e9b00ab59b7c5",
+      "latency_ms": 1.458
+    },
+    {
+      "id": "ev_007",
+      "kind": "metric",
+      "source": "prometheus",
+      "observed_at": 1791212698.275912,
+      "tool": {
+        "name": "metrics",
+        "service": "payment",
+        "period": "baseline"
+      },
+      "success": true,
+      "summary": {
+        "service": "payment",
+        "window": {
+          "start": 1791212198.889771,
+          "end": 1791212378.889771
+        },
+        "calls": {
+          "query": "sum by (status_code) (increase(traces_span_metrics_calls_total{span_kind=\"SPAN_KIND_SERVER\",service_name=\"payment\"}[180s]))",
+          "warnings": [],
+          "series_count": 2,
+          "values": [
+            {
+              "labels": {
+                "status_code": "STATUS_CODE_ERROR"
+              },
+              "timestamp": 1791212378.89,
+              "value": 0.0
+            },
+            {
+              "labels": {
+                "status_code": "STATUS_CODE_UNSET"
+              },
+              "timestamp": 1791212378.89,
+              "value": 7.499625018749062
+            }
+          ],
+          "omitted_series": 0
+        },
+        "p95_duration_ms": {
+          "query": "histogram_quantile(0.95, sum by (le, service_name) (rate(traces_span_metrics_duration_milliseconds_bucket{span_kind=\"SPAN_KIND_SERVER\",service_name=\"payment\"}[180s])))",
+          "warnings": [],
+          "series_count": 1,
+          "values": [
+            {
+              "labels": {
+                "service_name": "payment"
+              },
+              "timestamp": 1791212378.89,
+              "value": 87.49999999999999
+            }
+          ],
+          "omitted_series": 0
+        },
+        "minimum_counter_samples": {
+          "query": "min by (status_code) (count_over_time(traces_span_metrics_calls_total{span_kind=\"SPAN_KIND_SERVER\",service_name=\"payment\"}[180s]))",
+          "warnings": [],
+          "series_count": 2,
+          "values": [
+            {
+              "labels": {
+                "status_code": "STATUS_CODE_ERROR"
+              },
+              "timestamp": 1791212378.89,
+              "value": 3.0
+            },
+            {
+              "labels": {
+                "status_code": "STATUS_CODE_UNSET"
+              },
+              "timestamp": 1791212378.89,
+              "value": 3.0
+            }
+          ],
+          "omitted_series": 0,
+          "interpretation": "Minimum raw counter samples per underlying series, grouped by status. These are telemetry samples, not requests. Fewer than two samples cannot support increase/rate; absence is unknown. Two or more samples do not prove complete coverage."
+        },
+        "interpretation": "Span-derived estimates; null/missing values are not zero. Export delay and extrapolation apply."
+      },
+      "payload_sha256": "89d72f701904ea8c60798a968bbdd208cff43e6d3417ce63ab9b88660ad408ab",
+      "latency_ms": 143.41
+    },
+    {
+      "id": "ev_008",
+      "kind": "log",
+      "source": "opensearch",
+      "observed_at": 1791212716.327391,
+      "tool": {
+        "name": "logs",
+        "service": "payment",
+        "period": "baseline"
+      },
+      "success": true,
+      "summary": {
+        "service": "payment",
+        "window": {
+          "start": 1791212198.889771,
+          "end": 1791212378.889771
+        },
+        "matched_count": 16,
+        "matched_count_relation": "eq",
+        "returned_count": 16,
+        "sample_complete": true,
+        "omitted_groups": 0,
+        "record_examples_per_group": 3,
+        "groups": [
+          {
+            "severity": "info",
+            "message_excerpt": "Transaction complete.",
+            "message_truncated": false,
+            "message_sha256": "b787daa276eb8e39f332ae05c730b0f64426109594cbc38fc50974caf65aef8c",
+            "sample_count": 8,
+            "first_seen": 1791212213.794,
+            "last_seen": 1791212371.457,
+            "records": [
+              {
+                "timestamp": 1791212213.794,
+                "trace_id": "56861f8d948744c904753369b903db84"
+              },
+              {
+                "timestamp": 1791212214.862,
+                "trace_id": "c2b93ba8a2c66022f527f99bb2a8d193"
+              },
+              {
+                "timestamp": 1791212273.551,
+                "trace_id": "1bb546bfb2e7166a1a508405fa1b41c6"
+              }
+            ]
+          },
+          {
+            "severity": "info",
+            "message_excerpt": "Charge request received.",
+            "message_truncated": false,
+            "message_sha256": "86225b72f6901bb23e42578ccaabc2b245af73054c542809dba707c6a82e464b",
+            "sample_count": 8,
+            "first_seen": 1791212213.763,
+            "last_seen": 1791212371.419,
+            "records": [
+              {
+                "timestamp": 1791212213.763,
+                "trace_id": "56861f8d948744c904753369b903db84"
+              },
+              {
+                "timestamp": 1791212214.85,
+                "trace_id": "c2b93ba8a2c66022f527f99bb2a8d193"
+              },
+              {
+                "timestamp": 1791212273.52,
+                "trace_id": "1bb546bfb2e7166a1a508405fa1b41c6"
+              }
+            ]
+          }
+        ]
+      },
+      "payload_sha256": "2d48cb3806ce845ecd21c4e6fa988883be4a9d98ab3a8003fc726ff31ae283ba",
+      "latency_ms": 421.025
+    }
+  ],
+  "steps": [
+    {
+      "number": 0,
+      "action": "read",
+      "reason": "Discover the real traced inventory before choosing diagnostic reads.",
+      "evidence_id": "ev_001",
+      "model_call": null,
+      "at_ms": 215.211,
+      "hypotheses": [],
+      "usage": null,
+      "model_latency_ms": null
+    },
+    {
+      "number": 1,
+      "action": "read",
+      "reason": "Measure payment failure rate and latency during the incident versus the preceding baseline to distinguish an application-side failure from a latency/dependency symptom.",
+      "evidence_id": "ev_002",
+      "model_call": 1,
+      "at_ms": 9527.221000000001,
+      "hypotheses": [
+        {
+          "name": "Payment service or code regression",
+          "explanation": "A payment-local change or runtime fault is causing charge requests to fail during the incident.",
+          "confidence": 0.5,
+          "supporting_evidence": [],
+          "contradicting_evidence": [],
+          "status": "active"
+        },
+        {
+          "name": "Upstream or downstream dependency failure",
+          "explanation": "Payment failures are caused by an unavailable or degraded dependency rather than payment-local logic.",
+          "confidence": 0.5,
+          "supporting_evidence": [],
+          "contradicting_evidence": [],
+          "status": "active"
+        }
+      ],
+      "usage": {
+        "input_tokens": 1308,
+        "output_tokens": 205,
+        "cached_input_tokens": 0
+      },
+      "model_latency_ms": 8703.09
+    },
+    {
+      "number": 2,
+      "action": "read",
+      "reason": "The incident metric establishes payment server-span errors but does not distinguish a payment-local fault from a dependency failure. Read payment logs for error messages, dependency names, and correlated trace IDs.",
+      "evidence_id": "ev_003",
+      "model_call": 2,
+      "at_ms": 24564.821,
+      "hypotheses": [
+        {
+          "name": "Payment service or code regression",
+          "explanation": "A payment-local change or runtime fault is causing charge requests to fail during the incident.",
+          "confidence": 0.5,
+          "supporting_evidence": [],
+          "contradicting_evidence": [],
+          "status": "active"
+        },
+        {
+          "name": "Upstream or downstream dependency failure",
+          "explanation": "Payment failures are caused by an unavailable or degraded dependency rather than payment-local logic.",
+          "confidence": 0.5,
+          "supporting_evidence": [],
+          "contradicting_evidence": [],
+          "status": "active"
+        }
+      ],
+      "usage": {
+        "input_tokens": 1880,
+        "output_tokens": 222,
+        "cached_input_tokens": 0
+      },
+      "model_latency_ms": 13160.099
+    },
+    {
+      "number": 3,
+      "action": "read",
+      "reason": "Payment-local logs show invalid-token failures, but the existing metric and log evidence does not identify whether token validation is local or dependency-mediated. Read incident traces to inspect span errors, parent/child calls, and downstream involvement.",
+      "evidence_id": "ev_004",
+      "model_call": 3,
+      "at_ms": 36218.971000000005,
+      "hypotheses": [
+        {
+          "name": "Payment service or code regression",
+          "explanation": "A payment-local change or runtime fault is causing charge requests to fail during the incident.",
+          "confidence": 0.48,
+          "supporting_evidence": [
+            "ev_002",
+            "ev_003"
+          ],
+          "contradicting_evidence": [],
+          "status": "active"
+        },
+        {
+          "name": "Upstream or downstream dependency failure",
+          "explanation": "Payment failures are caused by an unavailable or degraded dependency rather than payment-local logic.",
+          "confidence": 0.42,
+          "supporting_evidence": [
+            "ev_003"
+          ],
+          "contradicting_evidence": [],
+          "status": "active"
+        }
+      ],
+      "usage": {
+        "input_tokens": 2566,
+        "output_tokens": 257,
+        "cached_input_tokens": 0
+      },
+      "model_latency_ms": 10983.874
+    },
+    {
+      "number": 4,
+      "action": "read",
+      "reason": "The incident traces and logs consistently show a payment-local \"Invalid token\" error, while the available dependency context is only indirect. Inspect the pinned payment source to test whether token validation is implemented locally or whether the observed error could originate from a dependency path.",
+      "evidence_id": "ev_005",
+      "model_call": 4,
+      "at_ms": 46486.448000000004,
+      "hypotheses": [
+        {
+          "name": "Payment service or code regression",
+          "explanation": "A payment-local validation path or recent code behavior is rejecting charge requests.",
+          "confidence": 0.52,
+          "supporting_evidence": [
+            "ev_002",
+            "ev_003",
+            "ev_004"
+          ],
+          "contradicting_evidence": [],
+          "status": "active"
+        },
+        {
+          "name": "Upstream or downstream dependency failure",
+          "explanation": "A dependency involved in payment processing is causing the token rejection or charge failure.",
+          "confidence": 0.38,
+          "supporting_evidence": [
+            "ev_004"
+          ],
+          "contradicting_evidence": [
+            "ev_003"
+          ],
+          "status": "active"
+        }
+      ],
+      "usage": {
+        "input_tokens": 5148,
+        "output_tokens": 308,
+        "cached_input_tokens": 0
+      },
+      "model_latency_ms": 10253.004
+    },
+    {
+      "number": 5,
+      "action": "read",
+      "reason": "The incident logs and traces show repeated Invalid token failures, and the pinned payment source contains an explicit paymentFailure feature-flag rejection path. Read the current flag snapshot to test that mechanism against an ordinary payment validation or dependency failure; this snapshot is not historical proof.",
+      "evidence_id": "ev_006",
+      "model_call": 5,
+      "at_ms": 56643.627,
+      "hypotheses": [
+        {
+          "name": "Payment service or code regression",
+          "explanation": "A payment-local validation path or recent code behavior is rejecting charge requests.",
+          "confidence": 0.4,
+          "supporting_evidence": [
+            "ev_002",
+            "ev_003",
+            "ev_004"
+          ],
+          "contradicting_evidence": [],
+          "status": "active"
+        },
+        {
+          "name": "Upstream or downstream dependency failure",
+          "explanation": "A dependency involved in payment processing is causing the token rejection or charge failure.",
+          "confidence": 0.22,
+          "supporting_evidence": [
+            "ev_004"
+          ],
+          "contradicting_evidence": [
+            "ev_003"
+          ],
+          "status": "active"
+        },
+        {
+          "name": "Payment failure feature flag enabled",
+          "explanation": "The paymentFailure flag described in source intentionally injects Invalid token errors, potentially explaining the incident without a dependency failure.",
+          "confidence": 0.7,
+          "supporting_evidence": [
+            "ev_003",
+            "ev_004",
+            "ev_005"
+          ],
+          "contradicting_evidence": [],
+          "status": "active"
+        }
+      ],
+      "usage": {
+        "input_tokens": 7505,
+        "output_tokens": 343,
+        "cached_input_tokens": 0
+      },
+      "model_latency_ms": 10144.34
+    },
+    {
+      "number": 6,
+      "action": "read",
+      "reason": "Compare payment error volume and latency in the preceding baseline to determine whether the incident represents a new payment-local failure pattern rather than a pre-existing condition.",
+      "evidence_id": "ev_007",
+      "model_call": 6,
+      "at_ms": 67736.63500000001,
+      "hypotheses": [
+        {
+          "name": "Payment service or code regression",
+          "explanation": "A payment-local validation path or code behavior is rejecting charge requests and should show a new error pattern relative to baseline.",
+          "confidence": 0.4,
+          "supporting_evidence": [
+            "ev_002",
+            "ev_003",
+            "ev_004"
+          ],
+          "contradicting_evidence": [],
+          "status": "active"
+        },
+        {
+          "name": "Upstream or downstream dependency failure",
+          "explanation": "A dependency involved in payment processing is causing the token rejection or charge failure; baseline comparison may show whether payment failures track a broader dependency symptom.",
+          "confidence": 0.22,
+          "supporting_evidence": [
+            "ev_004"
+          ],
+          "contradicting_evidence": [
+            "ev_003"
+          ],
+          "status": "active"
+        },
+        {
+          "name": "Payment failure feature flag enabled",
+          "explanation": "The paymentFailure flag described in source intentionally injects Invalid token errors, potentially explaining the incident without a dependency failure.",
+          "confidence": 0.7,
+          "supporting_evidence": [
+            "ev_003",
+            "ev_004",
+            "ev_005"
+          ],
+          "contradicting_evidence": [],
+          "status": "active"
+        }
+      ],
+      "usage": {
+        "input_tokens": 8373,
+        "output_tokens": 357,
+        "cached_input_tokens": 0
+      },
+      "model_latency_ms": 10936.762
+    },
+    {
+      "number": 7,
+      "action": "read",
+      "reason": "Baseline payment logs are the most direct missing comparison: they can establish whether the Invalid token pattern was absent before the incident and whether a different local or dependency-related error pattern existed.",
+      "evidence_id": "ev_008",
+      "model_call": 7,
+      "at_ms": 85788.423,
+      "hypotheses": [
+        {
+          "name": "Payment service or code regression",
+          "explanation": "A payment-local validation or deployed-code behavior changed and is rejecting charge requests; a new baseline-relative error pattern would support this.",
+          "confidence": 0.35,
+          "supporting_evidence": [
+            "ev_002",
+            "ev_003",
+            "ev_004"
+          ],
+          "contradicting_evidence": [],
+          "status": "active"
+        },
+        {
+          "name": "Upstream or downstream dependency failure",
+          "explanation": "A dependency involved in checkout is causing payment failures; dependency-associated errors or broader correlated failures would support this.",
+          "confidence": 0.2,
+          "supporting_evidence": [
+            "ev_004"
+          ],
+          "contradicting_evidence": [
+            "ev_003"
+          ],
+          "status": "active"
+        },
+        {
+          "name": "Payment failure feature flag enabled",
+          "explanation": "The paymentFailure path intentionally throws the exact Invalid token error, and the current configuration snapshot shows a 100% default variant, though historical activation is not established.",
+          "confidence": 0.8,
+          "supporting_evidence": [
+            "ev_003",
+            "ev_004",
+            "ev_005",
+            "ev_006"
+          ],
+          "contradicting_evidence": [],
+          "status": "active"
+        }
+      ],
+      "usage": {
+        "input_tokens": 8864,
+        "output_tokens": 414,
+        "cached_input_tokens": 0
+      },
+      "model_latency_ms": 17581.376
+    },
+    {
+      "number": 8,
+      "action": "diagnose",
+      "reason": "Incident logs and traces show the same deterministic payment-local error, metrics show a baseline-to-incident transition to errors, and the pinned payment source contains an exact feature-flag-controlled throw matching that error. The current configuration snapshot shows paymentFailure at 100%; historical flag evaluation remains a limitation, so the diagnosis is causal but not absolute.",
+      "evidence_id": null,
+      "model_call": 8,
+      "at_ms": 115055.316,
+      "hypotheses": [
+        {
+          "name": "Payment failure feature flag enabled",
+          "explanation": "The paymentFailure branch throws the exact observed error when its evaluated numeric value is positive. The current snapshot sets its default variant to 100%, making this the best-supported explanation, although the snapshot alone does not prove historical evaluation.",
+          "confidence": 0.94,
+          "supporting_evidence": [
+            "ev_003",
+            "ev_004",
+            "ev_005",
+            "ev_006",
+            "ev_002",
+            "ev_007"
+          ],
+          "contradicting_evidence": [],
+          "status": "supported"
+        },
+        {
+          "name": "Payment service or code regression",
+          "explanation": "A payment-local deployment or code behavior change remains possible, but the exact match to an intentional feature-flag branch makes an unintentional regression less likely.",
+          "confidence": 0.18,
+          "supporting_evidence": [
+            "ev_002",
+            "ev_003",
+            "ev_004"
+          ],
+          "contradicting_evidence": [
+            "ev_005",
+            "ev_006"
+          ],
+          "status": "active"
+        },
+        {
+          "name": "Upstream or downstream dependency failure",
+          "explanation": "The observed failure originates in the payment Charge span and is propagated by checkout; no dependency-specific error is shown in the selected evidence. Trace sampling and omitted spans limit exclusion of all dependency problems.",
+          "confidence": 0.05,
+          "supporting_evidence": [],
+          "contradicting_evidence": [
+            "ev_003",
+            "ev_004"
+          ],
+          "status": "rejected"
+        }
+      ],
+      "usage": {
+        "input_tokens": 9527,
+        "output_tokens": 1103,
+        "cached_input_tokens": 0
+      },
+      "model_latency_ms": 29258.887
+    }
+  ],
+  "baseline": {
+    "estimated_server_error_calls": 0.0,
+    "selected_service_error_spans": 0,
+    "sampled_log_groups": 2,
+    "sampled_warning_or_error_logs": 0,
+    "all_reads_succeeded": true
+  },
+  "recovery": {
+    "estimated_server_error_calls": 0.0,
+    "selected_service_error_spans": 0,
+    "sampled_log_groups": 2,
+    "sampled_warning_or_error_logs": 0,
+    "all_reads_succeeded": true
+  },
+  "injected_at": 1791212410.3825579,
+  "reset_at": 1791212750.622633,
+  "remediation_executed_by_agent": false,
+  "cleanup_performed_by_developer_exercise": true,
+  "review": {
+    "run_id": "b4e5c4bc-ad01-4fde-b147-6446762705e2",
+    "acknowledged_on": "2026-10-05",
+    "checkpoint_acknowledged": true,
+    "causal_review": "accepted",
+    "expected_cause": "The enabled paymentFailure flag selects the intentional charge-failure branch.",
+    "note": "The coding agent inspected causal evidence and recovery; the developer acknowledged checkpoint 2 after receiving the review. This is one correct case after two failed investigations, not a diagnosis accuracy benchmark.",
+    "limitations": [
+      "OTLP self-trace export timed out during the run. Twenty-five local spans were retained; complete Jaeger delivery is unverified.",
+      "Recovery was performed by the developer exercise helper. Sentinel did not execute remediation."
+    ],
+    "source_hashes": {
+      "result.json": "1b9e0bc4b4c79e012249c13d2bb2bcb376131f38b00f549864868d8047510cd8",
+      "input.json": "286e1f5df6100af86d4ef48bc0d3e8727444448a011d7c8e19a3f742e408c3ed",
+      "events.jsonl": "d3d2b08b04ce2f96ba8f217aef9a7d2c5b3b792ca44d8f0ae80363d7c658e167",
+      "tools.jsonl": "1b6c9e368d5b472b3b2ae79eba3b6c49bb5fb3a2c27bb4b24351f530d9dc64dd",
+      "ev_001.json": "75c509f1e00eb649abc7ef7d99a3f460c147211e4578969d23539fc31d376fc5",
+      "ev_002.json": "b077dfbcc474d2ae5978b6e96582a5c00f3a6f8f40fefafdf85ce75bf75708fe",
+      "ev_003.json": "8682e07b244aeea447581c9dd9ab2668d678f13472631a6aca0eeb5e4938105d",
+      "ev_004.json": "f7ea6fe10b7d10ffc0e23a5cf2d75c5c6e7c15d28ff6536a8d83af17535c7d3e",
+      "ev_005.json": "80110bde717c14e0a1753563836f04315c389fd57f1d125e1525d3f0f5f2d120",
+      "ev_006.json": "6d943acdf21faaa3bf99f344aeb759b0643450a66701d94a8a5e9b00ab59b7c5",
+      "ev_007.json": "89d72f701904ea8c60798a968bbdd208cff43e6d3417ce63ab9b88660ad408ab",
+      "ev_008.json": "2d48cb3806ce845ecd21c4e6fa988883be4a9d98ab3a8003fc726ff31ae283ba",
+      "decision-01.json": "02f83754420f0d839c43f4e2cd7826985e8d5c43376113be6e800df577d7ede2",
+      "decision-02.json": "33b025e30b9084946d789a41e6362d76e39904eac23aeb8aa8e512f70dfc74f3",
+      "decision-03.json": "53bd1456ae4f797292e227b942a30879ba36939478714fc2a94e8053c6e73431",
+      "decision-04.json": "beda0cbe04a54c8313f567b97f3f1fb6d74f777e5b8d05cae24ada8e8480a10f",
+      "decision-05.json": "874c0039caad03c24ca94e09590bc9ebfce6c09d6efcb84bbda17802b853adad",
+      "decision-06.json": "dc9411d459138a533cb02399dc20225e78a2fae87af7bdd0b4f9fb3e9f58f7e3",
+      "decision-07.json": "e42ce7506d95599af3a1d8b2a62ff930a694d16544b8367d12f98e81f9d246e3",
+      "decision-08.json": "adc3bd71cca9a8d8b6ca9914b1d9ee1cdbc2ecd1bc2be1f941c3b4a8411f98f7",
+      "exercise-exercise-report.json": "8559caf82a1d1f579c4d7c7d8403add0e7311b5e85132acd6440fe0025983469",
+      "exercise-agent-result.json": "1b9e0bc4b4c79e012249c13d2bb2bcb376131f38b00f549864868d8047510cd8"
+    }
+  }
+}
