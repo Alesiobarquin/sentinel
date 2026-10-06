@@ -49,6 +49,15 @@ project notes, and [resume versions](resume-entry.md) now describe the measured
 study and remaining uncertainty. No AWS, Terraform, MCP, persistent DB state,
 GitHub diagnostic tool, or agent write permissions were added.
 
+The report and revised viewer are published from source `0e6807d`.
+[Hosted checks and Pages deployment](https://github.com/Alesiobarquin/sentinel/actions/runs/37412976918)
+passed both Python versions, offline evaluation recalculation, replay validation,
+and web checks. All **22 public HTTPS browser executions passed in 14.9 seconds**
+without retries; the fetched recording matches the original byte-for-byte.
+Actual public desktop/mobile screenshots were inspected. The owned preview has
+been stopped, and the local Docker lab is down with volumes retained. The frozen
+source and saved corpora remain available for the blocked control continuation.
+
 ## Delivery before the evaluation sprint — 2026-10-05
 
 The resume evidence audit checked source, retained investigation/scenario records,

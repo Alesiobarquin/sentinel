@@ -188,3 +188,34 @@ was reset and stopped using its scoped `make demo-down` command, preserving its
 volumes and leaving other projects untouched. Subscription quota prevents the
 remaining 12 control trials; this publication does not declare the evaluation
 sprint complete.
+
+Release source: `0e6807dad1d63ac395dc7d9937e403fa8bd63ec5`.
+[Actions run 37412976918](https://github.com/Alesiobarquin/sentinel/actions/runs/37412976918)
+passed Python 3.12/3.14 (151 deterministic passes and eight live skips each),
+offline verification of 48 published investigations, replay validation,
+TypeScript/static export, 22 CI browser executions, and Pages deployment.
+
+All five HTTPS paths in the initial release table returned 200 again. The home
+metadata uses `Sentinel — AI Incident Investigation Agent`, and the project page
+links the evaluation report. The fetched recording still matches the original
+byte-for-byte (SHA-256
+`e61ef20d37ac18a17cc29d84c3e7932c450f5e06e498b891a1954b2d4369767c`).
+The published report, summary JSON, and resume entries were also fetched from
+the release commit and matched the local files.
+
+The public HTTPS Playwright suite passed **22 executions in 14.9 seconds**,
+with retries disabled. These are eleven cases in two viewports, not 22 distinct
+test definitions. Actual public desktop landing and mobile diagnosis screenshots
+were inspected; widths remained 1440/390, and the confidence caveat was visible.
+The first screenshot helper used an unsupported `?step=8` query and timed out
+waiting for a diagnosis. It was corrected to use the viewer's actual **View
+result** button; this was an operator navigation mistake, not a failing browser
+test or product change. Its record remains under the screenshot directory.
+
+Public evidence is retained in `var/resume-evaluation-publication-ci.json`,
+`var/resume-evaluation-publication-ci-full.log`,
+`var/resume-evaluation-public-https.json`,
+`var/resume-evaluation-published-source.json`,
+`var/resume-evaluation-public-browser-final.log`, and
+`var/resume-evaluation-site-qa/public-observations.json`.
+The owned preview on 4187 has been stopped.
