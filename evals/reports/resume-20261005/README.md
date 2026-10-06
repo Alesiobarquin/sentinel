@@ -1,7 +1,8 @@
 # Fixed-model evaluation records
 
-This directory contains 48 executed investigation attempts and their bound
-Codex-assisted semantic reviews. The [full method/results](../../../docs/validation/resume-evaluation.md)
+This directory contains the original 48 executed investigation attempts and their
+bound Codex-assisted semantic reviews, plus a completed 15-attempt control follow-up.
+The [full method/results](../../../docs/validation/resume-evaluation.md)
 report primary fault accuracy of 9/27, distinguish explicit abstention from
 operational failures, and explain the paired context comparison.
 
@@ -17,13 +18,17 @@ operational failures, and explain the paired context comparison.
   audit, prior-inventory provenance, and separate operational probe.
 - `initial-aborted-cohort/`: three failed development trials, not discarded or
   added to the corrected cohort's accuracy denominator.
-- `controls-followup/`: incomplete separate follow-up; three quota failures,
-  12 planned trials unexecuted. It is not a complete repeated-control study.
+- `controls-followup/`: 15 executed and reviewed control trials, preserving
+  three earlier quota failures. One explicit healthy abstention, one qualified
+  no-fault diagnosis, six budget stops, and seven model failures are recorded.
+- `study-summary.json`: verified totals across both cohorts: 63 scored attempts,
+  18 matched context pairs, and 67 sprint attempts including four exclusions.
 
 From the repository root, run:
 
 ```sh
 uv run python scripts/run_evaluation.py verify --report evals/reports/resume-20261005
+uv run python scripts/summarize_resume_evaluation.py --report evals/reports/resume-20261005
 ```
 
 Verification checks complete trial identities, packet/configuration/catalog

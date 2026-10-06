@@ -1,10 +1,11 @@
 {
-  "status": "blocked_by_subscription_sharing_usage_limit",
+  "status": "executed_reviewed_and_verified",
   "planned_attempts": 15,
-  "executed_attempts": 3,
-  "unexecuted_attempts": 12,
-  "complete": false,
-  "reported_tokens_subtotal": 2060,
-  "usage_unknown_attempts": 3,
-  "included_in_original_accuracy": false
+  "executed_attempts": 15,
+  "unexecuted_attempts": 0,
+  "complete": true,
+  "reported_tokens_subtotal": 552602,
+  "usage_unknown_attempts": 7,
+  "included_in_original_accuracy": false,
+  "limits": "Includes three retained quota failures; completion describes evaluation execution, not diagnosis reliability or passing all control cases."
 }

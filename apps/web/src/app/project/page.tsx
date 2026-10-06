@@ -335,7 +335,7 @@ export default function Project() {
                       </a>
                     </td>
                     <td>
-                      151 passed; eight opt-in live tests skipped. Covers
+                      153 passed; eight opt-in live tests skipped. Covers
                       parsing, context, contracts, policy, auth, transport,
                       audit, evaluation grading, and export behavior with fixtures.
                     </td>
@@ -375,10 +375,11 @@ export default function Project() {
                       </a>
                     </td>
                     <td>
-                      48 attempts: 36 primary and 12 context-baseline runs.
+                      63 attempts: 45 primary and 18 context-baseline runs.
                       Correct causes in 9/27 primary fault trials; grounded claims
-                      in 9/12 emitted diagnoses. Provider failures blocked the
-                      missing/ambiguous controls and a separate follow-up.
+                      in 9/12 emitted primary diagnoses. Appropriate explicit
+                      abstention in 1/18 primary control trials; the others used
+                      a different terminal action or ended in budget/provider failures.
                     </td>
                   </tr>
                   <tr>
@@ -397,11 +398,13 @@ export default function Project() {
               </table>
             </div>
             <p>
-              Three model runs per case measure variability over the same
-              captured observations. Failures stay in the accuracy denominator;
+              The original cohort has three model runs per case; a separate
+              15-attempt control cohort reuses the same captured observations.
+              Failures stay in the accuracy denominator;
               grounding applies only to emitted diagnoses. The comparison did
-              not show an accuracy benefit from ranked context. Reviews are
-              Codex-assisted, and an abstention follow-up is still incomplete.
+              not show an accuracy benefit from ranked context. All attempts are
+              executed and reviewed. Reviews are Codex-assisted, without independent
+              human adjudication.
             </p>
             <div className="inline-links">
               <a href={`${REPO}/blob/main/docs/validation/resume-evaluation.md`}>
@@ -528,8 +531,8 @@ export default function Project() {
             </ul>
             <h3 className="next-experiment">Next experiment</h3>
             <p>
-              Complete the quota-blocked controls, then test whether retaining
-              compact causal evidence and reserving a final model call improves
+              Test whether retaining compact causal evidence and reserving a
+              final model call improves
               completion. That needs a separate measured comparison with fresh
               captures and independent review. The current{" "}
               <a href={`${REPO}/blob/main/docs/validation/resume-evaluation.md`}>

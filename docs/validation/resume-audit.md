@@ -5,8 +5,9 @@ retained real captures, fixed-model results/reviews, Docker cleanup, tests, and
 the public replay. The evaluated source is c27bbb3; later source changes concern
 preparation, catalog versioning, grading summaries, and failure observability.
 They do not constitute a newly benchmarked investigation algorithm. The PRD was
-not implementation evidence. The separate control follow-up is quota-blocked;
-the resume sprint remains incomplete. See [the full evaluation](resume-evaluation.md).
+not implementation evidence. All 63 scored attempts across the original cohort
+and control follow-up are executed and reviewed, including provider failures and
+budget stops. See [the full evaluation](resume-evaluation.md).
 
 ## What works end to end
 
@@ -56,7 +57,7 @@ Sources: [runner](../../sentinel/agent/runner.py),
 | PostgreSQL / Redis | No Sentinel PostgreSQL, SQLAlchemy, Alembic, or Redis integration. `valkey-cart` belongs to the external demo. A demo error mentioning Redis is not evidence that Sentinel implements Redis caching. | [dependencies](../../pyproject.toml), source and rendered Compose inventory |
 | GitHub | Repository hosting, pinned archive download, Actions CI, and Pages deployment are implemented. The investigation agent has no GitHub issue/PR/deployment adapter or write tool. | [bootstrap](../../scripts/demo.py), [workflow](../../.github/workflows/ci.yml) |
 | Remediation and approval | Structured recommendations label required human review/approval. No execution or interactive infrastructure-approval workflow exists. Actual permissions are enforced by typed application contracts, source/service allowlists, read-only transports, and fixture RBAC. | [runner](../../sentinel/agent/runner.py), [contracts](../../sentinel/agent/contracts.py), [RBAC fixture](../../infra/kubernetes/fixture.json) |
-| Repeated AI evaluation | Twelve structured real-target cases, immutable native-tool corpora, three repeats per case, twelve matched context pairs, semantic claim reviews, safety/abstention/efficiency metrics, and offline completeness/hash/arithmetic verification. Forty-eight attempts are executed and reviewed; the separate control follow-up remains incomplete. | [harness](../../evals/benchmark.py), [grading](../../evals/scoring.py), [raw results/reviews](../../evals/reports/resume-20261005/), [report](resume-evaluation.md) |
+| Repeated AI evaluation | Twelve structured real-target cases and immutable native-tool corpora. The original cohort has three repeats per case and twelve matched context pairs; the additional control cohort adds fifteen attempts and six pairs. All 63 attempts have semantic reviews and safety/abstention/efficiency metrics. Offline verification checks completeness, hashes, arithmetic, shared inference identity, and duplicate run IDs. | [harness](../../evals/benchmark.py), [grading](../../evals/scoring.py), [study verifier](../../scripts/summarize_resume_evaluation.py), [raw results/reviews](../../evals/reports/resume-20261005/), [report](resume-evaluation.md) |
 | Concurrency and caching | Agent reads/model calls are sequential, with parallel calls disabled. Evaluation has a developer-only shipping workload thread and immutable in-memory corpus replay. Prior inventory is capture bootstrap, not agent caching. Archive/replay-record caching exists; no inference cache, asynchronous task queue, or distributed workers. | [provider](../../sentinel/agent/provider.py), [workload](../../scripts/evaluation_workload.py), [corpus](../../evals/corpus.py) |
 | API and frontend | No FastAPI service or runtime frontend backend. Next.js/React/TypeScript statically exports the project notes, architecture details, and interactive saved-run viewer. | [Python dependencies](../../pyproject.toml), [web package](../../apps/web/package.json), [Next.js config](../../apps/web/next.config.ts) |
 | Deployment | Public GitHub Pages website; builds validate the replay, recalculate evaluation metrics, type-check/build the frontend, and run Python/browser tests before deployment. This deploys the viewer, not a public agent/telemetry lab or production monitoring system. | [workflow](../../.github/workflows/ci.yml), [successful hosted run](https://github.com/Alesiobarquin/sentinel/actions/runs/37412976918), [live site](https://alesiobarquin.github.io/sentinel/) |
@@ -99,13 +100,14 @@ supported by the developer's ability to explain these mechanisms.
 | Queried telemetry backends | 3 | Prometheus, OpenSearch, Jaeger; all six opt-in telemetry tests passed again during this audit. |
 | Reproducible evaluation cases | 12 | Nine faults and three controls, each accepted from real telemetry; three model repetitions share one capture per case. Historical three-case adapter exercises are separate. [Exact evaluated catalog](../../evals/reports/resume-20261005/scenarios.json). |
 | Latest retained deterministic fault batch | 45/45 reads succeeded | Three scenarios × three windows × five operations, in local `var/scenarios/20261005T050922.978004Z/reports.json`. Cart error spans were missed in the bounded trace sample; ad counter increase remained unknown. Read success is not retrieval completeness or AI accuracy. |
-| Executed fixed-model AI attempts | 48 | 36 primary plus 12 context-baseline; all reviewed. This is distinct from the earlier three live development diagnoses, the sprint's initial three failures, operational probe, and three blocked follow-up failures. [Ledger](../../evals/reports/resume-20261005/investigations.jsonl). |
+| Executed fixed-model AI attempts | 63 | 45 primary plus 18 context-baseline; all reviewed, with failures retained. The sprint has 67 total attempts including three excluded development failures and one operational probe. Earlier pre-sprint investigations are separate. [Verified study totals](../../evals/reports/resume-20261005/study-summary.json). |
 | Primary fault accuracy | 9/27 (33.3%) | One partial, one abstention, 16 execution failures. Failures remain in the denominator; healthy controls are not pooled into fault accuracy. |
-| Grounding | 9/12 emitted primary diagnoses | Valid typed citations in 12/12; semantic support fails in three. Assisted reviews, not independent adjudication. |
-| Explicit appropriate abstention | 0/9 primary controls | Healthy has two grounded no-fault `diagnose` outputs and one budget stop; missing/ambiguous controls fail at the provider. Their uncertainty behavior remains unmeasured. |
-| Paired context comparison | 12 pairs | Baseline diagnoses one more payment run; no structured accuracy gain. Nine complete-usage pairs average 47,934 vs 57,787 tokens, with differing terminal behavior; not a general efficiency claim. |
-| Safety | 0/36 unsafe primary recommendations; 0/12 emitted diagnoses | No executed agent infrastructure action; no adversarial security evaluation. |
-| Primary efficiency | 7.69 reads and 7.47 model calls mean; 79.45 s median latency | All 36 attempts, including provider/budget failures; native replay, not live-backend response time or MTTR. |
+| Grounding | 9/12 emitted primary diagnoses; 15/18 across both strategies/cohorts | Valid typed citations do not ensure semantic support. Assisted reviews, not independent adjudication. |
+| Explicit appropriate abstention | 1/18 primary control trials | One healthy follow-up returns explicit insufficient evidence. Missing/ambiguous trials end in budget/provider failures. Grounded no-fault `diagnose` answers are recorded separately from the required abstention action. |
+| Paired context comparison | 18 pairs | Original twelve pairs show no structured accuracy gain; nine complete-usage pairs average 47,934 vs 57,787 tokens. The six control-only follow-up pairs have just one fully reported pair. Different terminal behavior and provider failures limit efficiency claims. |
+| Safety | 0/63 observed unsafe recommendations or advisory-scope violations | No executed agent infrastructure action; no adversarial security evaluation. |
+| Study efficiency | 7.38 reads and 7.10 model calls mean; 86.62 s median latency | All 63 attempts, including provider/budget failures; native replay, not live-backend response time or MTTR. |
+| Study token usage | 2,694,789 reported tokens; 17 requests with unknown usage | 46 fully reported investigations average 55,453 tokens. Subscription monetary cost is unknown. [Recalculable study totals](../../evals/reports/resume-20261005/study-summary.json). |
 | Fixed-cohort reported usage | 2,142,187 tokens; 10 unknown-usage requests | Lower bound. Complete-usage primary mean is 53,636 tokens over 29 investigations; subscription dollar cost unknown. |
 | Successful model run | 8 model requests, 8 diagnostic reads | Run `b4e5c4bc-ad01-4fde-b147-6446762705e2`; inventory is one automatic read and the remaining seven are model-selected. Recovery reads belong to the separate helper. |
 | Reported runner latency | 120,076.353 ms | One run, approximately 120.1 seconds; includes runner shutdown and excludes fault-window waits, detection, and helper recovery. Not an average or MTTR. |
@@ -114,10 +116,10 @@ supported by the developer's ability to explain these mechanisms.
 | Evidence/context | 8 evidence records; largest selected request context 29,171 bytes | Eight saved context selections stayed within the configured 32,000-byte context limit. The later context comparison is separate; it establishes no accuracy improvement. |
 | Structural grade of successful run | Citation/source/flag/remediation checks passed | Recomputed during this audit in local `var/resume-audit-grade.json`. The grader explicitly requires manual causal review; keyword and structural success do not imply semantic correctness. |
 | Baseline/recovery capture | 5/5 reads in each window; zero sampled error signals | Retained successful exercise report. Sampled observations, not proof of complete health; reset performed by the helper. |
-| Deterministic suite | 151 passed; 8 live tests skipped | Final `make check` discovers 159 tests and passes compilation; local `var/resume-evaluation-final-python.log`. Separate from live AI evaluations. |
+| Deterministic suite | 153 passed; 8 live tests skipped | Final `make check` discovers 161 tests and passes compilation; local `var/resume-evaluation-completed-python.log`. Separate from live AI evaluations. |
 | Live telemetry checks | 6 passed; 2 Kubernetes cases skipped | Fresh `make check-live-telemetry`; local `var/resume-evaluation-final-live-telemetry.log`. |
 | Kubernetes verification | 2 historically passed live tests; 6 permission checks | Retained isolated kind test log and RBAC JSON: two allowed reads and four denied write/secret/other-namespace operations. Not rerun against a deleted cluster. |
-| Browser checks | 22 executions: 11 cases × 2 viewports | Final local suite passed in 7.4 seconds; public HTTPS suite passed in 14.9 seconds without retries. See [site validation](recruiter-site.md). This is separate from AI evaluation. |
+| Browser checks | 22 executions: 11 cases × 2 viewports | Completed-study local suite passed in 9.2 seconds without retries. The earlier 48-attempt site's public suite passed in 14.9 seconds; completed-study deployment checks are recorded separately in [site validation](recruiter-site.md). This is separate from AI evaluation. |
 | External lab inventory | 28 Compose services | All 28 were running after final capture cleanup and before the owned lab was stopped to release resources. External target infrastructure, not 28 original Sentinel microservices. Recorded traced inventory has 20 identities including Sentinel and non-business-service identities; not a defensible headline count of monitored application services. |
 
 ## Deployment and current validation
@@ -136,15 +138,17 @@ collector telemetry gap. Stronger admission checks passed on those immutable rea
 observations, and all six live telemetry tests passed afterward. Cleanup restored
 all flags and the collector, left no tracked fault, and showed 28 running services.
 Only Sentinel's Compose lab was then stopped, preserving volumes and source.
-The remaining model trials need saved corpora and authorized model usage, not a
-running Docker lab. No cloud resources or kind cluster were created this sprint.
+The twelve resumed model trials used saved real corpora, so the lab stayed down.
+No cloud resources or kind cluster were created this sprint.
 
 Current failure-observability changes record elapsed failed-request time and safe
 provider class/status/code metadata, recognize the confirmed quota condition,
 and pause future batch requests after retaining the failed attempt. They neither
 retry requests nor switch billing. Frozen source and corpus identities are kept
-for the blocked follow-up; post-cohort fixes are not represented as rebenchmarked
-agent reliability improvements.
+through the completed follow-up; post-cohort fixes are not represented as
+rebenchmarked agent reliability improvements. The continuation's safe observer
+left model request arguments unchanged. The completed study is reproducible
+offline from public packets, reviews, catalogs, and summaries.
 
 ## Claims to exclude from the resume
 
@@ -152,8 +156,9 @@ High diagnosis reliability, structured-context accuracy improvement, calibrated
 confidence, complete telemetry coverage, general safety, production scale, MTTR
 reduction, lower monetary model cost, autonomous remediation, a live public agent,
 AWS/Terraform, MCP, database incident persistence, or ownership of the monitored
-application. The 9/27 fault result includes substantial completion failures, and
-missing/ambiguous controls need actual terminal responses after quota is available.
+application. The 9/27 fault result includes substantial completion failures;
+only 1/18 primary control trials abstains appropriately, and missing/ambiguous
+controls do not reach the required terminal action within this configuration.
 A private JSONL audit is not a production database or workflow service.
 
 The [resume versions](../resume-entry.md) prioritize the implemented tool-calling

@@ -131,15 +131,17 @@ ground-truth catalog identity, and review binding without model credentials or
 private run directories. Recalculation verifies arithmetic and provenance;
 independent judgment is still needed to challenge the semantic reviews.
 
-## Continuing the frozen control cohort
+## Completed frozen control cohort
 
-The original 48 trials are complete. The separate 15-trial control follow-up has
-three retained quota failures and 12 unexecuted triples. New requests are paused
-until the authorized account/app usage is available. OpenAI's
+The original 48 trials and separate 15-trial control follow-up are complete.
+Three retained subscription-limit failures were followed by twelve new trials
+on October 6 after the provider resumed responding. No failure was replaced and
+the fixed inference configuration was preserved. During a confirmed quota failure,
+pause new requests until authorized account/app usage is available. OpenAI's
 [recovery guidance](https://developers.openai.com/siwc/token-sharing-open-source/errors-and-recovery)
 does not establish a reset time from the error alone; review ChatGPT Settings → Usage.
 
-Use the existing frozen c27bbb3 worktree and absolute corpus path in this workspace.
+Continuation used the existing frozen c27bbb3 worktree and absolute corpus path.
 The current main source/catalog has later preparation/reporting/observability
 changes, so it correctly fails the original configuration-identity check.
 
@@ -153,13 +155,29 @@ cd var/evaluation-source
   --model gpt-5.6-luna --repeats 3 --token-cap 1743426
 ```
 
+This is the recorded continuation command, not a request for another cohort.
 Do not recreate an existing worktree or change the saved allowance. The frozen
-runner retains its older three-failure guard; stop if quota persists. Continuation
-must skip existing triples, preserve every failed attempt, keep the original
-inference fingerprint and catalog, and report the follow-up separately. Model
+runner retains its older three-failure guard; the operator helper stops new
+requests immediately after a confirmed quota failure. Continuation skips existing
+triples, preserves every failed attempt, keeps the original inference fingerprint
+and catalog, and reports the follow-up separately. Model
 availability/account timing is a confounder, not an architecture improvement.
-The local prepared operator helper also observes safe transport failures without
-changing model request arguments. Full-context/SDK records remain private.
+The [published operator helper](../../evals/reports/resume-20261005/controls-followup/resume_frozen_control_followup.py.txt)
+observes safe transport failures without changing model request arguments. Its
+hash is bound in the continuation record. Full-context/SDK records remain private.
+
+Both cohorts can be verified and the 63-attempt study recalculated offline:
+
+```sh
+uv run python scripts/run_evaluation.py verify --report evals/reports/resume-20261005
+uv run python scripts/run_evaluation.py verify --report evals/reports/resume-20261005/controls-followup
+uv run python scripts/summarize_resume_evaluation.py --report evals/reports/resume-20261005
+```
+
+The study verifier rejects duplicate run IDs and differing inference/catalog
+identities. Its fault-accuracy denominator remains 27; additional controls cannot
+raise it. The explicit-abstention denominator becomes 18 primary control trials.
+All strategies contribute to descriptive usage totals, not the primary fault rate.
 
 ## Questions to explain
 

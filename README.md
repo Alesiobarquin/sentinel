@@ -251,29 +251,33 @@ See [measured validation](docs/validation/read-only-agent.md).
 
 ## AI evaluation
 
-A fixed `gpt-5.6-luna` study executed **48 AI attempts across 12 real-telemetry
-cases**: three primary runs per case and 12 additional context-baseline runs.
+A fixed `gpt-5.6-luna` study executed **63 scored AI attempts across 12
+real-telemetry cases**: 48 original trials and a 15-trial control follow-up.
 Repetitions replay one actual captured baseline/fault window per case; they are
 live model calls, not independent repeated injections.
 
 Primary fault accuracy was **9/27 (33.3%)**, retaining failed requests, invalid
 decisions, and exhausted budgets. Cited evidence supported material claims in
-**9/12 emitted diagnoses**. Explicit appropriate abstention was **0/9 controls**;
-provider failures prevented terminal answers on missing/ambiguous evidence.
+**9/12 emitted primary diagnoses**. Explicit appropriate abstention was
+**1/18 primary control trials** across both cohorts; missing/ambiguous cases
+stopped on budgets or model failures. Qualified no-fault answers using `diagnose`
+are separate from explicit abstention.
 Semantic reviews are Codex-assisted, not independent human adjudication.
 
-The 12 matched context pairs showed no accuracy advantage for ranked reduction:
-the native-context baseline diagnosed one more payment run. Token/latency results
+The original 12 matched context pairs showed no accuracy advantage for ranked
+reduction: the native baseline diagnosed one more payment run. Six additional
+control pairs are reported separately. Token/latency results
 and their missing-usage limits are in the
 [evaluation report](docs/validation/resume-evaluation.md), with
-[per-run data and reviews](evals/reports/resume-20261005/). A separate control
-follow-up is quota-blocked: three failed attempts retained, 12 still unexecuted.
-The sprint is incomplete. Subscription monetary cost remains unknown.
+[per-run data and reviews](evals/reports/resume-20261005/). All planned trials are
+executed and reviewed, including the three earlier quota failures. These are
+development measurements, not evidence of a reliable production agent.
+Subscription monetary cost remains unknown.
 
-Recalculate the original 48-attempt summary offline:
+Recalculate both cohorts and their study totals offline:
 
 ```bash
-uv run python scripts/run_evaluation.py verify --report evals/reports/resume-20261005
+uv run python scripts/summarize_resume_evaluation.py --report evals/reports/resume-20261005
 ```
 
 See [capture, execution, and review instructions](docs/learning/evaluation.md).
@@ -285,7 +289,7 @@ make check
 make check-live-telemetry
 ```
 
-The latest local suite passed **151 deterministic tests**, with eight opt-in
+The latest local suite passed **153 deterministic tests**, with eight opt-in
 live tests skipped, plus Python compilation. The website passed **22 Chromium
 browser checks** across desktop and mobile, TypeScript checks, and static export.
 Six real telemetry checks and two isolated kind integration checks passed

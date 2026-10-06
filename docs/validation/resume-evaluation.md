@@ -1,10 +1,11 @@
 # Resume evaluation: Sentinel — AI Incident Investigation Agent
 
-**The original 48-attempt cohort is executed, reviewed, and recalculable. The
-abstention follow-up is blocked by ChatGPT Subscription Sharing limits; this
-sprint is not complete.** Results below describe the original cohort, including
-failed requests and exhausted budgets. They are development measurements, not
-production reliability claims.
+**All 63 planned evaluation attempts are executed, reviewed, and recalculable:**
+the original 48-attempt cohort and a separate 15-attempt control follow-up.
+Three earlier subscription-limit failures remain in that follow-up. There were
+67 sprint attempts including four development/operational exclusions. The
+evaluation establishes substantial completion and abstention limitations;
+these are development measurements, not production reliability claims.
 
 Sentinel supplies the typed diagnostic adapters, telemetry reduction, context
 selection, model loop, policy, audit, evaluation harness, and recorded-run viewer.
@@ -19,14 +20,20 @@ OpenTelemetry Demo. The PRD is not implementation evidence.
 | Matched context baseline | 12 | Three runs on four of those cases; paired with the corresponding primary runs. |
 | Initial development cohort | 3 | Failed before an action-contract/context correction; retained separately. |
 | Operational probe | 1 | Single-call availability probe, not a diagnosis benchmark. |
-| Control follow-up so far | 3 | All quota failures; 15 planned, 12 unexecuted. No original trial is replaced. |
-| Total sprint attempts so far | 55 | 48 original + 3 initial + 1 probe + 3 blocked follow-up. |
+| Control follow-up primary | 9 | Three additional runs per control; includes one retained healthy quota failure. |
+| Control follow-up baseline | 6 | Three additional runs on healthy/ambiguous controls; includes two retained quota failures. |
+| Total scored evaluations | 63 | 48 original + 15 follow-up; every attempt has a bound semantic review. |
+| Total sprint attempts | 67 | 63 scored + 3 initial development failures + 1 operational probe. |
 
-The fixed cohort has **12 scenarios: 9 diagnosis-expected faults and 3 abstention
-controls**, 48 bound semantic reviews, 348 model calls, and 360 actual diagnostic
-reads. Repetitions share **one real native-tool capture per case**. These are
-48 live model investigations over captured real telemetry, not 48 independent
-fault injections or live-backend latency experiments.
+The study has **12 scenarios: 9 diagnosis-expected faults and 3 abstention
+controls**, 63 bound semantic reviews, 447 model calls, and 465 diagnostic reads.
+The original cohort contributes 348 calls/360 reads; the follow-up contributes
+99/105. There are 45 primary attempts, 18 native-context baseline attempts, and
+18 matched pairs across the two separately reported cohorts. Repetitions share
+**one real native-tool capture per case**. These are live model investigations
+over captured real telemetry, not 63 independent injections or live-backend
+latency experiments. [Study totals](../../evals/reports/resume-20261005/study-summary.json)
+are recalculated from both verified cohorts, with controls excluded from fault accuracy.
 
 Public records: [investigations](../../evals/reports/resume-20261005/investigations.jsonl),
 [reviews](../../evals/reports/resume-20261005/reviews.jsonl),
@@ -34,6 +41,8 @@ Public records: [investigations](../../evals/reports/resume-20261005/investigati
 [configuration](../../evals/reports/resume-20261005/configuration.json),
 [exact evaluated catalog](../../evals/reports/resume-20261005/scenarios.json), and
 [capture checks/runtime identities](../../evals/reports/resume-20261005/captures.json).
+The [control follow-up](../../evals/reports/resume-20261005/controls-followup/)
+has its own complete ledger, reviews, summary, configuration, and captures.
 These are publication-limited per-run results, native evidence projections, and
 original model decisions. Full tool corpora, selected model contexts, SDK outputs,
 and self-traces remain in local, gitignored `var/resume-evaluation/` directories;
@@ -114,6 +123,12 @@ trial. Guard stops/resumptions and rejected preparations are retained in the
   unavailable delay logs. Those categories receive no retrospective credit.
   Catalog v2 fixes these definitions and the stock capture now checks both
   healthy windows. Historical scoring uses the exact archived v1 catalog.
+- The ambiguous case's baseline metrics have no usable increases/p95 and only
+  one counter sample. Baseline logs contain four successful transactions, and
+  bounded traces include successful payment spans alongside upstream errors.
+  This is not a pristine whole-system baseline. An empty metric-only baseline
+  query receives no comparison-evidence credit in the follow-up; populated
+  baseline logs/traces can support a qualified comparison.
 
 ## Scoring
 
@@ -179,9 +194,10 @@ qualified no-current-fault findings on the healthy control.
 
 **Explicit appropriate abstention was 0/9 controls.** The missing/ambiguous
 results do not show a model choosing a wrong cause; they show that provider
-failures prevented measurement of its uncertainty behavior. The later control
-follow-up remains necessary. The healthy findings support restrained no-fault
-reasoning, but do not satisfy the specified abstention terminal state.
+failures prevented measurement of its uncertainty behavior in this cohort.
+The completed follow-up below measures additional behavior. The healthy findings
+support restrained no-fault reasoning, but do not satisfy the specified abstention
+terminal state.
 
 ### Grounding, tools, and safety
 
@@ -217,9 +233,9 @@ part of the cause, and a partial cart conclusion added unsupported Valkey scope.
 Primary reported subtotals: **1,525,152 input + 96,948 output = 1,622,100 tokens**.
 Seven primary runs have one unknown-usage request each. Across all original 48,
 **2,015,031 input + 127,156 output = 2,142,187 reported tokens**, with ten
-unknown-usage requests. Including initial failures, the availability probe, and
-three blocked follow-up attempts gives **2,258,634 reported tokens so far** and
-13 unknown-usage requests. Actual total token/credit consumption and monetary
+unknown-usage requests. Including the completed follow-up, initial failures, and
+availability probe gives **2,809,176 reported tokens** and 17 unknown-usage
+requests. Actual total token/credit consumption and monetary
 cost remain unknown. Neither unknown usage nor subscription inference is $0.
 
 ## Context comparison: 12 matched pairs
@@ -265,7 +281,79 @@ shipping or explicitly abstained on a control. Token/latency differences are
 exploratory observations on a small development subset with differing terminal
 behavior, not a general efficiency gain or a reliability improvement claim.
 
-## Failures, corrections, and blocked follow-up
+## Control follow-up: 15 additional attempts
+
+The three retained quota failures were followed by 12 new trials on October 6
+once the provider responded again. All 15 planned triples are now executed and
+reviewed, using frozen c27bbb3 inference, the original model/instructions/budgets,
+and the same three native corpora. No original trial was replaced. The aggregate
+reported-token admission allowance remained 1,743,426. The operator wrapper
+observes SDK failures and pauses before another provider is constructed after a
+known quota error; it does not change model request arguments.
+
+| Control and arm | Explicit appropriate abstention / 3 | Other outcomes |
+| --- | ---: | --- |
+| Healthy / structured | 1 | One retained quota failure; one budget stop. |
+| Missing telemetry / structured | 0 | Two budget stops after retrieving the cross-signal gap; one HTTP 503. |
+| Ambiguous / structured | 0 | Two budget stops; one SDK APIError with no HTTP status. |
+| Healthy / native baseline | 0 | Two retained quota failures; one grounded no-current-fault `diagnose` answer. |
+| Ambiguous / native baseline | 0 | One budget stop; two model failures with unknown usage. |
+
+Primary follow-up abstention is **1/9 (11.1%)**; across the original and follow-up
+primary controls it is **1/18 (5.6%)**. Fault accuracy remains **9/27** because
+these additional controls are not diagnosis-expected faults. The explicit healthy
+abstention acknowledges successful incident observations, capped traces, sparse
+baseline metrics, and the real preceding connection error. Its claim checks are
+published. The native no-fault diagnosis is grounded, but uses the wrong terminal
+action for the abstention protocol; it is not a fabricated fault cause.
+
+The follow-up produced one diagnosis, one explicit abstention, six budget stops,
+and seven model failures. Three model failures are the earlier confirmed quota
+errors. Of the four later failures, the observer captured one HTTP 503 and two
+SDK APIErrors without HTTP status; the remaining failure has no captured SDK
+exception, so its transport cause is unknown. Failed-request usage is unknown
+in all seven. No unsafe recommendation or action outside advisory scope was
+observed; the only emitted recommendation suggests observation rather than a change.
+
+Expected-evidence coverage is **29/45** across the follow-up, and required-tool
+coverage is **36/51** (attempted operations, including unavailable reads).
+Two reads were unnecessary: unconfigured Kubernetes pods on the healthy case,
+and checkout source after global local-source-context failures on the ambiguous
+case. Sparse metric-only baseline reads are conservatively uncredited. Healthy
+and ambiguous control imperfections remain explicit; they are not repaired by
+relabeling the existing captures.
+
+| Follow-up efficiency | Result and scope |
+| --- | --- |
+| Reads / model calls | 7.00 / 6.60 mean; 8 / 8 median; 11 / 10 p95 over all 15 |
+| Runner latency | 70.56 s mean, 94.27 s median, 116.73 s p95; includes fast failures |
+| Measured model latency | 10.91 s mean, 9.81 s median, 17.20 s p95 over 92 calls; 7 missing |
+| Prompt / completion / total tokens | 55,876 / 3,538 / 59,414 mean over 8 fully reported investigations |
+| Reported token subtotal | 552,602; 7 requests have unknown usage |
+| Monetary cost | Unknown subscription cost |
+
+The six additional matched pairs cover only healthy and ambiguous controls.
+Structured context has one explicit abstention versus none for the baseline;
+the baseline has one qualified no-fault diagnosis versus none for structured.
+Only one pair has fully known usage in both arms, and its terminal states differ
+(structured budget stop versus native diagnosis). Account availability/timing
+and model failures confound these comparisons. They establish no new fault
+accuracy or general efficiency advantage.
+
+### Descriptive totals across both scored cohorts
+
+Across all 63, **15/18 emitted diagnoses have grounded material claims**;
+primary grounding remains 9/12. Mean reads/model calls are 7.38/7.10. Runner
+latency is 72.56 s mean, 86.62 s median, and 116.64 s p95, including unsuccessful
+attempts. Model latency is measured for 430/447 calls: 10.29 s mean, 9.49 s
+median, 17.60 s p95. The 46 complete-usage investigations average 52,174 prompt,
+3,279 completion, and 55,453 total tokens; their total-token median/p95 are
+58,358/79,660. Reported scored usage is 2,534,794 input + 159,995 output =
+**2,694,789 tokens**, with 17 unknown-usage requests. Initial failures/probe add
+114,387 reported tokens, yielding the 2,809,176 sprint subtotal. These mixed-arm
+totals are descriptive, not a new default-agent accuracy benchmark.
+
+## Failures, corrections, and resumed execution
 
 The [initial three attempts](../../evals/reports/resume-20261005/initial-aborted-cohort/)
 used 21 model calls, 21 reads, and 112,274 reported tokens before correction. One
@@ -288,20 +376,22 @@ of them to quota.
 
 A separate one-call operational probe succeeded in making a diagnostic read,
 used 2,113 reported tokens, and stopped at its one-call budget. It is not evidence
-of a successful diagnosis. The subsequent planned 15-attempt control follow-up
+of a successful diagnosis. The subsequent 15-attempt control follow-up initially
 executed **three attempts**, all rejected by the provider's explicit Subscription
 Sharing usage-limit message. One received an initial read decision; the other
 two failed on their first model request. Their 2,060 reported-token subtotal is
 incomplete; all three have unknown usage. Records are retained separately in
-[the blocked control ledger](../../evals/reports/resume-20261005/controls-followup/).
-No original failure is retried or replaced. Twelve follow-up trials remain.
+[the control ledger](../../evals/reports/resume-20261005/controls-followup/).
+The remaining 12 ran after the provider resumed responding. No original failure
+was retried or replaced.
 
 OpenAI's [recovery guidance](https://developers.openai.com/siwc/token-sharing-open-source/errors-and-recovery)
 says to pause new plan-usage requests and review ChatGPT Settings → Usage. The
 error alone establishes neither a reset time nor whether the limit is plan-wide
 or app-specific. No paid API fallback or new sign-in was attempted. A detached
-c27bbb3 checkout preserves the original inference configuration for continuation
-once usage is available; future observations will be reported separately.
+c27bbb3 checkout preserved the original inference configuration for continuation.
+Provider availability was observed from successful requests, not inferred from
+midnight or a guessed quota-reset schedule.
 
 Post-cohort changes add failure latency and safe provider type/status/quota
 metadata, stop a future batch immediately after a known quota failure, archive
@@ -321,10 +411,14 @@ Run offline, without credentials or private files:
 
 ```sh
 uv run python scripts/run_evaluation.py verify --report evals/reports/resume-20261005
+uv run python scripts/run_evaluation.py verify --report evals/reports/resume-20261005/controls-followup
+uv run python scripts/summarize_resume_evaluation.py --report evals/reports/resume-20261005
 ```
 
-This checks completeness, packet/configuration/catalog hashes, review binding,
-and summary arithmetic. It does not certify semantic judgments independently.
+These check completeness, packet/configuration/catalog hashes, review binding,
+and summary arithmetic. The study verifier rejects repeated run IDs and changed
+inference/catalog identities; it keeps control trials out of fault accuracy.
+It does not certify semantic judgments independently.
 GitHub Actions performs the same recalculation. The
 [evaluation guide](../learning/evaluation.md) documents capture, execution,
 cleanup, review, quota handling, and frozen-source continuation.
@@ -337,10 +431,11 @@ It is a saved replay. Visitors do not start an agent or query the local lab.
 
 ## Known limits and remaining work
 
-The controls need an available provider and completion of the separate follow-up
-before this sprint can meet its abstention standard. Independent human review,
-fresh captures across repeated injections, held-out cases, stronger causal-context
-retention, and budget-aware terminal behavior would strengthen the next study.
+The evaluation suite and repeated control study are complete, but control
+reliability is weak: most investigations failed to emit a terminal answer even
+after retrieving useful evidence. Independent human review, fresh captures
+across repeated injections, held-out cases, stronger causal-context retention,
+and budget-aware terminal behavior would strengthen the next study.
 More technology would not address those measured failure modes.
 
 Ground truth is controlled, source-readable, and sometimes directly exposed by

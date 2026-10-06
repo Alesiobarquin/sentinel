@@ -23,6 +23,8 @@ jobs:
       - run: make check
       - name: Recalculate published AI evaluation metrics
         run: uv run python scripts/run_evaluation.py verify --report evals/reports/resume-20261005
+      - name: Verify complete two-cohort study
+        run: uv run python scripts/summarize_resume_evaluation.py --report evals/reports/resume-20261005
   web:
     runs-on: ubuntu-latest
     permissions:

@@ -219,3 +219,35 @@ Public evidence is retained in `var/resume-evaluation-publication-ci.json`,
 `var/resume-evaluation-public-browser-final.log`, and
 `var/resume-evaluation-site-qa/public-observations.json`.
 The owned preview on 4187 has been stopped.
+
+## Completed control study — October 6
+
+The completed study contains 63 reviewed attempts: the original 48 plus fifteen
+additional control trials. The site and resume documents now report all trials
+as executed, with failures retained. The original payment recording still has
+SHA-256 `e61ef20d37ac18a17cc29d84c3e7932c450f5e06e498b891a1954b2d4369767c`.
+The site describes 9/27 primary fault accuracy, grounding in 9/12 emitted primary
+diagnoses, and appropriate explicit abstention in 1/18 primary control trials.
+Measurements remain inside the experiment write-up, with method and raw-data links.
+
+Fresh TypeScript checks, production static export, and replay validation passed.
+All **22 local browser executions passed in 9.2 seconds** without retries. Six
+desktop/mobile screenshots and two additional mobile table/diagnosis captures
+were inspected. Both document widths match their 1440/390-pixel viewports, and
+the added results remain readable without horizontal overflow.
+
+The Python suite passed **153 deterministic tests**, eight opt-in live skips,
+and compilation. Both cohort verifiers and the study verifier reproduce all 63
+bound reviews. They check hashes/completeness, reject repeated run IDs, preserve
+inference identity, and keep additional controls out of fault accuracy. Screening
+of 48 public report files found no credential/home-path pattern matches; public
+fields and the continuation helper were also reviewed. These offline checks do
+not independently validate the semantic grading.
+
+Local artifacts: `var/resume-evaluation-completed-python.log`,
+`var/resume-evaluation-completed-site-typecheck.log`,
+`var/resume-evaluation-completed-site-build.log`,
+`var/resume-evaluation-completed-site-browser.log`, and
+`var/resume-evaluation-completed-site-qa/`. The owned preview uses port 4189;
+the unrelated process on 4173 is untouched. The Docker lab remains stopped;
+the resumed evaluations used the existing native captures.

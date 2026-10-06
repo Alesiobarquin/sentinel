@@ -79,15 +79,15 @@ export default function Home() {
           timeout.
         </p>
         <p>
-          I then captured 12 fault and control cases and ran 48 AI evaluation
+          I then captured 12 fault and control cases and ran 63 AI evaluation
           attempts, including a comparison of context strategies. Nine of 27
           primary fault trials produced the correct cause; failed decisions and
           exhausted budgets remain in that denominator. The{" "}
           <a href={`${REPO}/blob/main/docs/validation/resume-evaluation.md`}>
             evaluation report
           </a>{" "}
-          includes grounding reviews and the provider failures that blocked an
-          abstention follow-up.
+          includes grounding reviews, an additional control cohort, and every
+          provider failure and budget stop.
         </p>
         <Link href="/project/#development">
           Failure history, changes, and tests

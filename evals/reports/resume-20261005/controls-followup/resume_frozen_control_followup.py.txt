@@ -1,0 +1,76 @@
+"""Separate control follow-up after provider failures; original trials stay intact."""
+from pathlib import Path
+import json
+import re
+import shutil
+import sys
+import time
+
+ROOT=Path(__file__).resolve().parents[1]
+FROZEN=ROOT/'var/evaluation-source'
+sys.path.insert(0,str(FROZEN))
+from openai import OpenAIError
+from evals import benchmark as b
+from evals.corpus import CATALOG, digest, write_json
+from sentinel.replay import SECRET
+
+ORIGINAL=ROOT/'var/resume-evaluation/20261005-fixed'
+FOLLOWUP=ROOT/'var/resume-evaluation/20261005-controls-followup'
+prior=json.loads((ORIGINAL/'configuration.json').read_text())
+assert b.code_hash()==prior['code_sha256']
+rows=[json.loads(s) for s in (ORIGINAL/'runs.jsonl').read_text().splitlines()]
+probe=json.loads((ORIGINAL/'diagnostic-probe.json').read_text())
+spent=112274+sum(x['result']['input_tokens']+x['result']['output_tokens'] for x in rows)+probe['result']['input_tokens']+probe['result']['output_tokens']
+cap=4_000_000-spent
+if not FOLLOWUP.exists():
+    FOLLOWUP.mkdir(mode=0o700)
+    prep=json.loads((ORIGINAL/'preparation.json').read_text())
+    prep['cases']=['healthy-payment','collector-coverage-gap','ambiguous-payment']
+    write_json(FOLLOWUP/'preparation.json',prep)
+    for case in prep['cases']:
+        shutil.copytree(ORIGINAL/case,FOLLOWUP/case)
+    write_json(FOLLOWUP/'method.json',{'at':time.time(),'operator_helper_sha256':digest(Path(__file__).read_bytes()),
+        'purpose':'15 additional control trials (nine primary, six baseline) after provider failures prevented the first cohort from testing missing/ambiguous evidence behavior. Same original native telemetry and inference configuration; no original trial is replaced or removed.',
+        'reported_token_allowance_remaining':cap,'original_reported_tokens_spent':spent,
+        'limits':'Unknown-usage requests are not assumed free. This allowance admits further calls using reported subtotals only; subscription dollars and actual credit use remain unknown.'})
+original_provider=b.model_provider
+quota_observed=False
+def observe(exc):
+    global quota_observed
+    quota_observed = quota_observed or (
+        getattr(exc,'code',None)=='subscription_sharing_usage_limit_exceeded' or
+        'has reached their Subscription Sharing usage limit' in str(getattr(exc,'message','')))
+    message=SECRET.sub('[redacted]',str(getattr(exc,'message','')))[:500]
+    message=re.sub(r'\b\d{13,19}\b','[redacted digits]',message)
+    with (FOLLOWUP/'private-transport-observations.jsonl').open('a') as stream:
+        stream.write(json.dumps({'at':time.time(),'sdk_error_class':type(exc).__name__,
+            'http_status':getattr(exc,'status_code',None),'sanitized_message':message})+'\n')
+class Stream:
+    def __init__(self,s):self.s=s
+    def __enter__(self):self.entered=self.s.__enter__();return self
+    def __iter__(self):
+        try:yield from self.entered
+        except OpenAIError as exc:
+            observe(exc)
+            raise
+    def __exit__(self,*args):return self.s.__exit__(*args)
+def provider(model):
+    if quota_observed:
+        raise ValueError('Observed Subscription Sharing limit; previous failed trial was retained. New requests are paused.')
+    p=original_provider(model);original=p.client.responses.create
+    def create(**kwargs):
+        try:return Stream(original(**kwargs))
+        except OpenAIError as exc:
+            observe(exc)
+            raise
+    p.client.responses.create=create
+    return p
+b.model_provider=provider
+continuation={'at':time.time(),
+    'operator_helper_sha256':digest(Path(__file__).read_bytes()),
+    'evaluated_source_sha256':b.code_hash(),
+    'catalog_sha256':digest(CATALOG.read_bytes()),
+    'method':'Frozen inference source and configuration. External SDK observer pauses before constructing the next provider after a confirmed quota failure; the preceding failed trial remains persisted. No request, agent, or scoring logic changes.'}
+with (FOLLOWUP/'continuation-method.jsonl').open('a') as stream:
+    stream.write(json.dumps(continuation)+'\n')
+b.evaluate(FOLLOWUP,model='gpt-5.6-luna',repeats=3,wait_for_capture=False,aggregate_token_cap=cap)

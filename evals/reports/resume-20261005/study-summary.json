@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "inference_identity": {
+    "model": "gpt-5.6-luna",
+    "billing_mode": "chatgpt",
+    "budget": {
+      "max_model_calls": 10,
+      "max_tool_calls": 12,
+      "max_total_tokens": 100000,
+      "max_context_bytes": 32000,
+      "max_response_bytes": 12000,
+      "max_output_tokens": 2400,
+      "max_seconds": 300,
+      "max_api_cost_usd": 1
+    },
+    "code_sha256": "bf16f03662efca7c24fd1ef93c133ce04b8778d187039156d0064206823c43f5",
+    "catalog_sha256": "e813e73e669fea378632c10c03dfa375935e98c3cbdfaad3f66369b873a49e15",
+    "context_strategies": {
+      "structured": "ranked reduced results",
+      "chronological_raw": "newest-first native parsed results"
+    }
+  },
+  "cohorts": [
+    {
+      "directory": ".",
+      "investigations": 48,
+      "summary_sha256": "861c250b7289cbb02f6754acf46321ac589d8ef2ce1aff3bed6a7817b50dd186"
+    },
+    {
+      "directory": "controls-followup",
+      "investigations": 15,
+      "summary_sha256": "8f9096c86cdbbdcb7943672cbbd74dce7d11ed5732a289cae1337e06e2a4d28b"
+    }
+  ],
+  "scope": "Descriptive totals across two separately verified development cohorts sharing native captures. Accuracy uses primary fault trials only; controls and context-baseline arms are excluded from that denominator. Repeated captures are not independent fault injections.",
+  "review_method": "Codex-assisted semantic review; not independent human adjudication",
+  "evaluated_attempts": 63,
+  "unique_scenarios": 12,
+  "primary_attempts": 45,
+  "context_baseline_attempts": 18,
+  "matched_context_pairs": 18,
+  "primary_fault_accuracy": {
+    "numerator": 9,
+    "denominator": 27,
+    "rate": 0.3333333333333333
+  },
+  "primary_control_abstention": {
+    "numerator": 1,
+    "denominator": 18,
+    "rate": 0.05555555555555555
+  },
+  "emitted_diagnosis_grounding": {
+    "numerator": 15,
+    "denominator": 18,
+    "rate": 0.8333333333333334
+  },
+  "unsafe_recommendations": 0,
+  "outside_advisory_scope": 0,
+  "model_calls": 447,
+  "diagnostic_reads": 465,
+  "model_calls_distribution": {
+    "count": 63,
+    "mean": 7.095238095238095,
+    "median": 8,
+    "p95": 10,
+    "min": 1,
+    "max": 10
+  },
+  "diagnostic_reads_distribution": {
+    "count": 63,
+    "mean": 7.380952380952381,
+    "median": 8,
+    "p95": 11,
+    "min": 1,
+    "max": 11
+  },
+  "runner_latency_seconds": {
+    "count": 63,
+    "mean": 72.56434387301587,
+    "median": 86.617452,
+    "p95": 116.64200699999999,
+    "min": 3.331879,
+    "max": 119.31063400000001
+  },
+  "model_latency_seconds": {
+    "count": 430,
+    "mean": 10.287096162790698,
+    "median": 9.4916625,
+    "p95": 17.603328,
+    "min": 5.641263,
+    "max": 26.998841
+  },
+  "model_latency_missing_calls": 17,
+  "reported_input_tokens": 2534794,
+  "reported_output_tokens": 159995,
+  "reported_token_subtotal": 2694789,
+  "unknown_usage_calls": 17,
+  "fully_reported_tokens": {
+    "input": {
+      "count": 46,
+      "mean": 52174.065217391304,
+      "median": 54814.5,
+      "p95": 75643,
+      "min": 19090,
+      "max": 82916
+    },
+    "output": {
+      "count": 46,
+      "mean": 3278.891304347826,
+      "median": 3450.0,
+      "p95": 3988,
+      "min": 1975,
+      "max": 4381
+    }
+  },
+  "fully_reported_total_tokens": {
+    "count": 46,
+    "mean": 55452.95652173913,
+    "median": 58358.0,
+    "p95": 79660,
+    "min": 21227,
+    "max": 86632
+  },
+  "subscription_cost_usd": null,
+  "excluded_development_and_probe_attempts": 4,
+  "total_sprint_attempts": 67,
+  "reported_sprint_token_subtotal": 2809176
+}

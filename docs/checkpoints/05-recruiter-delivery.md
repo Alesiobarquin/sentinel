@@ -1,12 +1,45 @@
 # Recruiter delivery review
 
-**Status: focused recruiter delivery published and verified on October 5, 2026.**
+**Status: focused recruiter delivery published; 63-attempt evaluation completed
+on October 6, 2026.**
 This review covers the developer's clarified goal: one recruiter demo and an
 explanatory project/learning page. It supplies the architecture, demo flow,
 measurements, deployment, tradeoffs, limitations, resume wording, and interview
 questions requested by checkpoint 5. It does not declare all PRD section 52
 requirements complete. Checkpoints 1 and 2 are acknowledged; the agent remains
 read-only, and AWS resources have not been created.
+
+## Evaluation sprint review — October 6
+
+The architecture and original public payment replay below remain unchanged.
+The completed [evaluation report](../validation/resume-evaluation.md) and
+[implementation audit](../validation/resume-audit.md) now support the canonical
+title **Sentinel — AI Incident Investigation Agent**. Twelve real-telemetry
+cases produced 63 reviewed attempts in two separately reported cohorts: 45
+primary and 18 native-context baseline trials, including 18 matched pairs.
+All attempts are retained, with failed requests and budget stops in denominators.
+Public JSONL and the [offline study verifier](../../scripts/summarize_resume_evaluation.py)
+make the counts and arithmetic inspectable without credentials.
+
+The primary fault result is 9/27 correct causes; primary explicit control
+abstention is 1/18. Grounding is 9/12 emitted primary diagnoses. The context
+comparison does not establish an accuracy improvement. These outcomes expose
+context retention, finishing-budget, and provider-availability limits; they do
+not support high reliability or production-scale claims. Reviews are assisted,
+not independently adjudicated. Repeated model runs share one capture per case.
+
+The public site keeps one clear real investigation and links the experiment's
+method and per-run records. It runs on GitHub Pages without a public agent or
+always-running telemetry lab. See [current site checks](../validation/recruiter-site.md),
+[three resume versions](../resume-entry.md), and
+[evaluation interview questions](../learning/evaluation.md#questions-to-explain).
+153 deterministic tests pass; live adapter/RBAC checks remain separate evidence.
+No additional cloud infrastructure, database, provider, or write tools were added.
+
+## Initial delivery review — October 5
+
+The following sections preserve the initial single-diagnosis review. Evaluation
+and test counts in that historical review are superseded by the sprint above.
 
 ## Architecture and deployment
 
