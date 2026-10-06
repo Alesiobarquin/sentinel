@@ -47,10 +47,15 @@ No AWS, Terraform, MCP, persistent database state, GitHub diagnostic tool, or
 agent write permissions were added. The local Docker lab stays down with volumes
 retained; the frozen source and saved corpora remain available for reproduction.
 
-The prior 48-attempt report was published from source `0e6807d` with
-[successful hosted checks](https://github.com/Alesiobarquin/sentinel/actions/runs/37412976918)
-and 22 public HTTPS browser executions. The completed 63-attempt report and
-updated site will receive a separate recorded release check.
+The completed report and site are published from source `52ba8fc`.
+[Hosted checks and Pages deployment](https://github.com/Alesiobarquin/sentinel/actions/runs/37471001073)
+passed Python 3.12/3.14 (153 deterministic passes and eight live skips each),
+verification of both cohorts, and 22 CI browser executions. All **22 actual
+public HTTPS executions passed in 15.1 seconds** without retries. Five public
+paths returned 200; the published report/resume/summary files match the release,
+and the payment recording remains byte-identical. Public desktop/mobile views
+were inspected. All sprint deliverables are complete; the documented accuracy,
+abstention, and grading limitations remain. The owned preview was stopped.
 
 ## Delivery before the evaluation sprint — 2026-10-05
 

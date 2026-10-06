@@ -47,7 +47,8 @@ Docker is the actual monitored runtime.
 
 The study measured 33.3% primary fault accuracy and appropriate explicit
 abstention in 1/18 primary control trials. Those results are not a basis for
-claiming a reliable or production-ready diagnosis system. Lower token use in the small complete-usage
-comparison does not establish an accuracy improvement or lower monetary cost.
+claiming a reliable or production-ready diagnosis system. Lower token use in the
+small complete-usage comparison does not establish an accuracy improvement or
+lower monetary cost.
 Deterministic test counts are omitted from the primary resume bullets because the
 executed AI evaluation is more relevant. No subscription dollar cost is claimed.

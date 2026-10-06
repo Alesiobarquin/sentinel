@@ -251,3 +251,24 @@ Local artifacts: `var/resume-evaluation-completed-python.log`,
 `var/resume-evaluation-completed-site-qa/`. The owned preview uses port 4189;
 the unrelated process on 4173 is untouched. The Docker lab remains stopped;
 the resumed evaluations used the existing native captures.
+
+Completed-study release source: `52ba8fce658e1d280439d5d8ec99947da48778de`.
+[Actions run 37471001073](https://github.com/Alesiobarquin/sentinel/actions/runs/37471001073)
+passed Python 3.12/3.14 (153 deterministic passes and eight live skips each),
+both cohort verifications/study totals, recording validation, TypeScript/static
+export, 22 CI browser executions in 11.3 seconds, and Pages deployment.
+
+All five public paths returned 200. The homepage metadata retains the canonical
+title and the home/project pages show the completed 63-attempt study. The fetched
+recording is byte-identical to the original. The report, resume entries, study
+summary, and control summary fetched from the immutable release commit matched
+the local files. All **22 public HTTPS browser executions passed in 15.1 seconds**
+without retries. Public desktop landing, mobile evaluation table, and mobile
+diagnosis screenshots were inspected, with no overflow or missing calibration
+caveat. The owned preview on 4189 was stopped; the Docker lab remains down.
+
+Public artifacts: `var/resume-evaluation-completed-publication-ci.json`,
+`var/resume-evaluation-completed-publication-ci-full.log`,
+`var/resume-evaluation-completed-public-https.json`,
+`var/resume-evaluation-completed-public-browser.log`, and
+`var/resume-evaluation-completed-site-qa/public-observations.json`.
