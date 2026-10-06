@@ -14,3 +14,4 @@ require human involvement before implementation.
 | [007](007-bounded-investigation.md) | One bounded native investigation loop |
 | [008](008-chatgpt-authentication.md) | Supported ChatGPT sign-in and explicit usage limits |
 | [009](009-recruiter-demo-hosting.md) | One free GitHub Pages site with a real investigation replay and project case study |
+| [010](010-repeated-ai-evaluation.md) | Real-telemetry repeated evaluation and controlled context comparison |

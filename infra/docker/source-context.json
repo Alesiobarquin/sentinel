@@ -3,5 +3,7 @@
   "cart": ["src/cart/src/services/CartService.cs", "src/cart/src/cartstore/ValkeyCartStore.cs"],
   "recommendation": ["src/recommendation/recommendation_server.py"],
   "checkout": ["src/checkout/main.go"],
-  "ad": ["src/ad/src/main/java/oteldemo/AdService.java"]
+  "ad": ["src/ad/src/main/java/oteldemo/AdService.java", "src/ad/src/main/java/oteldemo/problempattern/CPULoad.java"],
+  "shipping": ["src/shipping/src/shipping_service.rs"],
+  "product-catalog": ["src/product-catalog/main.go", "src/product-catalog/flags/flags_gen.go"]
 }

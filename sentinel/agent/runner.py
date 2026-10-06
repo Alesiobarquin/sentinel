@@ -62,7 +62,10 @@ def validate_references(step: InvestigationStep, evidence: list[Evidence]) -> No
 class InvestigationRunner:
     def __init__(self, provider: ModelProvider, tools, *, budget: Budget | None = None,
                  output_root: Path = Path("var/investigations"), otlp_endpoint: str | None = None,
-                 clock=time.monotonic):
+                 clock=time.monotonic, context_strategy: str = "structured"):
+        if context_strategy not in {"structured", "chronological_raw"}:
+            raise ValueError("Unknown context strategy")
+        self.context_strategy, self.context_payloads = context_strategy, {}
         self.provider, self.tools = provider, tools
         self.budget = budget or Budget()
         self.clock = clock
@@ -106,6 +109,7 @@ class InvestigationRunner:
                     lambda: self.tools.execute(request), lambda r: {"kind": r[0], "source": r[1], "evidence_id": evidence_id},
                 )
                 self.save(payload_file, raw)
+                self.context_payloads[evidence_id] = raw
                 success = True
             except (TelemetryError, OSError, ValueError) as exc:
                 # Error type is safe; arbitrary response bodies and credentials
@@ -115,6 +119,7 @@ class InvestigationRunner:
                 if isinstance(exc, TelemetryError):
                     summary["error_message"] = str(exc)[:1000]
                 self.save(payload_file, summary)
+                self.context_payloads[evidence_id] = summary
                 span.set_status(Status(StatusCode.ERROR, "Diagnostic read failed"))
             evidence = Evidence(id=evidence_id, run_id=self.run_id, kind=kind, source=source,
                                 observed_at=time.time(), tool=request, success=success, summary=summary, payload_file=payload_file)
@@ -128,7 +133,8 @@ class InvestigationRunner:
         started = self.clock()
         status, reason, diagnosis = "failed", "Investigation did not finish", None
         self.save("input.json", {"incident": incident.model_dump(), "budget": self.budget.model_dump(),
-                                 "model": self.provider.model, "billing_mode": self.provider.billing_mode})
+                                 "model": self.provider.model, "billing_mode": self.provider.billing_mode,
+                                 "context_strategy": self.context_strategy})
         self.event("run_started", model=self.provider.model, billing_mode=self.provider.billing_mode)
         try:
             with self.tracer.start_as_current_span("sentinel.investigation", attributes={
@@ -148,6 +154,7 @@ class InvestigationRunner:
                     with self.tracer.start_as_current_span("sentinel.context"):
                         context = build_context(incident, self.evidence, self.hypotheses,
                                                 max_bytes=self.budget.max_context_bytes,
+                                                strategy=self.context_strategy, payloads=self.context_payloads,
                                                 remaining={"model_calls": self.budget.max_model_calls - self.model_calls,
                                                            "tool_calls": self.budget.max_tool_calls - self.tool_calls,
                                                            "total_tokens": self.budget.max_total_tokens - total_tokens})

@@ -132,6 +132,11 @@ def normalize_compose(config: dict) -> dict:
         service.pop("ports", None)
         # This is a prebuilt-image workflow, never a compilation of upstream code.
         service.pop("build", None)
+        # The pinned 20 MiB limits repeatedly restart these Go services even
+        # without a deliberate fault. Keep the evaluation baseline stable.
+        if name in {"checkout", "product-catalog"}:
+            limits = service.setdefault("deploy", {}).setdefault("resources", {}).setdefault("limits", {})
+            limits["memory"] = str(max(int(limits.get("memory", 0)), 128 * 1024 * 1024))
         image = service.get("image", "")
         if not image or image.endswith(":latest") or (":" not in image.rsplit("/", 1)[-1] and "@sha256:" not in image):
             raise DemoError(f"Service {name} has an unpinned image")

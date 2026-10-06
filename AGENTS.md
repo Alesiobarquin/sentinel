@@ -8,6 +8,15 @@ Read `docs/progress.md` for recorded implementation and validation status.
 
 ## Mission and scope
 
+- Canonical resume subtitle: **AI Incident Investigation Agent**. Use
+  `Sentinel — AI Incident Investigation Agent` in resume-facing documentation and
+  recommendations. Keep the repository and product name Sentinel.
+- Current authorized sprint: reproducible real-telemetry scenarios, repeated AI
+  evaluations, explicit abstention grading, and a fair context comparison. Keep
+  fixed configurations and auditable raw results. AWS, Terraform, MCP, database
+  persistence, and agent write permissions remain out of scope. Local developer
+  fault setup/cleanup is authorized; never expose it through agent tools.
+
 - Recruiter delivery, clarified by the developer on 2026-10-05: one public site
   with an interactive replay of a real investigation and a project/learning
   explanation page. Optimize for a reliable, free visitor experience. Execute

@@ -1,5 +1,7 @@
 # Sentinel
 
+**AI Incident Investigation Agent**
+
 A student project for investigating failures in a local distributed-system lab.
 Sentinel's Python agent reads metrics, logs, traces, source, and configuration,
 compares hypotheses, and records a diagnosis with evidence references. The site

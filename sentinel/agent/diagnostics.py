@@ -134,7 +134,7 @@ class DiagnosticTools:
                 # Generic deterministic windows around feature evaluations and
                 # failure handling. No scenario label or expected answer is used.
                 selected = set(range(min(12, len(lines))))
-                if len(lines) <= 120:
+                if len(lines) <= 140:
                     selected.update(range(len(lines)))
                 else:
                     primary = ("flag", "getbooleanvalue", "getnumbervalue", "get_boolean_value", "get_double_value")

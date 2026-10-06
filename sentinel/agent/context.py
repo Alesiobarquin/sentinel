@@ -37,7 +37,12 @@ def encoded_size(value: dict) -> int:
 
 
 def build_context(incident: Incident, evidence: list[Evidence], hypotheses: list[Hypothesis],
-                  *, max_bytes: int, remaining: dict) -> dict:
+                  *, max_bytes: int, remaining: dict, strategy: str = "structured",
+                  payloads: dict[str, dict] | None = None) -> dict:
+    if strategy not in {"structured", "chronological_raw"}:
+        raise ValueError("Unknown context strategy")
+    if strategy == "chronological_raw" and any(e.id not in (payloads or {}) for e in evidence):
+        raise ValueError("Baseline requires the same complete native tool records")
     context = {
         "incident": incident.model_dump(),
         "baseline": {"start": incident.window("baseline").start, "end": incident.window("baseline").end},
@@ -54,12 +59,13 @@ def build_context(incident: Incident, evidence: list[Evidence], hypotheses: list
         score = {"log": 8, "trace": 7, "metric": 6, "configuration": 5,
                  "source_code": 4, "kubernetes": 3, "dependency": 2, "inventory": 1}.get(e.kind, 0)
         return (e.success, e.tool.period == "incident", score, e.observed_at)
-    ranked = sorted(evidence, key=priority, reverse=True)
+    ranked = sorted(evidence, key=priority, reverse=True) if strategy == "structured" else list(evidence)
     context["omitted_evidence_ids"] = [e.id for e in ranked]
     if encoded_size(context) > max_bytes:
         raise ContextLimit("Required incident, hypotheses, and evidence index exceed the context limit")
     for e in ranked:
-        entry = {"id": e.id, "kind": e.kind, "source": e.source, "success": e.success, "summary": e.summary}
+        data = e.summary if strategy == "structured" else payloads[e.id]
+        entry = {"id": e.id, "kind": e.kind, "source": e.source, "success": e.success, "summary": data}
         context["selected_evidence"].append(entry)
         context["omitted_evidence_ids"].remove(e.id)
         if encoded_size(context) > max_bytes:

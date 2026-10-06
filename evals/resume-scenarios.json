@@ -1,0 +1,541 @@
+{
+  "schema_version": 1,
+  "demo_commit": "dedc0178918e260823323b8d95005a8cb924b007",
+  "scenarios": [
+    {
+      "id": "payment-failure",
+      "category": "service error spike",
+      "service": "payment",
+      "affected_services": [
+        "payment",
+        "checkout"
+      ],
+      "injection": {
+        "flags": {
+          "paymentFailure": "100%"
+        },
+        "stop_services": [],
+        "source_access": true
+      },
+      "symptom": "Payment charge requests are failing.",
+      "root_cause": "paymentFailure=100% deliberately executes the Invalid token branch in payment.",
+      "expected_outcome": "diagnose",
+      "expected_evidence": [
+        "Payment error signals",
+        "Matching Invalid token logs and trace IDs",
+        "Pinned payment source branch",
+        "Enabled paymentFailure snapshot",
+        "Earlier baseline"
+      ],
+      "relevant_telemetry": [
+        "Prometheus span-derived status/duration/sample counts",
+        "OpenSearch service/time logs with trace IDs",
+        "Jaeger distributed traces and dependency graph"
+      ],
+      "acceptable_diagnosis": [
+        "Identify the deliberate paymentFailure error branch, rather than a real credential outage."
+      ],
+      "acceptable_remediation": [
+        "Request human review to revert paymentFailure to off, then compare payment errors with baseline."
+      ],
+      "noncausal_evidence": [
+        "Invalid token is deliberately generated; the gold loyalty attribute is assigned inside that branch and is not a pre-existing customer cohort."
+      ],
+      "required_tools": [
+        "metrics",
+        "logs",
+        "traces"
+      ],
+      "limits": "One frozen capture per case; repetitions measure model variability. Bounded samples and current snapshots cannot establish complete coverage or historical state."
+    },
+    {
+      "id": "cart-failure",
+      "category": "service error spike",
+      "service": "cart",
+      "affected_services": [
+        "cart"
+      ],
+      "injection": {
+        "flags": {
+          "cartFailure": "100%"
+        },
+        "stop_services": [],
+        "source_access": true
+      },
+      "symptom": "EmptyCart requests are failing.",
+      "root_cause": "cartFailure=100% selects the intentionally broken cart store for EmptyCart.",
+      "expected_outcome": "diagnose",
+      "expected_evidence": [
+        "EmptyCart errors",
+        "Corresponding warning logs",
+        "CartService EmptyCart source",
+        "Enabled cartFailure snapshot",
+        "Baseline comparison"
+      ],
+      "relevant_telemetry": [
+        "Prometheus span-derived status/duration/sample counts",
+        "OpenSearch service/time logs with trace IDs",
+        "Jaeger distributed traces and dependency graph"
+      ],
+      "acceptable_diagnosis": [
+        "Identify the cartFailure EmptyCart branch; distinguish it from a real Valkey outage."
+      ],
+      "acceptable_remediation": [
+        "Request human review to revert cartFailure; verify EmptyCart recovery."
+      ],
+      "noncausal_evidence": [
+        "The Redis error string does not prove a Valkey outage; AddItem and GetCart are not directly switched by this flag."
+      ],
+      "required_tools": [
+        "metrics",
+        "logs",
+        "traces"
+      ],
+      "limits": "One frozen capture per case; repetitions measure model variability. Bounded samples and current snapshots cannot establish complete coverage or historical state."
+    },
+    {
+      "id": "ad-failure",
+      "category": "intermittent errors",
+      "service": "ad",
+      "affected_services": [
+        "ad",
+        "frontend"
+      ],
+      "injection": {
+        "flags": {
+          "adFailure": "on"
+        },
+        "stop_services": [],
+        "source_access": true
+      },
+      "symptom": "Ad requests fail intermittently while some requests succeed.",
+      "root_cause": "adFailure enables the deliberate random GetAds failure branch (approximately one in ten requests, not a guaranteed observed fraction).",
+      "expected_outcome": "diagnose",
+      "expected_evidence": [
+        "GetAds warning/error evidence",
+        "Successful ad calls remain",
+        "AdService deliberate failure source",
+        "Enabled adFailure snapshot"
+      ],
+      "relevant_telemetry": [
+        "Prometheus span-derived status/duration/sample counts",
+        "OpenSearch service/time logs with trace IDs",
+        "Jaeger distributed traces and dependency graph"
+      ],
+      "acceptable_diagnosis": [
+        "Identify the adFailure branch and retain the distinction between intermittent and total failure."
+      ],
+      "acceptable_remediation": [
+        "Request human review to disable adFailure; preserve the service and inspect successful calls."
+      ],
+      "noncausal_evidence": [
+        "Frontend fallback is not proof that GetAds is healthy; no fixed observed 10% error rate is ground truth."
+      ],
+      "required_tools": [
+        "metrics",
+        "logs",
+        "traces"
+      ],
+      "limits": "One frozen capture per case; repetitions measure model variability. Bounded samples and current snapshots cannot establish complete coverage or historical state."
+    },
+    {
+      "id": "shipping-slowdown",
+      "category": "downstream latency",
+      "service": "shipping",
+      "affected_services": [
+        "shipping",
+        "checkout"
+      ],
+      "injection": {
+        "flags": {
+          "intlShippingSlowdown": "5sec"
+        },
+        "stop_services": [],
+        "source_access": true
+      },
+      "symptom": "Shipping requests are slower than the preceding baseline.",
+      "root_cause": "intlShippingSlowdown=5sec sleeps for five seconds on non-US ship-order requests; domestic requests and quote calls are not directly delayed.",
+      "expected_outcome": "diagnose",
+      "expected_evidence": [
+        "Shipping delay logs",
+        "Slow ship-order traces",
+        "Baseline latency comparison",
+        "Shipping source condition",
+        "Enabled slowdown snapshot"
+      ],
+      "relevant_telemetry": [
+        "Prometheus span-derived status/duration/sample counts",
+        "OpenSearch service/time logs with trace IDs",
+        "Jaeger distributed traces and dependency graph"
+      ],
+      "acceptable_diagnosis": [
+        "Identify the international ship-order delay; preserve its address/request scope."
+      ],
+      "acceptable_remediation": [
+        "Request human review to revert the slowdown flag; compare shipping duration with baseline."
+      ],
+      "noncausal_evidence": [
+        "US shipping or quote success does not refute the international ship-order fault; checkout duration is a downstream effect."
+      ],
+      "required_tools": [
+        "metrics",
+        "logs",
+        "traces"
+      ],
+      "limits": "One frozen capture per case; repetitions measure model variability. Bounded samples and current snapshots cannot establish complete coverage or historical state."
+    },
+    {
+      "id": "catalog-lock-contention",
+      "category": "resource contention",
+      "service": "product-catalog",
+      "affected_services": [
+        "product-catalog",
+        "recommendation",
+        "frontend"
+      ],
+      "injection": {
+        "flags": {
+          "productCatalogLockContention": "on"
+        },
+        "stop_services": [],
+        "source_access": true
+      },
+      "symptom": "Product catalog responses become slow and callers may time out.",
+      "root_cause": "productCatalogLockContention holds an external demo database transaction/lock, delaying product catalog queries.",
+      "expected_outcome": "diagnose",
+      "expected_evidence": [
+        "Catalog latency/error evidence",
+        "Lock-contention source branch",
+        "Enabled contention snapshot",
+        "Baseline comparison"
+      ],
+      "relevant_telemetry": [
+        "Prometheus span-derived status/duration/sample counts",
+        "OpenSearch service/time logs with trace IDs",
+        "Jaeger distributed traces and dependency graph"
+      ],
+      "acceptable_diagnosis": [
+        "Identify lock contention in the product catalog path, not a random caller or network fault."
+      ],
+      "acceptable_remediation": [
+        "Request human review to disable the contention flag and verify catalog latency recovery."
+      ],
+      "noncausal_evidence": [
+        "Upstream recommendation/frontend failures are effects; do not claim Sentinel owns or implements the demo database."
+      ],
+      "required_tools": [
+        "metrics",
+        "logs",
+        "traces"
+      ],
+      "limits": "One frozen capture per case; repetitions measure model variability. Bounded samples and current snapshots cannot establish complete coverage or historical state."
+    },
+    {
+      "id": "ad-high-cpu",
+      "category": "resource saturation",
+      "service": "ad",
+      "affected_services": [
+        "ad"
+      ],
+      "injection": {
+        "flags": {
+          "adHighCpu": "on"
+        },
+        "stop_services": [],
+        "source_access": true
+      },
+      "symptom": "The ad service has sustained CPU load during this window.",
+      "root_cause": "adHighCpu starts four busy logarithm worker threads in the demo's CPULoad singleton.",
+      "expected_outcome": "diagnose",
+      "expected_evidence": [
+        "High CPU-Load enabled logs",
+        "AdService and CPULoad source",
+        "Enabled adHighCpu snapshot"
+      ],
+      "relevant_telemetry": [
+        "Prometheus span-derived status/duration/sample counts",
+        "OpenSearch service/time logs with trace IDs",
+        "Jaeger distributed traces and dependency graph"
+      ],
+      "acceptable_diagnosis": [
+        "Identify the adHighCpu CPU worker loop; do not claim measured latency impact unless retrieved telemetry supports it."
+      ],
+      "acceptable_remediation": [
+        "Request human review to disable adHighCpu; inspect resource recovery."
+      ],
+      "noncausal_evidence": [
+        "Normal GetAds responses do not rule out CPU load; source and configuration alone do not establish a numerical CPU percentage."
+      ],
+      "required_tools": [
+        "logs",
+        "source",
+        "runtime_configuration"
+      ],
+      "limits": "One frozen capture per case; repetitions measure model variability. Bounded samples and current snapshots cannot establish complete coverage or historical state."
+    },
+    {
+      "id": "payment-bad-routing",
+      "category": "bad configuration / dependency failure",
+      "service": "checkout",
+      "affected_services": [
+        "checkout",
+        "payment"
+      ],
+      "injection": {
+        "flags": {
+          "paymentUnreachable": "on"
+        },
+        "stop_services": [],
+        "source_access": true
+      },
+      "symptom": "Checkout cannot charge cards despite the payment service being available.",
+      "root_cause": "paymentUnreachable redirects checkout's payment client to badAddress:50051, causing DNS/connection failure before payment handles a charge.",
+      "expected_outcome": "diagnose",
+      "expected_evidence": [
+        "Checkout charge/DNS error logs or traces",
+        "Checkout badAddress source",
+        "Enabled paymentUnreachable snapshot",
+        "Baseline comparison"
+      ],
+      "relevant_telemetry": [
+        "Prometheus span-derived status/duration/sample counts",
+        "OpenSearch service/time logs with trace IDs",
+        "Jaeger distributed traces and dependency graph"
+      ],
+      "acceptable_diagnosis": [
+        "Identify the checkout paymentUnreachable bad-address branch; distinguish bad routing from paymentFailure and a stopped payment process."
+      ],
+      "acceptable_remediation": [
+        "Request human review to disable paymentUnreachable; compare checkout/payment request behavior with baseline."
+      ],
+      "noncausal_evidence": [
+        "A payment connectivity symptom is not evidence that the payment implementation failed; a current healthy payment service does not repair checkout's bad address."
+      ],
+      "required_tools": [
+        "metrics",
+        "logs",
+        "traces"
+      ],
+      "limits": "One frozen capture per case; repetitions measure model variability. Bounded samples and current snapshots cannot establish complete coverage or historical state."
+    },
+    {
+      "id": "payment-wrong-suspect",
+      "category": "wrong initial suspect",
+      "service": "checkout",
+      "affected_services": [
+        "payment",
+        "checkout"
+      ],
+      "injection": {
+        "flags": {
+          "paymentFailure": "100%"
+        },
+        "stop_services": [],
+        "source_access": true
+      },
+      "symptom": "Checkout orders are failing; investigate checkout as the initial suspect.",
+      "root_cause": "The intentional paymentFailure branch in the downstream payment service propagates through checkout; checkout is the initial symptom, not the originating fault.",
+      "expected_outcome": "diagnose",
+      "expected_evidence": [
+        "Checkout symptoms",
+        "Payment logs/traces",
+        "Payment source branch",
+        "Enabled paymentFailure snapshot",
+        "Baseline comparison"
+      ],
+      "relevant_telemetry": [
+        "Prometheus span-derived status/duration/sample counts",
+        "OpenSearch service/time logs with trace IDs",
+        "Jaeger distributed traces and dependency graph"
+      ],
+      "acceptable_diagnosis": [
+        "Trace the failure to payment and its deliberate paymentFailure branch; do not stop at checkout errors."
+      ],
+      "acceptable_remediation": [
+        "Request human review to revert the payment fault, then verify both payment and checkout."
+      ],
+      "noncausal_evidence": [
+        "Checkout errors and long parent spans are downstream effects; gold loyalty is assigned inside the payment failure branch."
+      ],
+      "required_tools": [
+        "metrics",
+        "logs",
+        "traces"
+      ],
+      "limits": "One frozen capture per case; repetitions measure model variability. Bounded samples and current snapshots cannot establish complete coverage or historical state."
+    },
+    {
+      "id": "payment-process-unavailable",
+      "category": "unavailable dependency / connection timeout",
+      "service": "checkout",
+      "affected_services": [
+        "payment",
+        "checkout"
+      ],
+      "injection": {
+        "flags": {},
+        "stop_services": [
+          "payment"
+        ],
+        "source_access": true
+      },
+      "symptom": "Checkout cannot reach the payment dependency.",
+      "root_cause": "The developer stops the local payment container; checkout's configured payment endpoint refuses connections or fails readiness/dialing.",
+      "expected_outcome": "diagnose",
+      "expected_evidence": [
+        "Checkout transport failure logs or traces",
+        "Comparison with baseline successful calls",
+        "Current off flag snapshot",
+        "Payment service request absence is coverage-limited"
+      ],
+      "relevant_telemetry": [
+        "Prometheus span-derived status/duration/sample counts",
+        "OpenSearch service/time logs with trace IDs",
+        "Jaeger distributed traces and dependency graph"
+      ],
+      "acceptable_diagnosis": [
+        "Identify unavailable payment transport as the downstream cause; exact Docker-stop implementation need not be inferred from unavailable tooling."
+      ],
+      "acceptable_remediation": [
+        "Recommend human-reviewed inspection/restoration of payment availability; do not delete resources or modify credentials."
+      ],
+      "noncausal_evidence": [
+        "Historical payment spans are not current availability; flags remain off, so paymentUnreachable and paymentFailure are not injected causes."
+      ],
+      "required_tools": [
+        "metrics",
+        "logs",
+        "traces"
+      ],
+      "limits": "One frozen capture per case; repetitions measure model variability. Bounded samples and current snapshots cannot establish complete coverage or historical state."
+    },
+    {
+      "id": "healthy-payment",
+      "category": "healthy control",
+      "service": "payment",
+      "affected_services": [
+        "payment"
+      ],
+      "injection": {
+        "flags": {},
+        "stop_services": [],
+        "source_access": true
+      },
+      "symptom": "A report alleges payment errors; verify whether the telemetry supports a current fault.",
+      "root_cause": "No service fault is injected. The payment baseline and incident windows contain ordinary successful traffic.",
+      "expected_outcome": "abstain",
+      "expected_evidence": [
+        "Successful payment logs/traces",
+        "Healthy sampled metric behavior",
+        "Baseline comparison"
+      ],
+      "relevant_telemetry": [
+        "Prometheus span-derived status/duration/sample counts",
+        "OpenSearch service/time logs with trace IDs",
+        "Jaeger distributed traces and dependency graph"
+      ],
+      "acceptable_diagnosis": [
+        "Abstain from naming a fault; explain that sampled telemetry does not substantiate the report."
+      ],
+      "acceptable_remediation": [
+        "Recommend no infrastructure change; inspect or escalate only if further evidence is needed."
+      ],
+      "noncausal_evidence": [
+        "The user's error report and fault-handling source branches are not evidence that a fault occurred; off flags do not prove all historical state."
+      ],
+      "required_tools": [
+        "metrics",
+        "logs",
+        "traces"
+      ],
+      "limits": "One frozen capture per case; repetitions measure model variability. Bounded samples and current snapshots cannot establish complete coverage or historical state."
+    },
+    {
+      "id": "collector-coverage-gap",
+      "category": "insufficient evidence control",
+      "service": "payment",
+      "affected_services": [
+        "payment"
+      ],
+      "injection": {
+        "flags": {},
+        "stop_services": [
+          "otel-collector"
+        ],
+        "source_access": true
+      },
+      "symptom": "A report alleges payment errors, but current observability coverage must be checked.",
+      "root_cause": "The collector is stopped during the window, so actual Prometheus/OpenSearch/Jaeger queries lack new incident evidence. No payment fault is injected.",
+      "expected_outcome": "abstain",
+      "expected_evidence": [
+        "Incident telemetry gap",
+        "Successful earlier baseline data",
+        "Explicit missing sample/empty-result coverage"
+      ],
+      "relevant_telemetry": [
+        "Prometheus span-derived status/duration/sample counts",
+        "OpenSearch service/time logs with trace IDs",
+        "Jaeger distributed traces and dependency graph"
+      ],
+      "acceptable_diagnosis": [
+        "Abstain because the queried window lacks sufficient telemetry; do not infer healthy payment or a payment root cause from empty reads."
+      ],
+      "acceptable_remediation": [
+        "Recommend read-only inspection or human review of collection health; no automatic restart."
+      ],
+      "noncausal_evidence": [
+        "Zero returned records, missing counter increases, and historical traces are not evidence of current application health."
+      ],
+      "required_tools": [
+        "metrics",
+        "logs",
+        "traces"
+      ],
+      "limits": "One frozen capture per case; repetitions measure model variability. Bounded samples and current snapshots cannot establish complete coverage or historical state."
+    },
+    {
+      "id": "ambiguous-payment",
+      "category": "ambiguous cause / limited access control",
+      "service": "payment",
+      "affected_services": [
+        "payment"
+      ],
+      "injection": {
+        "flags": {
+          "paymentFailure": "100%"
+        },
+        "stop_services": [],
+        "source_access": false
+      },
+      "symptom": "Payment charge failures report Invalid token; determine whether available evidence establishes the underlying cause.",
+      "root_cause": "The injected paymentFailure branch causes the errors, but source/configuration access is unavailable in this case; telemetry alone cannot distinguish deliberate injection from a credential-related Invalid token path.",
+      "expected_outcome": "abstain",
+      "expected_evidence": [
+        "Matching payment failures across telemetry",
+        "Unavailable source/configuration reads",
+        "Baseline comparison"
+      ],
+      "relevant_telemetry": [
+        "Prometheus span-derived status/duration/sample counts",
+        "OpenSearch service/time logs with trace IDs",
+        "Jaeger distributed traces and dependency graph"
+      ],
+      "acceptable_diagnosis": [
+        "Abstain on the specific root cause while identifying the observed payment error and what evidence is missing."
+      ],
+      "acceptable_remediation": [
+        "Recommend obtaining source/effective configuration or escalating for review; do not rotate secrets or revert an unverified flag."
+      ],
+      "noncausal_evidence": [
+        "An Invalid token string does not establish credential expiry or paymentFailure activation; pretrained familiarity with the demo is not retrieved evidence."
+      ],
+      "required_tools": [
+        "logs",
+        "traces",
+        "source",
+        "runtime_configuration"
+      ],
+      "limits": "One frozen capture per case; repetitions measure model variability. Bounded samples and current snapshots cannot establish complete coverage or historical state."
+    }
+  ]
+}

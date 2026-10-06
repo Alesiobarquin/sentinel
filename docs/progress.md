@@ -2,6 +2,18 @@
 
 ## Current delivery status — 2026-10-05
 
+The resume evidence audit checked source, retained investigation/scenario records,
+git history, Docker state, hosted CI, and the public site rather than PRD intentions.
+Fresh checks passed 122 deterministic Python tests (eight live skips), compilation,
+six live telemetry tests (two Kubernetes skips), public replay validation, and
+all 22 HTTPS desktop/mobile browser checks in 16.9 seconds without retries. The
+fetched public recording matches the checkout byte-for-byte. The separate kind
+fixture was not recreated; its earlier live RBAC results remain historical.
+No real fault, live model request, cloud resource, or deployment was made by this
+audit. See [the evidence and boundaries](validation/resume-audit.md) and
+[three resume versions](resume-entry.md). Repeated causal AI accuracy and
+efficiency benchmarks remain unmeasured; the correct payment run is one case.
+
 The source is public at [Alesiobarquin/sentinel](https://github.com/Alesiobarquin/sentinel).
 The first [hosted deterministic CI run](https://github.com/Alesiobarquin/sentinel/actions/runs/37327673968)
 passed on Python 3.12 and 3.14. The focused recruiter site is now public:
