@@ -7,7 +7,7 @@ from typing import Protocol
 
 from openai import OpenAI, OpenAIError
 
-from sentinel.agent.contracts import Budget, InvestigationStep, Usage
+from sentinel.agent.contracts import Budget, InvestigationResponse, Usage
 
 DEFAULT_MODEL = "gpt-6-luna"
 # Standard API rates checked 2026-10-04. Subscription usage is not API dollars.
@@ -57,7 +57,7 @@ class OpenAIProvider:
             "store": False, "stream": True, "parallel_tool_calls": False,
             "tools": [{"type": "namespace", "name": "sentinel", "description": "Bounded read-only incident investigation",
                        "tools": [{"type": "function", "name": "investigation_step", "description": "Select one diagnostic read or finish with cited evidence.",
-                                  "parameters": InvestigationStep.model_json_schema(), "strict": True}]}],
+                                  "parameters": InvestigationResponse.model_json_schema(), "strict": True}]}],
             "tool_choice": "required", "timeout": max(0.1, min(timeout, 30)),
         }
         if self.billing_mode == "api":
@@ -114,9 +114,7 @@ class OpenAIProvider:
             raise ModelError("Completed model arguments exceeded their size limit", usage=measured,
                              response_id=completed.id, response=response)
         try:
-            decision = json.loads(calls[0].arguments)
-            if not isinstance(decision, dict):
-                raise ValueError()
+            decision = InvestigationResponse.model_validate(json.loads(calls[0].arguments)).step.model_dump()
         except (ValueError, AttributeError) as exc:
             raise ModelError("Model decision was malformed", usage=measured,
                              response_id=completed.id, response=response) from exc

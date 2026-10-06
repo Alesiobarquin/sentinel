@@ -11,7 +11,7 @@ if str(ROOT) not in sys.path:
 
 from evals.benchmark import evaluate, prepare
 from evals.corpus import cleanup
-from evals.scoring import report
+from evals.scoring import report, verify_report
 
 
 def stop(signum, frame):
@@ -35,6 +35,8 @@ def main(argv=None):
     reporting.add_argument("--corpora", type=Path, required=True)
     reporting.add_argument("--reviews", type=Path, required=True)
     reporting.add_argument("--output", type=Path, required=True)
+    verifying = sub.add_parser("verify", help="Recalculate a published report without private artifacts or model access")
+    verifying.add_argument("--report", type=Path, required=True)
     sub.add_parser("cleanup", help="Restore only the persisted local evaluation fault")
     args = parser.parse_args(argv)
     previous = signal.signal(signal.SIGTERM, stop)
@@ -46,6 +48,9 @@ def main(argv=None):
                      wait_for_capture=args.wait_for_capture, aggregate_token_cap=args.token_cap)
         elif args.command == "report":
             report(args.corpora, args.reviews, args.output)
+        elif args.command == "verify":
+            summary = verify_report(args.report)
+            print(f"Verified {summary['total_investigations']} published investigations and their summary metrics")
         else:
             cleanup()
         return 0

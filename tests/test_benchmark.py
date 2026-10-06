@@ -5,8 +5,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from evals.corpus import CorpusTools, LabCase, catalog, cleanup, digest, request_key
-from evals.scoring import distribution, fraction, summarize, validate_review
+from evals.corpus import CATALOG, CorpusTools, LabCase, catalog, cleanup, digest, request_key, write_json
+from evals.scoring import distribution, fraction, public_native, summarize, validate_review, verify_report
 from sentinel.agent.context import build_context
 from sentinel.agent.contracts import Evidence, Incident, ToolRequest
 from sentinel.tools.http import TelemetryError
@@ -18,7 +18,7 @@ def packet(run="fixture", status="diagnosed", scenario="fault", strategy="struct
             "result": {"run_id": run, "status": status, "diagnosis": {"remediation_executed": False} if status == "diagnosed" else None,
                        "model_calls": 2, "tool_calls": 2, "latency_ms": 1000, "input_tokens": 100,
                        "output_tokens": 50, "usage_unknown": False, "approximate_api_cost_usd": None},
-            "decisions": [{"valid": True}], "tool_requests": [{"name": "logs"}]}
+            "decisions": [{"valid": True}], "tool_requests": [{"name": "logs"}], "evidence": [{"id": "ev_001"}]}
 
 
 def review(p, outcome="correct"):
@@ -27,7 +27,8 @@ def review(p, outcome="correct"):
             "appropriate_abstention": False, "claims_supported": True if p["result"]["status"] == "diagnosed" else None,
             "important_evidence_retrieved": ["Observed logs"], "unsafe_recommendation": False,
             "within_advisory_scope": True, "unnecessary_tool_calls": 0,
-            "notes": "Synthetic scoring fixture, not an AI evaluation.", "claim_checks": [{"claim": "Fixture", "supported": True}]}
+            "notes": "Synthetic scoring fixture, not an AI evaluation.",
+            "claim_checks": [{"claim": "Fixture", "evidence_ids": ["ev_001"], "supported": True, "reason": "Synthetic fixture"}]}
 
 
 def cases():
@@ -106,6 +107,16 @@ class BenchmarkTests(unittest.TestCase):
         self.assertEqual(context["omitted_evidence_ids"], [e.id])
         self.assertEqual(context["selected_evidence"], [])
 
+    def test_raw_baseline_prioritizes_recent_reads_without_signal_ranking(self):
+        incident = Incident(service="payment", symptom="Fixture", start=1000.0, end=1180.0)
+        evidence = [Evidence(id=f"ev_{i:03d}", run_id="fixture", kind="inventory", source="fixture", observed_at=float(i),
+                             tool=ToolRequest(name="services", service=None, period=None), success=True,
+                             summary={"reduced": True}, payload_file="fixture") for i in [1, 2]]
+        context = build_context(incident, evidence, [], max_bytes=4000, remaining={}, strategy="chronological_raw",
+                                payloads={e.id: {"native": "a" * 1500} for e in evidence})
+        self.assertEqual([e["id"] for e in context["selected_evidence"]], ["ev_002"])
+        self.assertEqual(context["omitted_evidence_ids"], ["ev_001"])
+
     def test_fault_restores_prior_settings_after_failure_and_checks_ownership(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -176,6 +187,55 @@ class BenchmarkTests(unittest.TestCase):
         self.assertEqual(distribution([1, 2, 3])["median"], 2)
         self.assertIsNone(distribution([])["mean"])
         self.assertIsNone(fraction(0, 0)["rate"])
+
+    def test_public_native_retains_broader_samples_and_drops_unreviewed_fields(self):
+        e = Evidence(id="ev_001", run_id="fixture", kind="metric", source="prometheus", observed_at=1.0,
+                     tool=ToolRequest(name="latency_ranking", service=None, period="incident"), success=True,
+                     summary={}, payload_file="fixture")
+        raw = {"query": "fixture", "series": [{"labels": {"service_name": "payment", "secret": "discard"},
+               "samples": [{"timestamp": 1.0, "value": None}, {"timestamp": 2.0, "value": 3.0}]}], "private": "discard"}
+        exported = public_native(e, raw)
+        self.assertEqual(exported["series"][0]["samples"], raw["series"][0]["samples"])
+        self.assertEqual(exported["series"][0]["labels"], {"service_name": "payment"})
+        self.assertNotIn("private", exported)
+
+    def test_semantic_review_rejects_duplicate_evidence_and_unbound_claims(self):
+        p = packet()
+        r = review(p)
+        r["important_evidence_retrieved"] *= 2
+        with self.assertRaises(ValueError):
+            validate_review(p, r, cases()["fault"])
+        r = review(p)
+        r["claim_checks"][0]["evidence_ids"] = ["ev_999"]
+        with self.assertRaises(ValueError):
+            validate_review(p, r, cases()["fault"])
+
+    def test_public_summary_is_recalculable_without_private_run_files(self):
+        case = catalog()[0]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            config = {"catalog_sha256": digest(CATALOG.read_bytes()), "comparison_cases": [], "repeats": 3}
+            write_json(root / "configuration.json", config)
+            write_json(root / "preparation.json", {"cases": [case["id"]]})
+            packets, reviews = [], []
+            for repeat in range(1, 4):
+                p = packet(f"fixture-{repeat}", scenario=case["id"])
+                p["repeat"] = repeat
+                p["configuration_sha256"] = digest((root / "configuration.json").read_bytes())
+                body = {k: v for k, v in p.items() if k != "packet_sha256"}
+                p["packet_sha256"] = digest(json.dumps(body, sort_keys=True, separators=(",", ":")).encode())
+                r = review(p)
+                r["important_evidence_retrieved"] = []
+                packets.append(p)
+                reviews.append(r)
+            for name, values in [("investigations", packets), ("reviews", reviews)]:
+                (root / f"{name}.jsonl").write_text("\n".join(json.dumps(v) for v in values) + "\n")
+            summary = summarize(packets, {r["run_id"]: r for r in reviews}, {s["id"]: s for s in catalog()})
+            write_json(root / "summary.json", summary)
+            self.assertEqual(verify_report(root), summary)
+            write_json(root / "summary.json", {**summary, "total_investigations": 999})
+            with self.assertRaises(ValueError):
+                verify_report(root)
 
 
 if __name__ == "__main__":

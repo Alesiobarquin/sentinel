@@ -11,7 +11,7 @@ from pydantic import ValidationError
 from opentelemetry.trace import Status, StatusCode
 
 from sentinel.agent.context import ContextLimit, INSTRUCTIONS, build_context, encoded_size
-from sentinel.agent.contracts import Budget, Evidence, Incident, InvestigationStep, ToolRequest, Usage
+from sentinel.agent.contracts import Budget, Evidence, Incident, InvestigationResponse, InvestigationStep, ToolRequest, Usage
 from sentinel.agent.provider import ModelError, ModelProvider, api_cost
 from sentinel.observability import tracing
 from sentinel.tools.audit import ToolRecorder
@@ -161,7 +161,7 @@ class InvestigationRunner:
                     if self.provider.billing_mode == "api":
                         # UTF-8 byte count plus schema/envelope headroom is a
                         # conservative admission estimate, not measured usage.
-                        estimated_input = encoded_size(context) + len(INSTRUCTIONS.encode()) + len(json.dumps(InvestigationStep.model_json_schema()).encode()) + 1024
+                        estimated_input = encoded_size(context) + len(INSTRUCTIONS.encode()) + len(json.dumps(InvestigationResponse.model_json_schema()).encode()) + 1024
                         reserved = api_cost(self.provider.model, Usage(input_tokens=estimated_input, output_tokens=self.budget.max_output_tokens))
                         if self.cost + reserved > self.budget.max_api_cost_usd:
                             status, reason = "budget_exhausted", "API cost reservation exceeds the configured cap"

@@ -129,6 +129,7 @@ def evaluate(root: Path, *, model: str, repeats: int = 3, wait_for_capture: bool
     code = code_hash()
     config = {"model": model, "billing_mode": "chatgpt", "repeats": repeats, "budget": EVALUATION_BUDGET.model_dump(),
               "comparison_cases": sorted(COMPARISON), "code_sha256": code,
+              "context_strategies": {"structured": "ranked reduced results", "chronological_raw": "newest-first native parsed results"},
               "catalog_sha256": digest(CATALOG.read_bytes()), "aggregate_token_cap": aggregate_token_cap}
     config_path = root / "configuration.json"
     if config_path.exists() and json.loads(config_path.read_text()) != config:

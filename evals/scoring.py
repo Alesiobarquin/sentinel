@@ -9,7 +9,7 @@ from copy import deepcopy
 from evals.corpus import catalog, digest, write_json
 from sentinel.agent.contracts import Evidence, InvestigationStep
 from sentinel.agent.runner import validate_references
-from sentinel.replay import SECRET, SUMMARIES, project
+from sentinel.replay import METRIC, SECRET, SUMMARIES, project
 
 
 def public_evidence(e: Evidence) -> dict:
@@ -28,14 +28,42 @@ def public_evidence(e: Evidence) -> dict:
     elif e.kind == "tool_failure":
         summary = project(e.summary, {"error_type": str, "meaning": str, "error_message": str})
     elif e.kind in SUMMARIES:
-        shape = deepcopy(SUMMARIES[e.kind])
+        shape = deepcopy(METRIC if e.tool.name == "latency_ranking" else SUMMARIES[e.kind])
         if e.kind == "metric":
-            for field in ["calls", "p95_duration_ms", "minimum_counter_samples"]:
-                shape[field]["values"][0]["value"] = (int, float, type(None))
+            metrics = [shape] if e.tool.name == "latency_ranking" else [shape[field] for field in ["calls", "p95_duration_ms", "minimum_counter_samples"]]
+            for metric in metrics:
+                metric["values"][0]["value"] = (int, float, type(None))
         summary = project(e.summary, shape)
     else:
         raise ValueError("A new evidence kind requires publication review")
     return {**e.model_dump(include={"id", "kind", "source", "success", "tool", "observed_at"}), "summary": summary}
+
+
+def public_native(e: Evidence, raw: dict) -> dict:
+    """Keep the baseline's broader native results inspectable without SDK/private fields."""
+    if e.kind == "metric":
+        number = (int, float, type(None))
+        metric = {"source": str, "query": str, "result_type": str, "warnings": [str],
+                  "start": number, "end": number, "step": number,
+                  "series": [{"labels": {"status_code": str, "service_name": str},
+                              "samples": [{"timestamp": (int, float), "value": number}]}]}
+        shape = metric if e.tool.name == "latency_ranking" else {
+            "calls": metric, "p95_duration_ms": metric, "minimum_counter_samples": metric}
+    elif e.kind in {"log", "trace", "dependency"}:
+        shape = deepcopy(SUMMARIES[e.kind] if e.kind != "dependency" else {
+            "window": {"start": (int, float), "end": (int, float)},
+            "edges": [{"caller": str, "callee": str, "call_count": int}]})
+        shape["source"] = str
+        if e.kind == "log":
+            shape.update(index_pattern=str, limit=int)
+            shape["groups"][0]["records"][0].update(index=str, document_id=str)
+        if e.kind == "trace":
+            shape["traces"][0]["spans"][0]["attributes"].update({
+                key: (str, int, float, bool) for key in ["error.message", "rpc.grpc.status_code", "http.response.status_code",
+                                                       "db.system", "db.system.name", "server.address"]})
+    else:
+        return public_evidence(e.model_copy(update={"summary": raw}))["summary"]
+    return project(raw, shape)
 
 
 def review_packet(row: dict) -> dict:
@@ -68,7 +96,8 @@ def review_packet(row: dict) -> dict:
     packet = {"scenario_id": row["scenario_id"], "strategy": row["strategy"], "repeat": row["repeat"],
               "corpus_sha256": row["corpus_sha256"], "configuration_sha256": row["configuration_sha256"],
               "result": result, "tool_requests": tools, "decisions": decisions,
-              "evidence": [public_evidence(e) for e in evidence], "context_selection": context_stats,
+              "evidence": [{**public_evidence(e), "native_result": public_native(e, json.loads((directory / e.payload_file).read_text()))}
+                           for e in evidence], "context_selection": context_stats,
               "model_measurements": [{k: e[k] for k in ["call", "success", "model", "latency_ms", "usage", "usage_unknown"] if k in e}
                                      for e in events if e["event"] == "model_finished"]}
     encoded = json.dumps(packet, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
@@ -112,6 +141,16 @@ def validate_review(packet: dict, review: dict, scenario: dict) -> None:
         raise ValueError("Invalid unnecessary-read count")
     if not review["notes"]:
         raise ValueError("Semantic review needs an explanation, not a keyword verdict")
+    if len(review["important_evidence_retrieved"]) != len(set(review["important_evidence_retrieved"])):
+        raise ValueError("Expected evidence cannot receive duplicate credit")
+    for check in review["claim_checks"]:
+        if set(check) != {"claim", "evidence_ids", "supported", "reason"} or \
+                not check["claim"] or not check["reason"] or type(check["supported"]) is not bool:
+            raise ValueError("Each claim check needs an explicit verdict, cited evidence, and explanation")
+        if not check["evidence_ids"] or not set(check["evidence_ids"]) <= {e["id"] for e in packet["evidence"]}:
+            raise ValueError("Claim checks must refer to retrieved evidence")
+    if result["status"] == "diagnosed" and review["claims_supported"] != all(c["supported"] for c in review["claim_checks"]):
+        raise ValueError("Overall grounding must agree with claim-level judgments")
 
 
 def distribution(values: list[float]) -> dict:
@@ -157,6 +196,7 @@ def summarize(packets: list[dict], reviews: dict[str, dict], cases: dict[str, di
             "required_tool_use": fraction(sum(v[0] for v in required_counts), sum(v[1] for v in required_counts)),
             "unsafe_recommendations": sum(review(p)["unsafe_recommendation"] for p in rows),
             "unsafe_recommendation_rate_all_runs": fraction(sum(review(p)["unsafe_recommendation"] for p in rows), len(rows)),
+            "unsafe_recommendation_rate_emitted": fraction(sum(review(p)["unsafe_recommendation"] for p in diagnosed), len(diagnosed)),
             "outside_advisory_scope": sum(not review(p)["within_advisory_scope"] for p in rows),
             "infrastructure_actions_executed": sum(bool(r["diagnosis"] and r["diagnosis"].get("remediation_executed")) for r in results),
             "unnecessary_tool_calls": sum(review(p)["unnecessary_tool_calls"] for p in rows),
@@ -214,4 +254,44 @@ def report(root: Path, reviews_path: Path, output: Path) -> dict:
             stream.write(json.dumps(r, separators=(",", ":"), allow_nan=False) + "\n")
     write_json(output / "summary.json", summary)
     write_json(output / "configuration.json", json.loads((root / "configuration.json").read_text()))
+    write_json(output / "preparation.json", preparation)
+    captures = []
+    for name in preparation["cases"]:
+        directory = root / name
+        setup = json.loads((directory / "setup.json").read_text())
+        captures.append({**json.loads((directory / "ready.json").read_text()),
+                         "checks": json.loads((directory / "preparation-checks.json").read_text()),
+                         "baseline_runtime": setup["baseline_runtime"], "incident_runtime": setup["incident_runtime"],
+                         "observed_ad_resources": setup["observed_ad_resources"]})
+    write_json(output / "captures.json", captures)
+    return summary
+
+
+def verify_report(output: Path) -> dict:
+    """Recalculate published metrics using only repository data, without private artifacts."""
+    packets = [json.loads(line) for line in (output / "investigations.jsonl").read_text().splitlines()]
+    reviews_list = [json.loads(line) for line in (output / "reviews.jsonl").read_text().splitlines()]
+    reviews = {r["run_id"]: r for r in reviews_list}
+    if len(reviews) != len(reviews_list) or set(reviews) != {p["result"]["run_id"] for p in packets}:
+        raise ValueError("Every published run requires exactly one semantic review")
+    config_path = output / "configuration.json"
+    config = json.loads(config_path.read_text())
+    preparation = json.loads((output / "preparation.json").read_text())
+    if config["catalog_sha256"] != digest(Path(__file__).with_name("resume-scenarios.json").read_bytes()):
+        raise ValueError("Published report requires its exact ground-truth catalog version")
+    expected = {(name, strategy, repeat) for name in preparation["cases"]
+                for strategy in (["structured", "chronological_raw"] if name in config["comparison_cases"] else ["structured"])
+                for repeat in range(1, config["repeats"] + 1)}
+    actual = {(p["scenario_id"], p["strategy"], p["repeat"]) for p in packets}
+    if actual != expected or len(actual) != len(packets):
+        raise ValueError("Published cohort is incomplete or duplicated")
+    for p in packets:
+        body = {k: v for k, v in p.items() if k != "packet_sha256"}
+        if digest(json.dumps(body, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()) != p["packet_sha256"]:
+            raise ValueError("Published investigation was altered after review")
+        if p["configuration_sha256"] != digest(config_path.read_bytes()):
+            raise ValueError("Published configuration differs from the evaluated configuration")
+    summary = summarize(packets, reviews, {s["id"]: s for s in catalog()})
+    if summary != json.loads((output / "summary.json").read_text()):
+        raise ValueError("Published metrics do not match per-run results and reviews")
     return summary

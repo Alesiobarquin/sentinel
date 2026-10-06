@@ -112,6 +112,30 @@ class InvestigationStep(ClosedModel):
         return self
 
 
+class ReadStep(InvestigationStep):
+    action: Literal["read"]
+    tool: ToolRequest
+    diagnosis: None
+
+
+class DiagnoseStep(InvestigationStep):
+    action: Literal["diagnose"]
+    tool: None
+    diagnosis: Diagnosis
+
+
+class AbstainStep(InvestigationStep):
+    action: Literal["insufficient_evidence"]
+    tool: None
+    diagnosis: None
+
+
+class InvestigationResponse(ClosedModel):
+    # Nested unions are supported by strict function schemas; a root anyOf
+    # is not. These variants expose the same action constraints as Python.
+    step: ReadStep | DiagnoseStep | AbstainStep
+
+
 class Budget(ClosedModel):
     max_model_calls: int = Field(default=8, ge=1, le=12)
     max_tool_calls: int = Field(default=10, ge=1, le=16)

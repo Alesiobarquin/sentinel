@@ -1,0 +1,14 @@
+{
+  "source_commit": "95a9d98",
+  "status": "aborted_after_three_consecutive_execution_failures",
+  "investigations": 3,
+  "model_calls": 21,
+  "tool_calls": 21,
+  "reported_tokens": 112274,
+  "usage_unknown_runs": 0,
+  "failure_categories": [
+    "diagnosis contained non-null tool (1)",
+    "repeated already-retrieved source request, whose payload was omitted (2)"
+  ],
+  "interpretation": "Initial attempts retained separately; the corrected cohort is development-set evidence, not a held-out or preregistered comparison."
+}

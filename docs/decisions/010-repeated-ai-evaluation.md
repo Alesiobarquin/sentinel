@@ -17,7 +17,7 @@ Run three independent fixed-model investigations per case. Compare four selected
 cases with three baseline repeats using identical tool corpora and budgets.
 
 The normal strategy retains ranked, reduced results. The baseline selects whole
-native parsed results in retrieval order with the same byte bound, evidence
+native parsed results in newest-first chronological order with the same byte bound, evidence
 index, tools, instructions, citation validation, and stopping rules. It receives
 broader results; no useful fields are deliberately removed. Both strategies may
 omit whole entries at the shared context limit, with explicit omission IDs.
@@ -30,6 +30,18 @@ alone are not correctness. Review claims and citations against the captured
 evidence; publish per-run decisions, verdicts, denominators, and summary code.
 Record review as Codex-assisted, not independent human adjudication. Preserve all
 failures and incomplete preparations. No run is silently retried or omitted.
+
+The initial cohort was stopped after three failures (one action-shape failure,
+two duplicate reads). It is retained separately from the corrected cohort. The
+flat schema did not express mutually exclusive read/diagnosis fields; expose
+the Python constraints through a nested union in the strict model schema.
+[OpenAI's schema documentation](https://developers.openai.com/api/docs/guides/structured-outputs)
+supports nested unions and requires an object at the root. Both strategies
+receive the same clarified action/omission instructions. The initial baseline
+retained oldest results first and crowded out a newly requested source read;
+use the ordinary newest-first alternative for the final comparison. This
+change follows inspection of the failed attempts, so the final comparison is
+development-set evidence, not a preregistered or held-out benchmark.
 
 The pinned checkout/product-catalog 20 MiB limits showed repeated restarts before
 evaluation. Normalize these two local limits to at least 128 MiB, record runtime

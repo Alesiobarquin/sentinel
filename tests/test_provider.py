@@ -3,7 +3,7 @@ from types import SimpleNamespace as NS
 import json
 import unittest
 
-from sentinel.agent.contracts import Budget, Usage
+from sentinel.agent.contracts import Budget, InvestigationResponse, Usage
 from sentinel.agent.provider import ModelError, OpenAIProvider, api_cost
 
 
@@ -17,7 +17,16 @@ class Client:
         yield iter(self.events)
 
 
-def completed(arguments='{"action":"read"}', **changes):
+def read_decision():
+    return {"action": "read", "reason": "Synthetic diagnostic read", "hypotheses": [{
+        "name": "Fixture", "explanation": "Synthetic fixture", "confidence": 0.5,
+        "supporting_evidence": [], "contradicting_evidence": [], "status": "active"}],
+        "tool": {"name": "logs", "service": "payment", "period": "incident"}, "diagnosis": None}
+
+
+def completed(arguments=None, **changes):
+    if arguments is None:
+        arguments = json.dumps({"step": read_decision()})
     call = NS(type="function_call", name="investigation_step", namespace="sentinel", arguments=arguments)
     response = NS(status="completed", id="test-response", model="gpt-6-luna", output=[call],
                   usage=NS(input_tokens=10, output_tokens=5, input_tokens_details=NS(cached_tokens=2)))
@@ -31,6 +40,7 @@ class ProviderTests(unittest.TestCase):
         provider = OpenAIProvider("fake", client=client)
         reply = provider.step("instructions", {"incident": "fixture"}, Budget(), timeout=5)
         self.assertEqual(reply.usage.output_tokens, 5)
+        self.assertEqual(reply.decision, read_decision())
         p = client.parameters
         self.assertFalse(p["store"])
         self.assertTrue(p["stream"])
@@ -74,7 +84,7 @@ class ProviderTests(unittest.TestCase):
         call = completed().response.output[0]
         stream = [NS(type="response.output_item.done", output_index=1, item=call), completed(output=[])]
         reply = OpenAIProvider("fake", client=Client(stream)).step("instructions", {}, Budget())
-        self.assertEqual(reply.decision, {"action": "read"})
+        self.assertEqual(reply.decision, read_decision())
         self.assertEqual(reply.usage.output_tokens, 5)
 
     def test_finalized_item_without_completed_response_is_rejected(self):
@@ -98,6 +108,23 @@ class ProviderTests(unittest.TestCase):
         for stream in streams:
             with self.subTest(events=len(stream)), self.assertRaises(ModelError):
                 OpenAIProvider("fake", client=Client(stream)).step("instructions", {}, Budget())
+
+    def test_model_contract_and_python_reject_mixed_terminal_and_read_actions(self):
+        schema = InvestigationResponse.model_json_schema()
+        self.assertNotIn("anyOf", schema)
+        variants = [schema["$defs"][branch["$ref"].split("/")[-1]]
+                    for branch in schema["properties"]["step"]["anyOf"]]
+        by_action = {branch["properties"]["action"]["const"]: branch for branch in variants}
+        self.assertEqual(by_action["diagnose"]["properties"]["tool"]["type"], "null")
+        self.assertEqual(by_action["read"]["properties"]["diagnosis"]["type"], "null")
+        for action in ["diagnose", "insufficient_evidence"]:
+            invalid = {**read_decision(), "action": action}
+            with self.subTest(action=action), self.assertRaises(ModelError) as failure:
+                OpenAIProvider("fake", client=Client([completed(json.dumps({"step": invalid}))])).step("instructions", {}, Budget())
+            self.assertEqual(failure.exception.usage.output_tokens, 5)
+        for invalid in [read_decision(), {"step": read_decision(), "command": "shell"}, {"step": None}]:
+            with self.subTest(envelope=invalid), self.assertRaises(ModelError):
+                OpenAIProvider("fake", client=Client([completed(json.dumps(invalid))])).step("instructions", {}, Budget())
 
 
 if __name__ == "__main__":
