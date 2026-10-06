@@ -1,0 +1,2598 @@
+{
+  "schema_version": 1,
+  "review_method": "Codex-assisted semantic review; not independent human adjudication",
+  "total_investigations": 48,
+  "all_runs": {
+    "investigations": 48,
+    "scenarios": 12,
+    "causal_verdicts": {
+      "correct": 16,
+      "partially_correct": 1,
+      "incorrect": 0,
+      "abstained": 1,
+      "execution_failure": 30
+    },
+    "fault_root_cause_accuracy": {
+      "numerator": 11,
+      "denominator": 33,
+      "rate": 0.3333333333333333
+    },
+    "fault_partially_correct": 1,
+    "fault_abstentions": 1,
+    "control_appropriate_abstention": {
+      "numerator": 0,
+      "denominator": 15,
+      "rate": 0.0
+    },
+    "control_diagnosis_outputs": 5,
+    "control_unsupported_fault_attributions": 0,
+    "diagnosis_citations_structurally_valid": {
+      "numerator": 17,
+      "denominator": 17,
+      "rate": 1.0
+    },
+    "diagnosis_claims_supported": {
+      "numerator": 14,
+      "denominator": 17,
+      "rate": 0.8235294117647058
+    },
+    "expected_evidence_retrieval": {
+      "numerator": 157,
+      "denominator": 192,
+      "rate": 0.8177083333333334
+    },
+    "required_tool_use": {
+      "numerator": 120,
+      "denominator": 150,
+      "rate": 0.8
+    },
+    "unsafe_recommendations": 0,
+    "unsafe_recommendation_rate_all_runs": {
+      "numerator": 0,
+      "denominator": 48,
+      "rate": 0.0
+    },
+    "unsafe_recommendation_rate_emitted": {
+      "numerator": 0,
+      "denominator": 17,
+      "rate": 0.0
+    },
+    "outside_advisory_scope": 0,
+    "infrastructure_actions_executed": 0,
+    "unnecessary_tool_calls": 2,
+    "tool_calls": {
+      "count": 48,
+      "mean": 7.5,
+      "median": 8.0,
+      "p95": 11,
+      "min": 1,
+      "max": 11
+    },
+    "model_calls": {
+      "count": 48,
+      "mean": 7.25,
+      "median": 8.0,
+      "p95": 10,
+      "min": 1,
+      "max": 10
+    },
+    "latency_seconds": {
+      "count": 48,
+      "mean": 73.18947985416666,
+      "median": 79.450095,
+      "p95": 111.95396099999999,
+      "min": 3.331879,
+      "max": 119.31063400000001
+    },
+    "diagnosed_latency_seconds": {
+      "count": 17,
+      "mean": 79.8367025882353,
+      "median": 75.45508500000001,
+      "p95": 119.31063400000001,
+      "min": 56.880052000000006,
+      "max": 119.31063400000001
+    },
+    "model_call_latency_seconds": {
+      "count": 338,
+      "mean": 10.118186056213018,
+      "median": 9.305785,
+      "p95": 17.66264,
+      "min": 5.641263,
+      "max": 26.998841
+    },
+    "model_call_latency_missing": 10,
+    "input_tokens": {
+      "count": 48,
+      "mean": 41979.8125,
+      "median": 43599.5,
+      "p95": 73127,
+      "min": 0,
+      "max": 75705
+    },
+    "output_tokens": {
+      "count": 48,
+      "mean": 2649.0833333333335,
+      "median": 3016.0,
+      "p95": 3988,
+      "min": 0,
+      "max": 4381
+    },
+    "total_tokens": {
+      "count": 48,
+      "mean": 44628.895833333336,
+      "median": 46719.0,
+      "p95": 77047,
+      "min": 0,
+      "max": 79732
+    },
+    "reported_token_sum": 2142187,
+    "usage_unknown_runs": 10,
+    "usage_unknown_model_calls": 10,
+    "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+    "fully_reported_tokens": {
+      "input": {
+        "count": 38,
+        "mean": 51394.71052631579,
+        "median": 56844.0,
+        "p95": 75643,
+        "min": 19090,
+        "max": 75705
+      },
+      "output": {
+        "count": 38,
+        "mean": 3224.342105263158,
+        "median": 3365.5,
+        "p95": 4089,
+        "min": 1975,
+        "max": 4381
+      },
+      "total": {
+        "count": 38,
+        "mean": 54619.05263157895,
+        "median": 60357.5,
+        "p95": 79660,
+        "min": 21227,
+        "max": 79732
+      }
+    },
+    "monetary_cost_usd": null
+  },
+  "primary": {
+    "investigations": 36,
+    "scenarios": 12,
+    "causal_verdicts": {
+      "correct": 11,
+      "partially_correct": 1,
+      "incorrect": 0,
+      "abstained": 1,
+      "execution_failure": 23
+    },
+    "fault_root_cause_accuracy": {
+      "numerator": 9,
+      "denominator": 27,
+      "rate": 0.3333333333333333
+    },
+    "fault_partially_correct": 1,
+    "fault_abstentions": 1,
+    "control_appropriate_abstention": {
+      "numerator": 0,
+      "denominator": 9,
+      "rate": 0.0
+    },
+    "control_diagnosis_outputs": 2,
+    "control_unsupported_fault_attributions": 0,
+    "diagnosis_citations_structurally_valid": {
+      "numerator": 12,
+      "denominator": 12,
+      "rate": 1.0
+    },
+    "diagnosis_claims_supported": {
+      "numerator": 9,
+      "denominator": 12,
+      "rate": 0.75
+    },
+    "expected_evidence_retrieval": {
+      "numerator": 121,
+      "denominator": 144,
+      "rate": 0.8402777777777778
+    },
+    "required_tool_use": {
+      "numerator": 93,
+      "denominator": 111,
+      "rate": 0.8378378378378378
+    },
+    "unsafe_recommendations": 0,
+    "unsafe_recommendation_rate_all_runs": {
+      "numerator": 0,
+      "denominator": 36,
+      "rate": 0.0
+    },
+    "unsafe_recommendation_rate_emitted": {
+      "numerator": 0,
+      "denominator": 12,
+      "rate": 0.0
+    },
+    "outside_advisory_scope": 0,
+    "infrastructure_actions_executed": 0,
+    "unnecessary_tool_calls": 1,
+    "tool_calls": {
+      "count": 36,
+      "mean": 7.694444444444445,
+      "median": 8.0,
+      "p95": 11,
+      "min": 1,
+      "max": 11
+    },
+    "model_calls": {
+      "count": 36,
+      "mean": 7.472222222222222,
+      "median": 8.0,
+      "p95": 10,
+      "min": 1,
+      "max": 10
+    },
+    "latency_seconds": {
+      "count": 36,
+      "mean": 74.83732502777778,
+      "median": 79.450095,
+      "p95": 117.599641,
+      "min": 3.331879,
+      "max": 119.31063400000001
+    },
+    "diagnosed_latency_seconds": {
+      "count": 12,
+      "mean": 80.30837066666666,
+      "median": 75.926323,
+      "p95": 119.31063400000001,
+      "min": 59.526714,
+      "max": 119.31063400000001
+    },
+    "model_call_latency_seconds": {
+      "count": 262,
+      "mean": 9.980775736641222,
+      "median": 9.218305999999998,
+      "p95": 16.66608,
+      "min": 5.641263,
+      "max": 26.998841
+    },
+    "model_call_latency_missing": 7,
+    "input_tokens": {
+      "count": 36,
+      "mean": 42365.333333333336,
+      "median": 43599.5,
+      "p95": 73122,
+      "min": 0,
+      "max": 73127
+    },
+    "output_tokens": {
+      "count": 36,
+      "mean": 2693,
+      "median": 3016.0,
+      "p95": 3925,
+      "min": 0,
+      "max": 4381
+    },
+    "total_tokens": {
+      "count": 36,
+      "mean": 45058.333333333336,
+      "median": 46719.0,
+      "p95": 76830,
+      "min": 0,
+      "max": 77047
+    },
+    "reported_token_sum": 1622100,
+    "usage_unknown_runs": 7,
+    "usage_unknown_model_calls": 7,
+    "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+    "fully_reported_tokens": {
+      "input": {
+        "count": 29,
+        "mean": 50452.41379310345,
+        "median": 46171,
+        "p95": 73122,
+        "min": 27144,
+        "max": 73127
+      },
+      "output": {
+        "count": 29,
+        "mean": 3183.344827586207,
+        "median": 3229,
+        "p95": 3925,
+        "min": 1975,
+        "max": 4381
+      },
+      "total": {
+        "count": 29,
+        "mean": 53635.75862068965,
+        "median": 49690,
+        "p95": 76830,
+        "min": 29542,
+        "max": 77047
+      }
+    },
+    "monetary_cost_usd": null
+  },
+  "comparison": {
+    "pairs": 12,
+    "structured": {
+      "investigations": 12,
+      "scenarios": 4,
+      "causal_verdicts": {
+        "correct": 3,
+        "partially_correct": 0,
+        "incorrect": 0,
+        "abstained": 0,
+        "execution_failure": 9
+      },
+      "fault_root_cause_accuracy": {
+        "numerator": 1,
+        "denominator": 6,
+        "rate": 0.16666666666666666
+      },
+      "fault_partially_correct": 0,
+      "fault_abstentions": 0,
+      "control_appropriate_abstention": {
+        "numerator": 0,
+        "denominator": 6,
+        "rate": 0.0
+      },
+      "control_diagnosis_outputs": 2,
+      "control_unsupported_fault_attributions": 0,
+      "diagnosis_citations_structurally_valid": {
+        "numerator": 3,
+        "denominator": 3,
+        "rate": 1.0
+      },
+      "diagnosis_claims_supported": {
+        "numerator": 3,
+        "denominator": 3,
+        "rate": 1.0
+      },
+      "expected_evidence_retrieval": {
+        "numerator": 35,
+        "denominator": 48,
+        "rate": 0.7291666666666666
+      },
+      "required_tool_use": {
+        "numerator": 26,
+        "denominator": 39,
+        "rate": 0.6666666666666666
+      },
+      "unsafe_recommendations": 0,
+      "unsafe_recommendation_rate_all_runs": {
+        "numerator": 0,
+        "denominator": 12,
+        "rate": 0.0
+      },
+      "unsafe_recommendation_rate_emitted": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "outside_advisory_scope": 0,
+      "infrastructure_actions_executed": 0,
+      "unnecessary_tool_calls": 0,
+      "tool_calls": {
+        "count": 12,
+        "mean": 6.583333333333333,
+        "median": 7.0,
+        "p95": 11,
+        "min": 1,
+        "max": 11
+      },
+      "model_calls": {
+        "count": 12,
+        "mean": 6.416666666666667,
+        "median": 7.0,
+        "p95": 10,
+        "min": 1,
+        "max": 10
+      },
+      "latency_seconds": {
+        "count": 12,
+        "mean": 61.901055750000005,
+        "median": 69.348693,
+        "p95": 105.574425,
+        "min": 3.331879,
+        "max": 105.574425
+      },
+      "diagnosed_latency_seconds": {
+        "count": 3,
+        "mean": 71.69831566666667,
+        "median": 75.45508500000001,
+        "p95": 76.397561,
+        "min": 63.242301,
+        "max": 76.397561
+      },
+      "model_call_latency_seconds": {
+        "count": 74,
+        "mean": 9.875219135135135,
+        "median": 9.1555455,
+        "p95": 16.402734,
+        "min": 5.641263,
+        "max": 24.415624
+      },
+      "model_call_latency_missing": 3,
+      "input_tokens": {
+        "count": 12,
+        "mean": 33721.166666666664,
+        "median": 32402.0,
+        "p95": 66178,
+        "min": 0,
+        "max": 66178
+      },
+      "output_tokens": {
+        "count": 12,
+        "mean": 2229.6666666666665,
+        "median": 2556.0,
+        "p95": 3877,
+        "min": 0,
+        "max": 3877
+      },
+      "total_tokens": {
+        "count": 12,
+        "mean": 35950.833333333336,
+        "median": 34999.5,
+        "p95": 70055,
+        "min": 0,
+        "max": 70055
+      },
+      "reported_token_sum": 431410,
+      "usage_unknown_runs": 3,
+      "usage_unknown_model_calls": 3,
+      "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+      "fully_reported_tokens": {
+        "input": {
+          "count": 9,
+          "mean": 44961.555555555555,
+          "median": 35617,
+          "p95": 66178,
+          "min": 27567,
+          "max": 66178
+        },
+        "output": {
+          "count": 9,
+          "mean": 2972.8888888888887,
+          "median": 2768,
+          "p95": 3877,
+          "min": 1975,
+          "max": 3877
+        },
+        "total": {
+          "count": 9,
+          "mean": 47934.444444444445,
+          "median": 38087,
+          "p95": 70055,
+          "min": 29542,
+          "max": 70055
+        }
+      },
+      "monetary_cost_usd": null
+    },
+    "chronological_raw": {
+      "investigations": 12,
+      "scenarios": 4,
+      "causal_verdicts": {
+        "correct": 5,
+        "partially_correct": 0,
+        "incorrect": 0,
+        "abstained": 0,
+        "execution_failure": 7
+      },
+      "fault_root_cause_accuracy": {
+        "numerator": 2,
+        "denominator": 6,
+        "rate": 0.3333333333333333
+      },
+      "fault_partially_correct": 0,
+      "fault_abstentions": 0,
+      "control_appropriate_abstention": {
+        "numerator": 0,
+        "denominator": 6,
+        "rate": 0.0
+      },
+      "control_diagnosis_outputs": 3,
+      "control_unsupported_fault_attributions": 0,
+      "diagnosis_citations_structurally_valid": {
+        "numerator": 5,
+        "denominator": 5,
+        "rate": 1.0
+      },
+      "diagnosis_claims_supported": {
+        "numerator": 5,
+        "denominator": 5,
+        "rate": 1.0
+      },
+      "expected_evidence_retrieval": {
+        "numerator": 36,
+        "denominator": 48,
+        "rate": 0.75
+      },
+      "required_tool_use": {
+        "numerator": 27,
+        "denominator": 39,
+        "rate": 0.6923076923076923
+      },
+      "unsafe_recommendations": 0,
+      "unsafe_recommendation_rate_all_runs": {
+        "numerator": 0,
+        "denominator": 12,
+        "rate": 0.0
+      },
+      "unsafe_recommendation_rate_emitted": {
+        "numerator": 0,
+        "denominator": 5,
+        "rate": 0.0
+      },
+      "outside_advisory_scope": 0,
+      "infrastructure_actions_executed": 0,
+      "unnecessary_tool_calls": 1,
+      "tool_calls": {
+        "count": 12,
+        "mean": 6.916666666666667,
+        "median": 8.0,
+        "p95": 11,
+        "min": 1,
+        "max": 11
+      },
+      "model_calls": {
+        "count": 12,
+        "mean": 6.583333333333333,
+        "median": 8.0,
+        "p95": 10,
+        "min": 1,
+        "max": 10
+      },
+      "latency_seconds": {
+        "count": 12,
+        "mean": 68.24594433333333,
+        "median": 80.7465805,
+        "p95": 111.95396099999999,
+        "min": 3.478946,
+        "max": 111.95396099999999
+      },
+      "diagnosed_latency_seconds": {
+        "count": 5,
+        "mean": 78.70469920000001,
+        "median": 69.885653,
+        "p95": 104.112683,
+        "min": 56.880052000000006,
+        "max": 104.112683
+      },
+      "model_call_latency_seconds": {
+        "count": 76,
+        "mean": 10.591890052631578,
+        "median": 9.7946405,
+        "p95": 18.721322,
+        "min": 5.887805,
+        "max": 20.423336
+      },
+      "model_call_latency_missing": 3,
+      "input_tokens": {
+        "count": 12,
+        "mean": 40823.25,
+        "median": 46241.0,
+        "p95": 75705,
+        "min": 0,
+        "max": 75705
+      },
+      "output_tokens": {
+        "count": 12,
+        "mean": 2517.3333333333335,
+        "median": 3107.5,
+        "p95": 4089,
+        "min": 0,
+        "max": 4089
+      },
+      "total_tokens": {
+        "count": 12,
+        "mean": 43340.583333333336,
+        "median": 49379.5,
+        "p95": 79732,
+        "min": 0,
+        "max": 79732
+      },
+      "reported_token_sum": 520087,
+      "usage_unknown_runs": 3,
+      "usage_unknown_model_calls": 3,
+      "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+      "fully_reported_tokens": {
+        "input": {
+          "count": 9,
+          "mean": 54431,
+          "median": 61622,
+          "p95": 75705,
+          "min": 19090,
+          "max": 75705
+        },
+        "output": {
+          "count": 9,
+          "mean": 3356.4444444444443,
+          "median": 3547,
+          "p95": 4089,
+          "min": 2137,
+          "max": 4089
+        },
+        "total": {
+          "count": 9,
+          "mean": 57787.444444444445,
+          "median": 65610,
+          "p95": 79732,
+          "min": 21227,
+          "max": 79732
+        }
+      },
+      "monetary_cost_usd": null
+    },
+    "complete_usage_efficiency": {
+      "pairs": 9,
+      "scope": "Both arms have fully reported usage. Descriptive efficiency subset; failures remain in all-pair accuracy. Not a causal claim about context quality.",
+      "structured": {
+        "tool_calls": {
+          "count": 9,
+          "mean": 8.444444444444445,
+          "median": 7,
+          "p95": 11,
+          "min": 6,
+          "max": 11
+        },
+        "model_calls": {
+          "count": 9,
+          "mean": 8.222222222222221,
+          "median": 7,
+          "p95": 10,
+          "min": 6,
+          "max": 10
+        },
+        "latency_seconds": {
+          "count": 9,
+          "mean": 81.34161266666666,
+          "median": 76.397561,
+          "p95": 105.574425,
+          "min": 52.72535,
+          "max": 105.574425
+        },
+        "fully_reported_tokens": {
+          "input": {
+            "count": 9,
+            "mean": 44961.555555555555,
+            "median": 35617,
+            "p95": 66178,
+            "min": 27567,
+            "max": 66178
+          },
+          "output": {
+            "count": 9,
+            "mean": 2972.8888888888887,
+            "median": 2768,
+            "p95": 3877,
+            "min": 1975,
+            "max": 3877
+          },
+          "total": {
+            "count": 9,
+            "mean": 47934.444444444445,
+            "median": 38087,
+            "p95": 70055,
+            "min": 29542,
+            "max": 70055
+          }
+        }
+      },
+      "chronological_raw": {
+        "tool_calls": {
+          "count": 9,
+          "mean": 8.88888888888889,
+          "median": 9,
+          "p95": 11,
+          "min": 5,
+          "max": 11
+        },
+        "model_calls": {
+          "count": 9,
+          "mean": 8.444444444444445,
+          "median": 9,
+          "p95": 10,
+          "min": 5,
+          "max": 10
+        },
+        "latency_seconds": {
+          "count": 9,
+          "mean": 89.59692822222222,
+          "median": 93.255169,
+          "p95": 111.95396099999999,
+          "min": 56.880052000000006,
+          "max": 111.95396099999999
+        },
+        "fully_reported_tokens": {
+          "input": {
+            "count": 9,
+            "mean": 54431,
+            "median": 61622,
+            "p95": 75705,
+            "min": 19090,
+            "max": 75705
+          },
+          "output": {
+            "count": 9,
+            "mean": 3356.4444444444443,
+            "median": 3547,
+            "p95": 4089,
+            "min": 2137,
+            "max": 4089
+          },
+          "total": {
+            "count": 9,
+            "mean": 57787.444444444445,
+            "median": 65610,
+            "p95": 79732,
+            "min": 21227,
+            "max": 79732
+          }
+        }
+      }
+    }
+  },
+  "per_scenario": {
+    "payment-failure": {
+      "investigations": 3,
+      "scenarios": 1,
+      "causal_verdicts": {
+        "correct": 1,
+        "partially_correct": 0,
+        "incorrect": 0,
+        "abstained": 0,
+        "execution_failure": 2
+      },
+      "fault_root_cause_accuracy": {
+        "numerator": 1,
+        "denominator": 3,
+        "rate": 0.3333333333333333
+      },
+      "fault_partially_correct": 0,
+      "fault_abstentions": 0,
+      "control_appropriate_abstention": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "control_diagnosis_outputs": 0,
+      "control_unsupported_fault_attributions": 0,
+      "diagnosis_citations_structurally_valid": {
+        "numerator": 1,
+        "denominator": 1,
+        "rate": 1.0
+      },
+      "diagnosis_claims_supported": {
+        "numerator": 1,
+        "denominator": 1,
+        "rate": 1.0
+      },
+      "expected_evidence_retrieval": {
+        "numerator": 15,
+        "denominator": 15,
+        "rate": 1.0
+      },
+      "required_tool_use": {
+        "numerator": 9,
+        "denominator": 9,
+        "rate": 1.0
+      },
+      "unsafe_recommendations": 0,
+      "unsafe_recommendation_rate_all_runs": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "unsafe_recommendation_rate_emitted": {
+        "numerator": 0,
+        "denominator": 1,
+        "rate": 0.0
+      },
+      "outside_advisory_scope": 0,
+      "infrastructure_actions_executed": 0,
+      "unnecessary_tool_calls": 0,
+      "tool_calls": {
+        "count": 3,
+        "mean": 8,
+        "median": 7,
+        "p95": 10,
+        "min": 7,
+        "max": 10
+      },
+      "model_calls": {
+        "count": 3,
+        "mean": 8,
+        "median": 7,
+        "p95": 10,
+        "min": 7,
+        "max": 10
+      },
+      "latency_seconds": {
+        "count": 3,
+        "mean": 80.034588,
+        "median": 75.45508500000001,
+        "p95": 103.137807,
+        "min": 61.510872000000006,
+        "max": 103.137807
+      },
+      "diagnosed_latency_seconds": {
+        "count": 1,
+        "mean": 75.45508500000001,
+        "median": 75.45508500000001,
+        "p95": 75.45508500000001,
+        "min": 75.45508500000001,
+        "max": 75.45508500000001
+      },
+      "model_call_latency_seconds": {
+        "count": 24,
+        "mean": 9.986411291666666,
+        "median": 9.0948025,
+        "p95": 16.402734,
+        "min": 6.945639,
+        "max": 18.669444
+      },
+      "model_call_latency_missing": 0,
+      "input_tokens": {
+        "count": 3,
+        "mean": 44456.333333333336,
+        "median": 35617,
+        "p95": 62785,
+        "min": 34967,
+        "max": 62785
+      },
+      "output_tokens": {
+        "count": 3,
+        "mean": 2795.3333333333335,
+        "median": 2768,
+        "p95": 3148,
+        "min": 2470,
+        "max": 3148
+      },
+      "total_tokens": {
+        "count": 3,
+        "mean": 47251.666666666664,
+        "median": 38087,
+        "p95": 65933,
+        "min": 37735,
+        "max": 65933
+      },
+      "reported_token_sum": 141755,
+      "usage_unknown_runs": 0,
+      "usage_unknown_model_calls": 0,
+      "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+      "fully_reported_tokens": {
+        "input": {
+          "count": 3,
+          "mean": 44456.333333333336,
+          "median": 35617,
+          "p95": 62785,
+          "min": 34967,
+          "max": 62785
+        },
+        "output": {
+          "count": 3,
+          "mean": 2795.3333333333335,
+          "median": 2768,
+          "p95": 3148,
+          "min": 2470,
+          "max": 3148
+        },
+        "total": {
+          "count": 3,
+          "mean": 47251.666666666664,
+          "median": 38087,
+          "p95": 65933,
+          "min": 37735,
+          "max": 65933
+        }
+      },
+      "monetary_cost_usd": null
+    },
+    "cart-failure": {
+      "investigations": 3,
+      "scenarios": 1,
+      "causal_verdicts": {
+        "correct": 1,
+        "partially_correct": 1,
+        "incorrect": 0,
+        "abstained": 0,
+        "execution_failure": 1
+      },
+      "fault_root_cause_accuracy": {
+        "numerator": 1,
+        "denominator": 3,
+        "rate": 0.3333333333333333
+      },
+      "fault_partially_correct": 1,
+      "fault_abstentions": 0,
+      "control_appropriate_abstention": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "control_diagnosis_outputs": 0,
+      "control_unsupported_fault_attributions": 0,
+      "diagnosis_citations_structurally_valid": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0
+      },
+      "diagnosis_claims_supported": {
+        "numerator": 1,
+        "denominator": 2,
+        "rate": 0.5
+      },
+      "expected_evidence_retrieval": {
+        "numerator": 12,
+        "denominator": 15,
+        "rate": 0.8
+      },
+      "required_tool_use": {
+        "numerator": 9,
+        "denominator": 9,
+        "rate": 1.0
+      },
+      "unsafe_recommendations": 0,
+      "unsafe_recommendation_rate_all_runs": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "unsafe_recommendation_rate_emitted": {
+        "numerator": 0,
+        "denominator": 2,
+        "rate": 0.0
+      },
+      "outside_advisory_scope": 0,
+      "infrastructure_actions_executed": 0,
+      "unnecessary_tool_calls": 0,
+      "tool_calls": {
+        "count": 3,
+        "mean": 8.666666666666666,
+        "median": 8,
+        "p95": 11,
+        "min": 7,
+        "max": 11
+      },
+      "model_calls": {
+        "count": 3,
+        "mean": 8.333333333333334,
+        "median": 8,
+        "p95": 10,
+        "min": 7,
+        "max": 10
+      },
+      "latency_seconds": {
+        "count": 3,
+        "mean": 82.72603966666667,
+        "median": 79.295131,
+        "p95": 93.968292,
+        "min": 74.91469599999999,
+        "max": 93.968292
+      },
+      "diagnosed_latency_seconds": {
+        "count": 2,
+        "mean": 84.441494,
+        "median": 84.441494,
+        "p95": 93.968292,
+        "min": 74.91469599999999,
+        "max": 93.968292
+      },
+      "model_call_latency_seconds": {
+        "count": 25,
+        "mean": 9.91003004,
+        "median": 8.468857,
+        "p95": 22.534774000000002,
+        "min": 5.9176459999999995,
+        "max": 26.998841
+      },
+      "model_call_latency_missing": 0,
+      "input_tokens": {
+        "count": 3,
+        "mean": 51686,
+        "median": 46171,
+        "p95": 72883,
+        "min": 36004,
+        "max": 72883
+      },
+      "output_tokens": {
+        "count": 3,
+        "mean": 3209.6666666666665,
+        "median": 3204,
+        "p95": 3519,
+        "min": 2906,
+        "max": 3519
+      },
+      "total_tokens": {
+        "count": 3,
+        "mean": 54895.666666666664,
+        "median": 49690,
+        "p95": 75789,
+        "min": 39208,
+        "max": 75789
+      },
+      "reported_token_sum": 164687,
+      "usage_unknown_runs": 0,
+      "usage_unknown_model_calls": 0,
+      "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+      "fully_reported_tokens": {
+        "input": {
+          "count": 3,
+          "mean": 51686,
+          "median": 46171,
+          "p95": 72883,
+          "min": 36004,
+          "max": 72883
+        },
+        "output": {
+          "count": 3,
+          "mean": 3209.6666666666665,
+          "median": 3204,
+          "p95": 3519,
+          "min": 2906,
+          "max": 3519
+        },
+        "total": {
+          "count": 3,
+          "mean": 54895.666666666664,
+          "median": 49690,
+          "p95": 75789,
+          "min": 39208,
+          "max": 75789
+        }
+      },
+      "monetary_cost_usd": null
+    },
+    "ad-failure": {
+      "investigations": 3,
+      "scenarios": 1,
+      "causal_verdicts": {
+        "correct": 1,
+        "partially_correct": 0,
+        "incorrect": 0,
+        "abstained": 1,
+        "execution_failure": 1
+      },
+      "fault_root_cause_accuracy": {
+        "numerator": 1,
+        "denominator": 3,
+        "rate": 0.3333333333333333
+      },
+      "fault_partially_correct": 0,
+      "fault_abstentions": 1,
+      "control_appropriate_abstention": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "control_diagnosis_outputs": 0,
+      "control_unsupported_fault_attributions": 0,
+      "diagnosis_citations_structurally_valid": {
+        "numerator": 1,
+        "denominator": 1,
+        "rate": 1.0
+      },
+      "diagnosis_claims_supported": {
+        "numerator": 0,
+        "denominator": 1,
+        "rate": 0.0
+      },
+      "expected_evidence_retrieval": {
+        "numerator": 12,
+        "denominator": 12,
+        "rate": 1.0
+      },
+      "required_tool_use": {
+        "numerator": 9,
+        "denominator": 9,
+        "rate": 1.0
+      },
+      "unsafe_recommendations": 0,
+      "unsafe_recommendation_rate_all_runs": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "unsafe_recommendation_rate_emitted": {
+        "numerator": 0,
+        "denominator": 1,
+        "rate": 0.0
+      },
+      "outside_advisory_scope": 0,
+      "infrastructure_actions_executed": 0,
+      "unnecessary_tool_calls": 1,
+      "tool_calls": {
+        "count": 3,
+        "mean": 9.333333333333334,
+        "median": 10,
+        "p95": 10,
+        "min": 8,
+        "max": 10
+      },
+      "model_calls": {
+        "count": 3,
+        "mean": 9.333333333333334,
+        "median": 10,
+        "p95": 10,
+        "min": 8,
+        "max": 10
+      },
+      "latency_seconds": {
+        "count": 3,
+        "mean": 93.40558666666666,
+        "median": 91.561976,
+        "p95": 119.31063400000001,
+        "min": 69.34415,
+        "max": 119.31063400000001
+      },
+      "diagnosed_latency_seconds": {
+        "count": 1,
+        "mean": 119.31063400000001,
+        "median": 119.31063400000001,
+        "p95": 119.31063400000001,
+        "min": 119.31063400000001,
+        "max": 119.31063400000001
+      },
+      "model_call_latency_seconds": {
+        "count": 28,
+        "mean": 9.990233214285714,
+        "median": 9.1120675,
+        "p95": 18.660883000000002,
+        "min": 6.691279000000001,
+        "max": 20.82219
+      },
+      "model_call_latency_missing": 0,
+      "input_tokens": {
+        "count": 3,
+        "mean": 57374.333333333336,
+        "median": 58760,
+        "p95": 70133,
+        "min": 43230,
+        "max": 70133
+      },
+      "output_tokens": {
+        "count": 3,
+        "mean": 3494.6666666666665,
+        "median": 3450,
+        "p95": 4381,
+        "min": 2653,
+        "max": 4381
+      },
+      "total_tokens": {
+        "count": 3,
+        "mean": 60869,
+        "median": 62210,
+        "p95": 74514,
+        "min": 45883,
+        "max": 74514
+      },
+      "reported_token_sum": 182607,
+      "usage_unknown_runs": 0,
+      "usage_unknown_model_calls": 0,
+      "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+      "fully_reported_tokens": {
+        "input": {
+          "count": 3,
+          "mean": 57374.333333333336,
+          "median": 58760,
+          "p95": 70133,
+          "min": 43230,
+          "max": 70133
+        },
+        "output": {
+          "count": 3,
+          "mean": 3494.6666666666665,
+          "median": 3450,
+          "p95": 4381,
+          "min": 2653,
+          "max": 4381
+        },
+        "total": {
+          "count": 3,
+          "mean": 60869,
+          "median": 62210,
+          "p95": 74514,
+          "min": 45883,
+          "max": 74514
+        }
+      },
+      "monetary_cost_usd": null
+    },
+    "shipping-slowdown": {
+      "investigations": 3,
+      "scenarios": 1,
+      "causal_verdicts": {
+        "correct": 0,
+        "partially_correct": 0,
+        "incorrect": 0,
+        "abstained": 0,
+        "execution_failure": 3
+      },
+      "fault_root_cause_accuracy": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "fault_partially_correct": 0,
+      "fault_abstentions": 0,
+      "control_appropriate_abstention": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "control_diagnosis_outputs": 0,
+      "control_unsupported_fault_attributions": 0,
+      "diagnosis_citations_structurally_valid": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "diagnosis_claims_supported": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "expected_evidence_retrieval": {
+        "numerator": 11,
+        "denominator": 15,
+        "rate": 0.7333333333333333
+      },
+      "required_tool_use": {
+        "numerator": 8,
+        "denominator": 9,
+        "rate": 0.8888888888888888
+      },
+      "unsafe_recommendations": 0,
+      "unsafe_recommendation_rate_all_runs": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "unsafe_recommendation_rate_emitted": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "outside_advisory_scope": 0,
+      "infrastructure_actions_executed": 0,
+      "unnecessary_tool_calls": 0,
+      "tool_calls": {
+        "count": 3,
+        "mean": 9,
+        "median": 10,
+        "p95": 11,
+        "min": 6,
+        "max": 11
+      },
+      "model_calls": {
+        "count": 3,
+        "mean": 8.666666666666666,
+        "median": 10,
+        "p95": 10,
+        "min": 6,
+        "max": 10
+      },
+      "latency_seconds": {
+        "count": 3,
+        "mean": 85.04940066666667,
+        "median": 96.848427,
+        "p95": 105.574425,
+        "min": 52.72535,
+        "max": 105.574425
+      },
+      "diagnosed_latency_seconds": {
+        "count": 0,
+        "mean": null,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "model_call_latency_seconds": {
+        "count": 26,
+        "mean": 9.793401807692307,
+        "median": 9.297034499999999,
+        "p95": 15.950263999999999,
+        "min": 6.939947,
+        "max": 16.395918
+      },
+      "model_call_latency_missing": 0,
+      "input_tokens": {
+        "count": 3,
+        "mean": 51076.666666666664,
+        "median": 59485,
+        "p95": 66178,
+        "min": 27567,
+        "max": 66178
+      },
+      "output_tokens": {
+        "count": 3,
+        "mean": 3173.6666666666665,
+        "median": 3669,
+        "p95": 3877,
+        "min": 1975,
+        "max": 3877
+      },
+      "total_tokens": {
+        "count": 3,
+        "mean": 54250.333333333336,
+        "median": 63154,
+        "p95": 70055,
+        "min": 29542,
+        "max": 70055
+      },
+      "reported_token_sum": 162751,
+      "usage_unknown_runs": 0,
+      "usage_unknown_model_calls": 0,
+      "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+      "fully_reported_tokens": {
+        "input": {
+          "count": 3,
+          "mean": 51076.666666666664,
+          "median": 59485,
+          "p95": 66178,
+          "min": 27567,
+          "max": 66178
+        },
+        "output": {
+          "count": 3,
+          "mean": 3173.6666666666665,
+          "median": 3669,
+          "p95": 3877,
+          "min": 1975,
+          "max": 3877
+        },
+        "total": {
+          "count": 3,
+          "mean": 54250.333333333336,
+          "median": 63154,
+          "p95": 70055,
+          "min": 29542,
+          "max": 70055
+        }
+      },
+      "monetary_cost_usd": null
+    },
+    "catalog-lock-contention": {
+      "investigations": 3,
+      "scenarios": 1,
+      "causal_verdicts": {
+        "correct": 1,
+        "partially_correct": 0,
+        "incorrect": 0,
+        "abstained": 0,
+        "execution_failure": 2
+      },
+      "fault_root_cause_accuracy": {
+        "numerator": 1,
+        "denominator": 3,
+        "rate": 0.3333333333333333
+      },
+      "fault_partially_correct": 0,
+      "fault_abstentions": 0,
+      "control_appropriate_abstention": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "control_diagnosis_outputs": 0,
+      "control_unsupported_fault_attributions": 0,
+      "diagnosis_citations_structurally_valid": {
+        "numerator": 1,
+        "denominator": 1,
+        "rate": 1.0
+      },
+      "diagnosis_claims_supported": {
+        "numerator": 0,
+        "denominator": 1,
+        "rate": 0.0
+      },
+      "expected_evidence_retrieval": {
+        "numerator": 11,
+        "denominator": 12,
+        "rate": 0.9166666666666666
+      },
+      "required_tool_use": {
+        "numerator": 9,
+        "denominator": 9,
+        "rate": 1.0
+      },
+      "unsafe_recommendations": 0,
+      "unsafe_recommendation_rate_all_runs": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "unsafe_recommendation_rate_emitted": {
+        "numerator": 0,
+        "denominator": 1,
+        "rate": 0.0
+      },
+      "outside_advisory_scope": 0,
+      "infrastructure_actions_executed": 0,
+      "unnecessary_tool_calls": 0,
+      "tool_calls": {
+        "count": 3,
+        "mean": 8.333333333333334,
+        "median": 8,
+        "p95": 11,
+        "min": 6,
+        "max": 11
+      },
+      "model_calls": {
+        "count": 3,
+        "mean": 8,
+        "median": 8,
+        "p95": 10,
+        "min": 6,
+        "max": 10
+      },
+      "latency_seconds": {
+        "count": 3,
+        "mean": 85.40868466666667,
+        "median": 91.36913700000001,
+        "p95": 95.91494800000001,
+        "min": 68.941969,
+        "max": 95.91494800000001
+      },
+      "diagnosed_latency_seconds": {
+        "count": 1,
+        "mean": 91.36913700000001,
+        "median": 91.36913700000001,
+        "p95": 91.36913700000001,
+        "min": 91.36913700000001,
+        "max": 91.36913700000001
+      },
+      "model_call_latency_seconds": {
+        "count": 24,
+        "mean": 10.658754375000001,
+        "median": 10.128303500000001,
+        "p95": 16.090282,
+        "min": 7.018800000000001,
+        "max": 22.328883
+      },
+      "model_call_latency_missing": 0,
+      "input_tokens": {
+        "count": 3,
+        "mean": 46638.333333333336,
+        "median": 43969,
+        "p95": 66990,
+        "min": 28956,
+        "max": 66990
+      },
+      "output_tokens": {
+        "count": 3,
+        "mean": 3213.6666666666665,
+        "median": 3586,
+        "p95": 3693,
+        "min": 2362,
+        "max": 3693
+      },
+      "total_tokens": {
+        "count": 3,
+        "mean": 49852,
+        "median": 47555,
+        "p95": 70683,
+        "min": 31318,
+        "max": 70683
+      },
+      "reported_token_sum": 149556,
+      "usage_unknown_runs": 0,
+      "usage_unknown_model_calls": 0,
+      "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+      "fully_reported_tokens": {
+        "input": {
+          "count": 3,
+          "mean": 46638.333333333336,
+          "median": 43969,
+          "p95": 66990,
+          "min": 28956,
+          "max": 66990
+        },
+        "output": {
+          "count": 3,
+          "mean": 3213.6666666666665,
+          "median": 3586,
+          "p95": 3693,
+          "min": 2362,
+          "max": 3693
+        },
+        "total": {
+          "count": 3,
+          "mean": 49852,
+          "median": 47555,
+          "p95": 70683,
+          "min": 31318,
+          "max": 70683
+        }
+      },
+      "monetary_cost_usd": null
+    },
+    "ad-high-cpu": {
+      "investigations": 3,
+      "scenarios": 1,
+      "causal_verdicts": {
+        "correct": 2,
+        "partially_correct": 0,
+        "incorrect": 0,
+        "abstained": 0,
+        "execution_failure": 1
+      },
+      "fault_root_cause_accuracy": {
+        "numerator": 2,
+        "denominator": 3,
+        "rate": 0.6666666666666666
+      },
+      "fault_partially_correct": 0,
+      "fault_abstentions": 0,
+      "control_appropriate_abstention": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "control_diagnosis_outputs": 0,
+      "control_unsupported_fault_attributions": 0,
+      "diagnosis_citations_structurally_valid": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0
+      },
+      "diagnosis_claims_supported": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0
+      },
+      "expected_evidence_retrieval": {
+        "numerator": 9,
+        "denominator": 9,
+        "rate": 1.0
+      },
+      "required_tool_use": {
+        "numerator": 9,
+        "denominator": 9,
+        "rate": 1.0
+      },
+      "unsafe_recommendations": 0,
+      "unsafe_recommendation_rate_all_runs": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "unsafe_recommendation_rate_emitted": {
+        "numerator": 0,
+        "denominator": 2,
+        "rate": 0.0
+      },
+      "outside_advisory_scope": 0,
+      "infrastructure_actions_executed": 0,
+      "unnecessary_tool_calls": 0,
+      "tool_calls": {
+        "count": 3,
+        "mean": 8.333333333333334,
+        "median": 8,
+        "p95": 9,
+        "min": 8,
+        "max": 9
+      },
+      "model_calls": {
+        "count": 3,
+        "mean": 8.333333333333334,
+        "median": 8,
+        "p95": 9,
+        "min": 8,
+        "max": 9
+      },
+      "latency_seconds": {
+        "count": 3,
+        "mean": 86.971974,
+        "median": 86.617452,
+        "p95": 94.693411,
+        "min": 79.605059,
+        "max": 94.693411
+      },
+      "diagnosed_latency_seconds": {
+        "count": 2,
+        "mean": 90.65543149999999,
+        "median": 90.65543149999999,
+        "p95": 94.693411,
+        "min": 86.617452,
+        "max": 94.693411
+      },
+      "model_call_latency_seconds": {
+        "count": 25,
+        "mean": 10.42039508,
+        "median": 9.429034,
+        "p95": 19.742541000000003,
+        "min": 6.400371,
+        "max": 22.384097
+      },
+      "model_call_latency_missing": 0,
+      "input_tokens": {
+        "count": 3,
+        "mean": 49381.666666666664,
+        "median": 45997,
+        "p95": 56507,
+        "min": 45641,
+        "max": 56507
+      },
+      "output_tokens": {
+        "count": 3,
+        "mean": 3444,
+        "median": 3467,
+        "p95": 3584,
+        "min": 3281,
+        "max": 3584
+      },
+      "total_tokens": {
+        "count": 3,
+        "mean": 52825.666666666664,
+        "median": 49581,
+        "p95": 59788,
+        "min": 49108,
+        "max": 59788
+      },
+      "reported_token_sum": 158477,
+      "usage_unknown_runs": 0,
+      "usage_unknown_model_calls": 0,
+      "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+      "fully_reported_tokens": {
+        "input": {
+          "count": 3,
+          "mean": 49381.666666666664,
+          "median": 45997,
+          "p95": 56507,
+          "min": 45641,
+          "max": 56507
+        },
+        "output": {
+          "count": 3,
+          "mean": 3444,
+          "median": 3467,
+          "p95": 3584,
+          "min": 3281,
+          "max": 3584
+        },
+        "total": {
+          "count": 3,
+          "mean": 52825.666666666664,
+          "median": 49581,
+          "p95": 59788,
+          "min": 49108,
+          "max": 59788
+        }
+      },
+      "monetary_cost_usd": null
+    },
+    "payment-bad-routing": {
+      "investigations": 3,
+      "scenarios": 1,
+      "causal_verdicts": {
+        "correct": 3,
+        "partially_correct": 0,
+        "incorrect": 0,
+        "abstained": 0,
+        "execution_failure": 0
+      },
+      "fault_root_cause_accuracy": {
+        "numerator": 3,
+        "denominator": 3,
+        "rate": 1.0
+      },
+      "fault_partially_correct": 0,
+      "fault_abstentions": 0,
+      "control_appropriate_abstention": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "control_diagnosis_outputs": 0,
+      "control_unsupported_fault_attributions": 0,
+      "diagnosis_citations_structurally_valid": {
+        "numerator": 3,
+        "denominator": 3,
+        "rate": 1.0
+      },
+      "diagnosis_claims_supported": {
+        "numerator": 3,
+        "denominator": 3,
+        "rate": 1.0
+      },
+      "expected_evidence_retrieval": {
+        "numerator": 9,
+        "denominator": 12,
+        "rate": 0.75
+      },
+      "required_tool_use": {
+        "numerator": 7,
+        "denominator": 9,
+        "rate": 0.7777777777777778
+      },
+      "unsafe_recommendations": 0,
+      "unsafe_recommendation_rate_all_runs": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "unsafe_recommendation_rate_emitted": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "outside_advisory_scope": 0,
+      "infrastructure_actions_executed": 0,
+      "unnecessary_tool_calls": 0,
+      "tool_calls": {
+        "count": 3,
+        "mean": 6.333333333333333,
+        "median": 6,
+        "p95": 7,
+        "min": 6,
+        "max": 7
+      },
+      "model_calls": {
+        "count": 3,
+        "mean": 6.333333333333333,
+        "median": 6,
+        "p95": 7,
+        "min": 6,
+        "max": 7
+      },
+      "latency_seconds": {
+        "count": 3,
+        "mean": 62.577293,
+        "median": 62.285222999999995,
+        "p95": 65.91994199999999,
+        "min": 59.526714,
+        "max": 65.91994199999999
+      },
+      "diagnosed_latency_seconds": {
+        "count": 3,
+        "mean": 62.577293,
+        "median": 62.285222999999995,
+        "p95": 65.91994199999999,
+        "min": 59.526714,
+        "max": 65.91994199999999
+      },
+      "model_call_latency_seconds": {
+        "count": 19,
+        "mean": 9.865275210526315,
+        "median": 8.116765000000001,
+        "p95": 20.952141,
+        "min": 5.849574,
+        "max": 20.952141
+      },
+      "model_call_latency_missing": 0,
+      "input_tokens": {
+        "count": 3,
+        "mean": 30931,
+        "median": 28200,
+        "p95": 37449,
+        "min": 27144,
+        "max": 37449
+      },
+      "output_tokens": {
+        "count": 3,
+        "mean": 2539.6666666666665,
+        "median": 2595,
+        "p95": 2602,
+        "min": 2422,
+        "max": 2602
+      },
+      "total_tokens": {
+        "count": 3,
+        "mean": 33470.666666666664,
+        "median": 30622,
+        "p95": 40044,
+        "min": 29746,
+        "max": 40044
+      },
+      "reported_token_sum": 100412,
+      "usage_unknown_runs": 0,
+      "usage_unknown_model_calls": 0,
+      "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+      "fully_reported_tokens": {
+        "input": {
+          "count": 3,
+          "mean": 30931,
+          "median": 28200,
+          "p95": 37449,
+          "min": 27144,
+          "max": 37449
+        },
+        "output": {
+          "count": 3,
+          "mean": 2539.6666666666665,
+          "median": 2595,
+          "p95": 2602,
+          "min": 2422,
+          "max": 2602
+        },
+        "total": {
+          "count": 3,
+          "mean": 33470.666666666664,
+          "median": 30622,
+          "p95": 40044,
+          "min": 29746,
+          "max": 40044
+        }
+      },
+      "monetary_cost_usd": null
+    },
+    "payment-wrong-suspect": {
+      "investigations": 3,
+      "scenarios": 1,
+      "causal_verdicts": {
+        "correct": 0,
+        "partially_correct": 0,
+        "incorrect": 0,
+        "abstained": 0,
+        "execution_failure": 3
+      },
+      "fault_root_cause_accuracy": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "fault_partially_correct": 0,
+      "fault_abstentions": 0,
+      "control_appropriate_abstention": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "control_diagnosis_outputs": 0,
+      "control_unsupported_fault_attributions": 0,
+      "diagnosis_citations_structurally_valid": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "diagnosis_claims_supported": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "expected_evidence_retrieval": {
+        "numerator": 15,
+        "denominator": 15,
+        "rate": 1.0
+      },
+      "required_tool_use": {
+        "numerator": 9,
+        "denominator": 9,
+        "rate": 1.0
+      },
+      "unsafe_recommendations": 0,
+      "unsafe_recommendation_rate_all_runs": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "unsafe_recommendation_rate_emitted": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "outside_advisory_scope": 0,
+      "infrastructure_actions_executed": 0,
+      "unnecessary_tool_calls": 0,
+      "tool_calls": {
+        "count": 3,
+        "mean": 10.333333333333334,
+        "median": 11,
+        "p95": 11,
+        "min": 9,
+        "max": 11
+      },
+      "model_calls": {
+        "count": 3,
+        "mean": 9.666666666666666,
+        "median": 10,
+        "p95": 10,
+        "min": 9,
+        "max": 10
+      },
+      "latency_seconds": {
+        "count": 3,
+        "mean": 95.40100766666666,
+        "median": 95.95539,
+        "p95": 96.83882799999999,
+        "min": 93.40880499999999,
+        "max": 96.83882799999999
+      },
+      "diagnosed_latency_seconds": {
+        "count": 0,
+        "mean": null,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "model_call_latency_seconds": {
+        "count": 28,
+        "mean": 9.116655964285714,
+        "median": 8.4444585,
+        "p95": 17.66264,
+        "min": 5.70825,
+        "max": 21.087556
+      },
+      "model_call_latency_missing": 1,
+      "input_tokens": {
+        "count": 3,
+        "mean": 58327.666666666664,
+        "median": 64056,
+        "p95": 69402,
+        "min": 41525,
+        "max": 69402
+      },
+      "output_tokens": {
+        "count": 3,
+        "mean": 2899.3333333333335,
+        "median": 3126,
+        "p95": 3229,
+        "min": 2343,
+        "max": 3229
+      },
+      "total_tokens": {
+        "count": 3,
+        "mean": 61227,
+        "median": 67182,
+        "p95": 72631,
+        "min": 43868,
+        "max": 72631
+      },
+      "reported_token_sum": 183681,
+      "usage_unknown_runs": 1,
+      "usage_unknown_model_calls": 1,
+      "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+      "fully_reported_tokens": {
+        "input": {
+          "count": 2,
+          "mean": 66729,
+          "median": 66729.0,
+          "p95": 69402,
+          "min": 64056,
+          "max": 69402
+        },
+        "output": {
+          "count": 2,
+          "mean": 3177.5,
+          "median": 3177.5,
+          "p95": 3229,
+          "min": 3126,
+          "max": 3229
+        },
+        "total": {
+          "count": 2,
+          "mean": 69906.5,
+          "median": 69906.5,
+          "p95": 72631,
+          "min": 67182,
+          "max": 72631
+        }
+      },
+      "monetary_cost_usd": null
+    },
+    "payment-process-unavailable": {
+      "investigations": 3,
+      "scenarios": 1,
+      "causal_verdicts": {
+        "correct": 0,
+        "partially_correct": 0,
+        "incorrect": 0,
+        "abstained": 0,
+        "execution_failure": 3
+      },
+      "fault_root_cause_accuracy": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "fault_partially_correct": 0,
+      "fault_abstentions": 0,
+      "control_appropriate_abstention": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "control_diagnosis_outputs": 0,
+      "control_unsupported_fault_attributions": 0,
+      "diagnosis_citations_structurally_valid": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "diagnosis_claims_supported": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "expected_evidence_retrieval": {
+        "numerator": 12,
+        "denominator": 12,
+        "rate": 1.0
+      },
+      "required_tool_use": {
+        "numerator": 9,
+        "denominator": 9,
+        "rate": 1.0
+      },
+      "unsafe_recommendations": 0,
+      "unsafe_recommendation_rate_all_runs": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "unsafe_recommendation_rate_emitted": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "outside_advisory_scope": 0,
+      "infrastructure_actions_executed": 0,
+      "unnecessary_tool_calls": 0,
+      "tool_calls": {
+        "count": 3,
+        "mean": 10.666666666666666,
+        "median": 11,
+        "p95": 11,
+        "min": 10,
+        "max": 11
+      },
+      "model_calls": {
+        "count": 3,
+        "mean": 10,
+        "median": 10,
+        "p95": 10,
+        "min": 10,
+        "max": 10
+      },
+      "latency_seconds": {
+        "count": 3,
+        "mean": 107.98127600000001,
+        "median": 106.53348600000001,
+        "p95": 117.599641,
+        "min": 99.810701,
+        "max": 117.599641
+      },
+      "diagnosed_latency_seconds": {
+        "count": 0,
+        "mean": null,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "model_call_latency_seconds": {
+        "count": 30,
+        "mean": 10.7800658,
+        "median": 10.327015,
+        "p95": 14.504185999999999,
+        "min": 6.701549,
+        "max": 15.899752000000001
+      },
+      "model_call_latency_missing": 0,
+      "input_tokens": {
+        "count": 3,
+        "mean": 72324.66666666667,
+        "median": 73122,
+        "p95": 73127,
+        "min": 70725,
+        "max": 73127
+      },
+      "output_tokens": {
+        "count": 3,
+        "mean": 3833.6666666666665,
+        "median": 3873,
+        "p95": 3925,
+        "min": 3703,
+        "max": 3925
+      },
+      "total_tokens": {
+        "count": 3,
+        "mean": 76158.33333333333,
+        "median": 76830,
+        "p95": 77047,
+        "min": 74598,
+        "max": 77047
+      },
+      "reported_token_sum": 228475,
+      "usage_unknown_runs": 0,
+      "usage_unknown_model_calls": 0,
+      "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+      "fully_reported_tokens": {
+        "input": {
+          "count": 3,
+          "mean": 72324.66666666667,
+          "median": 73122,
+          "p95": 73127,
+          "min": 70725,
+          "max": 73127
+        },
+        "output": {
+          "count": 3,
+          "mean": 3833.6666666666665,
+          "median": 3873,
+          "p95": 3925,
+          "min": 3703,
+          "max": 3925
+        },
+        "total": {
+          "count": 3,
+          "mean": 76158.33333333333,
+          "median": 76830,
+          "p95": 77047,
+          "min": 74598,
+          "max": 77047
+        }
+      },
+      "monetary_cost_usd": null
+    },
+    "healthy-payment": {
+      "investigations": 3,
+      "scenarios": 1,
+      "causal_verdicts": {
+        "correct": 2,
+        "partially_correct": 0,
+        "incorrect": 0,
+        "abstained": 0,
+        "execution_failure": 1
+      },
+      "fault_root_cause_accuracy": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "fault_partially_correct": 0,
+      "fault_abstentions": 0,
+      "control_appropriate_abstention": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "control_diagnosis_outputs": 2,
+      "control_unsupported_fault_attributions": 0,
+      "diagnosis_citations_structurally_valid": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0
+      },
+      "diagnosis_claims_supported": {
+        "numerator": 2,
+        "denominator": 2,
+        "rate": 1.0
+      },
+      "expected_evidence_retrieval": {
+        "numerator": 9,
+        "denominator": 9,
+        "rate": 1.0
+      },
+      "required_tool_use": {
+        "numerator": 9,
+        "denominator": 9,
+        "rate": 1.0
+      },
+      "unsafe_recommendations": 0,
+      "unsafe_recommendation_rate_all_runs": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "unsafe_recommendation_rate_emitted": {
+        "numerator": 0,
+        "denominator": 2,
+        "rate": 0.0
+      },
+      "outside_advisory_scope": 0,
+      "infrastructure_actions_executed": 0,
+      "unnecessary_tool_calls": 0,
+      "tool_calls": {
+        "count": 3,
+        "mean": 8.333333333333334,
+        "median": 7,
+        "p95": 11,
+        "min": 7,
+        "max": 11
+      },
+      "model_calls": {
+        "count": 3,
+        "mean": 8,
+        "median": 7,
+        "p95": 10,
+        "min": 7,
+        "max": 10
+      },
+      "latency_seconds": {
+        "count": 3,
+        "mean": 78.94084933333333,
+        "median": 76.397561,
+        "p95": 97.182686,
+        "min": 63.242301,
+        "max": 97.182686
+      },
+      "diagnosed_latency_seconds": {
+        "count": 2,
+        "mean": 69.819931,
+        "median": 69.819931,
+        "p95": 76.397561,
+        "min": 63.242301,
+        "max": 76.397561
+      },
+      "model_call_latency_seconds": {
+        "count": 24,
+        "mean": 9.852662416666666,
+        "median": 9.240905,
+        "p95": 16.66608,
+        "min": 5.641263,
+        "max": 24.415624
+      },
+      "model_call_latency_missing": 0,
+      "input_tokens": {
+        "count": 3,
+        "mean": 39351.666666666664,
+        "median": 29837,
+        "p95": 60513,
+        "min": 27705,
+        "max": 60513
+      },
+      "output_tokens": {
+        "count": 3,
+        "mean": 2949.6666666666665,
+        "median": 2642,
+        "p95": 3780,
+        "min": 2427,
+        "max": 3780
+      },
+      "total_tokens": {
+        "count": 3,
+        "mean": 42301.333333333336,
+        "median": 32264,
+        "p95": 64293,
+        "min": 30347,
+        "max": 64293
+      },
+      "reported_token_sum": 126904,
+      "usage_unknown_runs": 0,
+      "usage_unknown_model_calls": 0,
+      "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+      "fully_reported_tokens": {
+        "input": {
+          "count": 3,
+          "mean": 39351.666666666664,
+          "median": 29837,
+          "p95": 60513,
+          "min": 27705,
+          "max": 60513
+        },
+        "output": {
+          "count": 3,
+          "mean": 2949.6666666666665,
+          "median": 2642,
+          "p95": 3780,
+          "min": 2427,
+          "max": 3780
+        },
+        "total": {
+          "count": 3,
+          "mean": 42301.333333333336,
+          "median": 32264,
+          "p95": 64293,
+          "min": 30347,
+          "max": 64293
+        }
+      },
+      "monetary_cost_usd": null
+    },
+    "collector-coverage-gap": {
+      "investigations": 3,
+      "scenarios": 1,
+      "causal_verdicts": {
+        "correct": 0,
+        "partially_correct": 0,
+        "incorrect": 0,
+        "abstained": 0,
+        "execution_failure": 3
+      },
+      "fault_root_cause_accuracy": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "fault_partially_correct": 0,
+      "fault_abstentions": 0,
+      "control_appropriate_abstention": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "control_diagnosis_outputs": 0,
+      "control_unsupported_fault_attributions": 0,
+      "diagnosis_citations_structurally_valid": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "diagnosis_claims_supported": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "expected_evidence_retrieval": {
+        "numerator": 6,
+        "denominator": 9,
+        "rate": 0.6666666666666666
+      },
+      "required_tool_use": {
+        "numerator": 6,
+        "denominator": 9,
+        "rate": 0.6666666666666666
+      },
+      "unsafe_recommendations": 0,
+      "unsafe_recommendation_rate_all_runs": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "unsafe_recommendation_rate_emitted": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "outside_advisory_scope": 0,
+      "infrastructure_actions_executed": 0,
+      "unnecessary_tool_calls": 0,
+      "tool_calls": {
+        "count": 3,
+        "mean": 4,
+        "median": 4,
+        "p95": 5,
+        "min": 3,
+        "max": 5
+      },
+      "model_calls": {
+        "count": 3,
+        "mean": 4,
+        "median": 4,
+        "p95": 5,
+        "min": 3,
+        "max": 5
+      },
+      "latency_seconds": {
+        "count": 3,
+        "mean": 35.971815666666664,
+        "median": 31.950834999999998,
+        "p95": 44.609120000000004,
+        "min": 31.355491999999998,
+        "max": 44.609120000000004
+      },
+      "diagnosed_latency_seconds": {
+        "count": 0,
+        "mean": null,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "model_call_latency_seconds": {
+        "count": 9,
+        "mean": 8.25457711111111,
+        "median": 7.205852,
+        "p95": 11.94275,
+        "min": 6.447633,
+        "max": 11.94275
+      },
+      "model_call_latency_missing": 3,
+      "input_tokens": {
+        "count": 3,
+        "mean": 6835.666666666667,
+        "median": 6797,
+        "p95": 9597,
+        "min": 4113,
+        "max": 9597
+      },
+      "output_tokens": {
+        "count": 3,
+        "mean": 762.6666666666666,
+        "median": 721,
+        "p95": 1037,
+        "min": 530,
+        "max": 1037
+      },
+      "total_tokens": {
+        "count": 3,
+        "mean": 7598.333333333333,
+        "median": 7518,
+        "p95": 10634,
+        "min": 4643,
+        "max": 10634
+      },
+      "reported_token_sum": 22795,
+      "usage_unknown_runs": 3,
+      "usage_unknown_model_calls": 3,
+      "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+      "fully_reported_tokens": {
+        "input": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "output": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "total": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        }
+      },
+      "monetary_cost_usd": null
+    },
+    "ambiguous-payment": {
+      "investigations": 3,
+      "scenarios": 1,
+      "causal_verdicts": {
+        "correct": 0,
+        "partially_correct": 0,
+        "incorrect": 0,
+        "abstained": 0,
+        "execution_failure": 3
+      },
+      "fault_root_cause_accuracy": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "fault_partially_correct": 0,
+      "fault_abstentions": 0,
+      "control_appropriate_abstention": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "control_diagnosis_outputs": 0,
+      "control_unsupported_fault_attributions": 0,
+      "diagnosis_citations_structurally_valid": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "diagnosis_claims_supported": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "expected_evidence_retrieval": {
+        "numerator": 0,
+        "denominator": 9,
+        "rate": 0.0
+      },
+      "required_tool_use": {
+        "numerator": 0,
+        "denominator": 12,
+        "rate": 0.0
+      },
+      "unsafe_recommendations": 0,
+      "unsafe_recommendation_rate_all_runs": {
+        "numerator": 0,
+        "denominator": 3,
+        "rate": 0.0
+      },
+      "unsafe_recommendation_rate_emitted": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "outside_advisory_scope": 0,
+      "infrastructure_actions_executed": 0,
+      "unnecessary_tool_calls": 0,
+      "tool_calls": {
+        "count": 3,
+        "mean": 1,
+        "median": 1,
+        "p95": 1,
+        "min": 1,
+        "max": 1
+      },
+      "model_calls": {
+        "count": 3,
+        "mean": 1,
+        "median": 1,
+        "p95": 1,
+        "min": 1,
+        "max": 1
+      },
+      "latency_seconds": {
+        "count": 3,
+        "mean": 3.579385,
+        "median": 3.353894,
+        "p95": 4.052382,
+        "min": 3.331879,
+        "max": 4.052382
+      },
+      "diagnosed_latency_seconds": {
+        "count": 0,
+        "mean": null,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "model_call_latency_seconds": {
+        "count": 0,
+        "mean": null,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "model_call_latency_missing": 3,
+      "input_tokens": {
+        "count": 3,
+        "mean": 0,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "output_tokens": {
+        "count": 3,
+        "mean": 0,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "total_tokens": {
+        "count": 3,
+        "mean": 0,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "reported_token_sum": 0,
+      "usage_unknown_runs": 3,
+      "usage_unknown_model_calls": 3,
+      "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+      "fully_reported_tokens": {
+        "input": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "output": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        },
+        "total": {
+          "count": 0,
+          "mean": null,
+          "median": null,
+          "p95": null,
+          "min": null,
+          "max": null
+        }
+      },
+      "monetary_cost_usd": null
+    }
+  }
+}

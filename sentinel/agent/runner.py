@@ -170,6 +170,7 @@ class InvestigationRunner:
                     self.save(f"context-{self.model_calls:02d}.json", context)
                     self.event("model_started", call=self.model_calls, context_bytes=encoded_size(context))
                     with self.tracer.start_as_current_span("sentinel.model") as model_span:
+                        request_started = time.monotonic()
                         try:
                             reply = self.provider.step(INSTRUCTIONS, context, self.budget,
                                                        timeout=min(30, self.budget.max_seconds - elapsed))
@@ -186,7 +187,10 @@ class InvestigationRunner:
                                     self.cost += api_cost(self.provider.model, exc.usage)
                             model_span.set_status(Status(StatusCode.ERROR, "Model request failed"))
                             self.event("model_finished", call=self.model_calls, success=False, usage_unknown=exc.usage is None,
-                                       usage=exc.usage.model_dump() if exc.usage else None, response_id=exc.response_id)
+                                       usage=exc.usage.model_dump() if exc.usage else None, response_id=exc.response_id,
+                                       latency_ms=round((time.monotonic() - request_started) * 1000, 3),
+                                       provider_error_type=exc.provider_error_type, http_status=exc.http_status,
+                                       provider_error_code=exc.provider_error_code, failure_category=exc.failure_category)
                             raise
                         self.input_tokens += reply.usage.input_tokens
                         self.output_tokens += reply.usage.output_tokens
@@ -240,6 +244,8 @@ class InvestigationRunner:
         except (ValidationError, DecisionError, ContextLimit, ModelError) as exc:
             # Pydantic errors echo untrusted inputs; persist a safe reason only.
             status, reason = "failed", f"{type(exc).__name__}: invalid decision, context, or model response; inspect the local run artifacts"
+            if isinstance(exc, ModelError) and exc.failure_category == "subscription_usage_limit":
+                reason = "ChatGPT plan usage limit reached; review ChatGPT Settings > Usage. No retry or billing change was attempted."
             self.event("run_error", error_type=type(exc).__name__)
         except Exception as exc:
             status, reason = "failed", f"{type(exc).__name__}: unexpected investigation failure; inspect local artifacts"

@@ -1,6 +1,55 @@
 # Implementation progress
 
-## Current delivery status — 2026-10-05
+## Resume evaluation sprint — control follow-up blocked
+
+Canonical resume title: **Sentinel — AI Incident Investigation Agent**. The
+12-case real-telemetry catalog includes nine faults and healthy, missing-evidence,
+and ambiguous controls. The fixed `gpt-5.6-luna` cohort executed **48 AI attempts**:
+36 primary (three per case) and 12 matched context-baseline runs. Every attempt
+has a packet-bound semantic review and remains in the public ledger, including
+failures. An offline verifier recalculates the complete cohort's metrics.
+
+Primary fault accuracy was **9/27 (33.3%)**, with one partial cause, one fault
+abstention, and 16 execution failures. Material cited claims were grounded in
+**9/12 emitted diagnoses**. Appropriate explicit abstention was **0/9 controls**:
+two healthy answers correctly reported no current fault but used `diagnose`, and
+provider errors prevented missing/ambiguous terminal decisions. The native-context
+baseline diagnosed one more payment run; there is no demonstrated accuracy gain
+from ranked reduction. See [method, denominators, and limitations](validation/resume-evaluation.md).
+
+A separate 15-trial control follow-up has **three retained provider quota failures
+and 12 unexecuted triples**. ChatGPT explicitly reports its Subscription Sharing
+usage limit. New requests are paused until authorized usage is available; no paid
+fallback or repeat sign-in is attempted. A frozen c27bbb3 worktree preserves the
+original inference configuration. The sprint is **not complete** while that
+follow-up is blocked. There have been 55 sprint attempts so far: 48 fixed, three
+initial development failures, one single-call operational probe, and three
+blocked follow-up attempts. These cohorts are not pooled to improve accuracy.
+
+All 12 accepted original captures were cleaned up. Four rejected preparations
+and one pre-injection operator abort are retained. The international-checkout
+workload exercises shipping through real traffic; missing telemetry uses genuinely
+observed prior inventory without fault-specific model hints. Post-cohort changes
+incorporate these methods into the stock capture CLI, fix future catalog/admission
+defects, archive scoring catalogs, and improve safe failure diagnostics/latency.
+They do not repair or rebenchmark the agent's causal-context retention or terminal
+budget behavior. The stock shipping/coverage paths both reproduced real captures and cleanup;
+stronger admission checks also passed on those immutable observations. These
+checks made no AI request and are separate from the original study.
+
+Fresh `make check` passed **151 deterministic tests**, eight opt-in live skips,
+and compilation. Six live telemetry tests passed after those captures. TypeScript
+checks, static export, replay validation, and **22 desktop/mobile browser checks**
+passed locally; all six final screenshots were inspected. See the
+[site validation](validation/recruiter-site.md#evaluation-study-presentation)
+for publication checks. Kubernetes' two live reader tests and six permission
+checks remain historical isolated-kind evidence; this sprint's application is Compose.
+The public recording remains the original reviewed payment diagnosis. The README,
+project notes, and [resume versions](resume-entry.md) now describe the measured
+study and remaining uncertainty. No AWS, Terraform, MCP, persistent DB state,
+GitHub diagnostic tool, or agent write permissions were added.
+
+## Delivery before the evaluation sprint — 2026-10-05
 
 The resume evidence audit checked source, retained investigation/scenario records,
 git history, Docker state, hosted CI, and the public site rather than PRD intentions.

@@ -38,7 +38,7 @@ const decisions = [
     title: "Reduce data before inference",
     why: "Log grouping, selected spans, fixed queries, and source excerpts limit model context. Evidence IDs and omissions are recorded.",
     alternative:
-      "Sending all raw data would use more context. Selecting data can miss evidence, so the result includes coverage limits.",
+      "A comparison with newer native results at the same context limit used fewer tokens with reduction, but the baseline diagnosed one more payment run. The small study shows no accuracy advantage for ranked selection.",
     link: "sentinel/agent/context.py",
   },
   {
@@ -83,6 +83,18 @@ const implementation = [
   },
 ];
 const lessons = [
+  {
+    title: "Evidence omitted from context",
+    body: "Repeated trials retrieved a source branch, later omitted it from the selected context, and then requested it again. The duplicate-read policy stopped those investigations. Saving the full audit did not make the omitted payload available to the model. The evaluation preserves those failures rather than counting only completed diagnoses.",
+    source: "docs/validation/resume-evaluation.md",
+    tests: "tests/test_benchmark.py",
+  },
+  {
+    title: "Citations and causal claims",
+    body: "Some trials named the injected fault but did not cite the evidence establishing its mechanism. A cart conclusion also added Valkey to the affected services without support. Structural citation checks and semantic claim review measure different things; valid evidence IDs do not prove an explanation is correct.",
+    source: "evals/reports/resume-20261005/reviews.jsonl",
+    tests: "tests/test_benchmark.py",
+  },
   {
     title: "Streaming response parsing",
     body: "The first model investigation failed: the function call arrived in output_item.done, while the terminal response's output was empty. The adapter now accepts finalized stream items only after successful completion and reported usage. Regression tests reproduce that response shape and reject incomplete, oversized, or inconsistent streams.",
@@ -308,7 +320,7 @@ export default function Project() {
             </p>
             <div className="table-scroll">
               <table className="validation-table">
-                <caption>Validation recorded on October 5, 2026</caption>
+                <caption>Validation recorded on October 5–6, 2026</caption>
                 <thead>
                   <tr>
                     <th>Check</th>
@@ -323,9 +335,9 @@ export default function Project() {
                       </a>
                     </td>
                     <td>
-                      122 passed; eight opt-in live tests skipped. Covers
+                      151 passed; eight opt-in live tests skipped. Covers
                       parsing, context, contracts, policy, auth, transport,
-                      audit, and export behavior with fixtures.
+                      audit, evaluation grading, and export behavior with fixtures.
                     </td>
                   </tr>
                   <tr>
@@ -344,28 +356,29 @@ export default function Project() {
                   </tr>
                   <tr>
                     <td>
-                      <a href={`${REPO}/blob/main/evals/scenarios.json`}>
+                      <a href={`${REPO}/blob/main/evals/resume-scenarios.json`}>
                         Fault exercises
                       </a>
                     </td>
                     <td>
-                      Payment, EmptyCart, and intermittent ad faults were
-                      injected, captured, and reset. These three captures did
-                      not use the model.
+                      12 real-telemetry cases: nine faults and three controls.
+                      Each has one accepted capture; repeated model trials share
+                      that capture. Developer helpers restore their owned faults.
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <a
-                        href={`${REPO}/blob/main/docs/checkpoints/02-first-investigation.md`}
+                        href={`${REPO}/blob/main/docs/validation/resume-evaluation.md`}
                       >
-                        Model investigation
+                        Repeated AI evaluations
                       </a>
                     </td>
                     <td>
-                      One correct payment diagnosis after two failed development
-                      runs. No repeated trial or accuracy rate has been
-                      established.
+                      48 attempts: 36 primary and 12 context-baseline runs.
+                      Correct causes in 9/27 primary fault trials; grounded claims
+                      in 9/12 emitted diagnoses. Provider failures blocked the
+                      missing/ambiguous controls and a separate follow-up.
                     </td>
                   </tr>
                   <tr>
@@ -382,6 +395,21 @@ export default function Project() {
                   </tr>
                 </tbody>
               </table>
+            </div>
+            <p>
+              Three model runs per case measure variability over the same
+              captured observations. Failures stay in the accuracy denominator;
+              grounding applies only to emitted diagnoses. The comparison did
+              not show an accuracy benefit from ranked context. Reviews are
+              Codex-assisted, and an abstention follow-up is still incomplete.
+            </p>
+            <div className="inline-links">
+              <a href={`${REPO}/blob/main/docs/validation/resume-evaluation.md`}>
+                Method and measured results <Icon name="external" size={13} />
+              </a>
+              <a href={`${REPO}/tree/main/evals/reports/resume-20261005`}>
+                Per-run data and reviews <Icon name="external" size={13} />
+              </a>
             </div>
             <p>
               These are the payment test&apos;s before/failure/after-reset
@@ -468,10 +496,10 @@ export default function Project() {
             <h2>Current limitations</h2>
             <ul className="limits-list">
               <li>
-                <strong>Controlled example.</strong> The tested cause is a known
-                fault mechanism. Source files and configuration reads are
-                allowlisted, and the recorded diagnosis was reviewed against
-                that scenario. General investigation quality remains unmeasured.
+                <strong>Controlled evaluation.</strong> The cases use known demo
+                fault mechanisms and one capture each. Source and configuration
+                reads can reveal the injected cause. The results do not establish
+                performance on unfamiliar production incidents.
               </li>
               <li>
                 <strong>Incomplete telemetry.</strong> Samples can miss faults.
@@ -500,12 +528,12 @@ export default function Project() {
             </ul>
             <h3 className="next-experiment">Next experiment</h3>
             <p>
-              Repeated runs across different faults, including missing and
-              conflicting evidence, would help measure when the model adds
-              useful interpretation to the deterministic tools. That evaluation
-              has not been run. Broader planned capabilities are tracked in the{" "}
-              <a href={`${REPO}/blob/main/docs/progress.md`}>
-                implementation notes
+              Complete the quota-blocked controls, then test whether retaining
+              compact causal evidence and reserving a final model call improves
+              completion. That needs a separate measured comparison with fresh
+              captures and independent review. The current{" "}
+              <a href={`${REPO}/blob/main/docs/validation/resume-evaluation.md`}>
+                results and limitations
               </a>
               .
             </p>

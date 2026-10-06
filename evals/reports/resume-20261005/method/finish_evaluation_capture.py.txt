@@ -1,0 +1,43 @@
+"""Resume unaccepted cases after a pre-injection Docker management timeout."""
+from pathlib import Path
+import json
+import shutil
+import signal
+import sys
+import time
+
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
+from evals import benchmark as b
+from evals.corpus import catalog, digest, write_json
+
+COHORT=ROOT/'var/resume-evaluation/20261005-fixed'
+original_write=b.write_json
+
+def publish_ready(path,value):
+    original_write(path,value)
+    if path.name=='ready.json':
+        target=COHORT/path.parent.name
+        if target.exists():raise ValueError('Never overwrite accepted telemetry')
+        shutil.copytree(path.parent,target)
+        print('COHORT READY',path.parent.name,flush=True)
+
+def stop(signum,frame):
+    raise KeyboardInterrupt()
+
+signal.signal(signal.SIGTERM,stop)
+failed=COHORT/'_remaining-captures/payment-process-unavailable'
+archive=COHORT/'failed-preparations/runtime-baseline-timeout'
+if failed.exists():
+    if archive.exists():raise ValueError('Preserve the existing failed preparation')
+    archive.parent.mkdir(exist_ok=True)
+    shutil.copytree(failed,archive)
+write_json(COHORT/'runtime-recovery.json',{'at':time.time(),'operator_helper_sha256':digest(Path(__file__).read_bytes()),
+    'failure':'Docker ps timed out after 15 seconds during baseline runtime validation, before LabCase entry; no fault was injected.',
+    'recovery':'Docker management and all three telemetry HTTP backends respond again; all Sentinel flags are off and no tracked fault exists. Preserve the rejected preparation and recapture fresh windows.',
+    'unrelated_projects_untouched':True})
+b.write_json=publish_ready
+remaining=[s['id'] for s in catalog() if not (COHORT/s['id']/'ready.json').exists()]
+b.prepare(COHORT/'_final-captures-1',seconds=180,selected=remaining)
+write_json(COHORT/'capture-complete.json',{'scenarios':len(catalog()),'completed_at':time.time(),
+    'rejected_preparations_retained':2})

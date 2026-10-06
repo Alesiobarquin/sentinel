@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "demo_commit": "dedc0178918e260823323b8d95005a8cb924b007",
   "scenarios": [
     {
@@ -67,7 +67,7 @@
       "expected_outcome": "diagnose",
       "expected_evidence": [
         "EmptyCart errors",
-        "Corresponding warning logs",
+        "Corresponding Error-severity logs",
         "CartService EmptyCart source",
         "Enabled cartFailure snapshot",
         "Baseline comparison"
@@ -157,7 +157,7 @@
       "root_cause": "intlShippingSlowdown=5sec sleeps for five seconds on non-US ship-order requests; domestic requests and quote calls are not directly delayed.",
       "expected_outcome": "diagnose",
       "expected_evidence": [
-        "Shipping delay logs",
+        "Explicit shipping log coverage result",
         "Slow ship-order traces",
         "Baseline latency comparison",
         "Shipping source condition",
@@ -182,7 +182,7 @@
         "logs",
         "traces"
       ],
-      "limits": "One frozen capture per case; repetitions measure model variability. Bounded samples and current snapshots cannot establish complete coverage or historical state."
+      "limits": "One frozen capture per case; repetitions measure model variability. Bounded samples and current snapshots cannot establish complete coverage or historical state. This pinned target does not export shipping logs to OpenSearch; queried empty logs are a coverage limit, not health or absence of the injected delay. Real Canadian frontend checkouts exercise the fault."
     },
     {
       "id": "catalog-lock-contention",
@@ -422,7 +422,7 @@
         "source_access": true
       },
       "symptom": "A report alleges payment errors; verify whether the telemetry supports a current fault.",
-      "root_cause": "No service fault is injected. The payment baseline and incident windows contain ordinary successful traffic.",
+      "root_cause": "No service fault is injected; require successful sampled payment traffic and no sampled payment errors in both baseline and incident. This does not prove exhaustive health.",
       "expected_outcome": "abstain",
       "expected_evidence": [
         "Successful payment logs/traces",
@@ -441,7 +441,8 @@
         "Recommend no infrastructure change; inspect or escalate only if further evidence is needed."
       ],
       "noncausal_evidence": [
-        "The user's error report and fault-handling source branches are not evidence that a fault occurred; off flags do not prove all historical state."
+        "The user's error report and fault-handling source branches are not evidence that a fault occurred; off flags do not prove all historical state.",
+        "Historical startup/connectivity errors outside the incident must not be reclassified as a current fault; reject an unhealthy sampled baseline during preparation."
       ],
       "required_tools": [
         "metrics",

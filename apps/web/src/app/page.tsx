@@ -79,9 +79,15 @@ export default function Home() {
           timeout.
         </p>
         <p>
-          This demonstrates one controlled fault with readable source and an
-          available configuration snapshot. Repeated investigations and less
-          direct causes still need evaluation.
+          I then captured 12 fault and control cases and ran 48 AI evaluation
+          attempts, including a comparison of context strategies. Nine of 27
+          primary fault trials produced the correct cause; failed decisions and
+          exhausted budgets remain in that denominator. The{" "}
+          <a href={`${REPO}/blob/main/docs/validation/resume-evaluation.md`}>
+            evaluation report
+          </a>{" "}
+          includes grounding reviews and the provider failures that blocked an
+          abstention follow-up.
         </p>
         <Link href="/project/#development">
           Failure history, changes, and tests

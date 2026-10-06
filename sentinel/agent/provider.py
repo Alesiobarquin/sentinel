@@ -12,15 +12,40 @@ from sentinel.agent.contracts import Budget, InvestigationResponse, Usage
 DEFAULT_MODEL = "gpt-6-luna"
 # Standard API rates checked 2026-10-04. Subscription usage is not API dollars.
 API_RATES = {"gpt-6-luna": (0.10, 0.01, 0.50)}
+SUBSCRIPTION_LIMIT_CODE = "subscription_sharing_usage_limit_exceeded"
+
+
+def failure_metadata(error) -> dict:
+    """Keep bounded diagnostics, never an arbitrary provider message or body.
+
+    The preview can raise an APIError during streaming without an HTTP status
+    or structured code. Its known limit message is a diagnostic hint, not a
+    substitute for a server-returned code or a basis for guessing reset time.
+    """
+    code = getattr(error, "code", None)
+    status = getattr(error, "status_code", None)
+    limited = (code == SUBSCRIPTION_LIMIT_CODE or
+               "has reached their Subscription Sharing usage limit" in
+               str(getattr(error, "message", "")))
+    return {
+        "provider_error_type": type(error).__name__[:80],
+        "http_status": status if type(status) is int and 100 <= status <= 599 else None,
+        "provider_error_code": code if code == SUBSCRIPTION_LIMIT_CODE else None,
+        "failure_category": "subscription_usage_limit" if limited else "provider_failure",
+    }
 
 
 class ModelError(RuntimeError):
     """A sanitized model failure; unknown usage is recorded rather than assumed free."""
 
     def __init__(self, message: str, *, usage: Usage | None = None, response_id: str | None = None,
-                 response: dict | None = None):
+                 response: dict | None = None, provider_error_type: str | None = None,
+                 http_status: int | None = None, provider_error_code: str | None = None,
+                 failure_category: str | None = None):
         super().__init__(message)
         self.usage, self.response_id, self.response = usage, response_id, response
+        self.provider_error_type, self.http_status = provider_error_type, http_status
+        self.provider_error_code, self.failure_category = provider_error_code, failure_category
 
 
 @dataclass(frozen=True)
@@ -73,7 +98,9 @@ class OpenAIProvider:
                         if output_bytes > budget.max_response_bytes:
                             raise ModelError("Model response exceeded the local byte limit; usage is unknown")
                     if event.type in {"response.failed", "response.incomplete", "error"}:
-                        raise ModelError("Model stream reported failure or incomplete output; usage is unknown")
+                        error = getattr(getattr(event, "response", None), "error", None) or event
+                        raise ModelError("Model stream reported failure or incomplete output; usage is unknown",
+                                         **failure_metadata(error))
                     if event.type == "response.output_item.done" and event.item.type == "function_call":
                         index = event.output_index
                         if type(index) is not int or not 0 <= index < 16 or index in streamed_calls:
@@ -82,8 +109,9 @@ class OpenAIProvider:
                     if event.type == "response.completed":
                         completed = event.response
                         break
-        except OpenAIError:
-            raise ModelError("OpenAI request failed; usage may be unknown; no retry was attempted") from None
+        except OpenAIError as exc:
+            raise ModelError("OpenAI request failed; usage may be unknown; no retry was attempted",
+                             **failure_metadata(exc)) from None
         if completed is None or completed.status != "completed":
             raise ModelError("Model stream ended without a completed response; usage is unknown")
         usage = completed.usage

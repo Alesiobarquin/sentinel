@@ -27,10 +27,12 @@ files stay local. Published on GitHub Pages:
 
 The bounded agent, typed telemetry tools, policy, ChatGPT authentication, local
 audit, and self-instrumentation are implemented. Metrics/logs/traces and restricted
-Kubernetes reads passed real integration checks. Three deterministic fault
-scenarios are reproducible; broader AI evaluations, FastAPI/PostgreSQL persistence,
-incident chat, controlled remediation, MCP, and disposable AWS deployment remain
-later guide work. Checkpoints 1 and 2 are acknowledged. See
+Kubernetes reads passed real integration checks. The repeated evaluation harness
+uses a [12-case catalog](evals/resume-scenarios.json), including abstention controls
+and a context-strategy comparison; its execution and scoring are documented in
+[the evaluation report](docs/validation/resume-evaluation.md). There is no
+automatic incident detection, database incident service, executable remediation,
+MCP server, or AWS deployment. Checkpoints 1 and 2 are acknowledged. See
 [the delivery review](docs/checkpoints/05-recruiter-delivery.md),
 [the full PRD](prd.md), and [repository constraints](AGENTS.md).
 
@@ -247,21 +249,51 @@ Results are adapter and fault validation, not AI accuracy. The
 [scenario catalog](evals/scenarios.json) holds ground truth outside model context.
 See [measured validation](docs/validation/read-only-agent.md).
 
-## Measured validation
+## AI evaluation
+
+A fixed `gpt-5.6-luna` study executed **48 AI attempts across 12 real-telemetry
+cases**: three primary runs per case and 12 additional context-baseline runs.
+Repetitions replay one actual captured baseline/fault window per case; they are
+live model calls, not independent repeated injections.
+
+Primary fault accuracy was **9/27 (33.3%)**, retaining failed requests, invalid
+decisions, and exhausted budgets. Cited evidence supported material claims in
+**9/12 emitted diagnoses**. Explicit appropriate abstention was **0/9 controls**;
+provider failures prevented terminal answers on missing/ambiguous evidence.
+Semantic reviews are Codex-assisted, not independent human adjudication.
+
+The 12 matched context pairs showed no accuracy advantage for ranked reduction:
+the native-context baseline diagnosed one more payment run. Token/latency results
+and their missing-usage limits are in the
+[evaluation report](docs/validation/resume-evaluation.md), with
+[per-run data and reviews](evals/reports/resume-20261005/). A separate control
+follow-up is quota-blocked: three failed attempts retained, 12 still unexecuted.
+The sprint is incomplete. Subscription monetary cost remains unknown.
+
+Recalculate the original 48-attempt summary offline:
+
+```bash
+uv run python scripts/run_evaluation.py verify --report evals/reports/resume-20261005
+```
+
+See [capture, execution, and review instructions](docs/learning/evaluation.md).
+
+## Deterministic and integration validation
 
 ```bash
 make check
 make check-live-telemetry
 ```
 
-The latest local suite passed **122 deterministic tests**, with eight opt-in
+The latest local suite passed **151 deterministic tests**, with eight opt-in
 live tests skipped, plus Python compilation. The website passed **22 Chromium
 browser checks** across desktop and mobile, TypeScript checks, and static export.
 Six real telemetry checks and two isolated kind integration checks passed
 separately. These counts describe different validation layers, not AI accuracy.
 
-GitHub Actions checks Python 3.12/3.14, validates the public recording, builds the
-site, and runs browser checks before deploying main to Pages.
+GitHub Actions checks Python 3.12/3.14, validates the public recording, recalculates
+the evaluation summary, builds the site, and runs browser checks before deploying
+main to Pages.
 [The first website deployment](https://github.com/Alesiobarquin/sentinel/actions/runs/37349717998)
 passed every job; all 22 browser checks also passed against the actual public
 HTTPS site. Live/costly AI runs remain outside ordinary CI. See

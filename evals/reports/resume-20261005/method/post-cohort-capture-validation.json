@@ -1,0 +1,119 @@
+{
+  "at": 1791259036.7388082,
+  "cases": [
+    {
+      "scenario_id": "shipping-slowdown",
+      "ready": {
+        "scenario_id": "shipping-slowdown",
+        "corpus_sha256": "15e5017b732269f38bc6d0520a541c675f2b56acd89f95319c5311ebaee9f4dd",
+        "incident": {
+          "service": "shipping",
+          "symptom": "Shipping requests are slower than the preceding baseline.",
+          "start": 1791257663.309302,
+          "end": 1791257843.309302,
+          "baseline_start": 1791257440.061187,
+          "baseline_end": 1791257620.061187
+        },
+        "reset_at": 1791258018.385026,
+        "cleanup_completed": true
+      },
+      "checks": {
+        "checks": {
+          "real_in_window_shipping_delay_span": true,
+          "baseline_reads_succeeded": true,
+          "incident_reads_succeeded": true
+        },
+        "observations": {
+          "fault_log_marker_observed": false,
+          "delayed_shipping_spans": [
+            {
+              "span_id": "f977de4c00e77a35",
+              "start_time": 1791257836.618288,
+              "duration_ms": 5044.224
+            },
+            {
+              "span_id": "fdbbc731bd1185cf",
+              "start_time": 1791257816.547517,
+              "duration_ms": 5068.499
+            }
+          ]
+        },
+        "passed": true,
+        "interpretation": "Preparation checks only; does not grade model diagnosis or prove complete signal coverage."
+      },
+      "revalidated_admission_checks": {
+        "checks": {
+          "real_in_window_shipping_delay_span": true,
+          "baseline_reads_succeeded": true,
+          "incident_reads_succeeded": true
+        },
+        "observations": {
+          "fault_log_marker_observed": false,
+          "delayed_shipping_spans": [
+            {
+              "span_id": "f977de4c00e77a35",
+              "start_time": 1791257836.618288,
+              "duration_ms": 5044.224
+            },
+            {
+              "span_id": "fdbbc731bd1185cf",
+              "start_time": 1791257816.547517,
+              "duration_ms": 5068.499
+            }
+          ]
+        },
+        "passed": true,
+        "interpretation": "Preparation checks only; does not grade model diagnosis or prove complete signal coverage."
+      }
+    },
+    {
+      "scenario_id": "collector-coverage-gap",
+      "ready": {
+        "scenario_id": "collector-coverage-gap",
+        "corpus_sha256": "562484465c7a18a5cb38cecce0e5c406efd8183ad15d7ea3422db4249cbaeb67",
+        "incident": {
+          "service": "payment",
+          "symptom": "A report alleges payment errors, but current observability coverage must be checked.",
+          "start": 1791258281.676933,
+          "end": 1791258461.676933,
+          "baseline_start": 1791258049.385178,
+          "baseline_end": 1791258229.385178
+        },
+        "reset_at": 1791258554.144883,
+        "cleanup_completed": true
+      },
+      "checks": {
+        "checks": {
+          "real_backend_marker_present": true,
+          "baseline_reads_succeeded": true,
+          "incident_reads_succeeded": true,
+          "real_incident_telemetry_empty": true
+        },
+        "observations": {},
+        "passed": true,
+        "interpretation": "Preparation checks only; does not grade model diagnosis or prove complete signal coverage."
+      },
+      "revalidated_admission_checks": {
+        "checks": {
+          "baseline_reads_succeeded": true,
+          "incident_reads_succeeded": true,
+          "real_incident_telemetry_empty": true,
+          "baseline_telemetry_observed": true
+        },
+        "observations": {},
+        "passed": true,
+        "interpretation": "Preparation checks only; does not grade model diagnosis or prove complete signal coverage."
+      }
+    }
+  ],
+  "running_compose_services": 28,
+  "total_compose_services": 28,
+  "all_flags_off": true,
+  "tracked_evaluation_fault": false,
+  "tracked_legacy_fault": false,
+  "catalog_sha256": "04178214894d109953d2216b3d42a2d1c0fbcb16385b1c953eaaabe727c64b43",
+  "ai_requests": 0,
+  "revalidation_at": 1791259308.5370948,
+  "revalidation_source_sha256": "417e59d3657ec8e91f5b110e802bf18564e8d327184c38d99a19f283066eb408",
+  "method_note": "Stock CLI reproduced both real faults. Later admission checks were recalculated on these immutable real corpora: absent incident metrics plus positive baseline coverage are required; controls do not assert a vacuous fault marker. Original capture checks and hashes are preserved."
+}

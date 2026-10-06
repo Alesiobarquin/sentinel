@@ -92,8 +92,19 @@ Credential storage defaults to `~/.config/sentinel/`: directory `0700`, files
 `0600`, atomic replacement, and serialized rotating refresh. Tokens never enter
 model context, audit records, access logs, or browser storage. Authorization URLs
 omit the optional retained ID-token hint. One account is supported per directory;
-separate directories select separate accounts. Login has only been tested with
-local signed fixtures; a real consent/token exchange has not run yet.
+separate directories select separate accounts. Real browser consent and model
+inference completed on 2026-10-05. The original public recording and the repeated
+[evaluation study](validation/resume-evaluation.md) use that authorized flow.
+
+On 2026-10-06 the provider rejected the control follow-up with an explicit
+Subscription Sharing usage-limit message. This does not establish a reset time
+or whether the limit is plan-wide or app-specific. Review ChatGPT Settings → Usage
+and resume only after usage is available. The current adapter records safe error
+type/status/quota metadata and failed-request latency; the batch retains the
+failed attempt and stops new requests immediately on a recognized quota failure.
+Older evaluated source retained unknown usage but less transport detail.
+No automatic retry, new OAuth grant, or paid billing fallback is performed.
+See OpenAI's [recovery guidance](https://developers.openai.com/siwc/token-sharing-open-source/errors-and-recovery).
 
 `make models` uses that account's public model catalog. `uv run python -m sentinel
 logout` attempts remote revocation and clears local tokens. When remote

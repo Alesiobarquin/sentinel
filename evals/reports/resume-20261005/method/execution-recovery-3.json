@@ -1,0 +1,7 @@
+{
+  "at": 1791256492.4605172,
+  "operator_helper_sha256": "00886e7ae97c2ae40eb03acd75bc157704c3a4136840326a984bc309524d423f",
+  "reason": "Three immediate provider failures triggered the guard. Only three unexecuted triples remain. Observe SDK exception class/status/code without error bodies, headers, credentials, or changes to model request arguments; preserve all existing failures.",
+  "completed_runs_before_resume": 45,
+  "code_sha256": "bf16f03662efca7c24fd1ef93c133ce04b8778d187039156d0064206823c43f5"
+}

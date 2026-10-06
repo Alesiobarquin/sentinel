@@ -5,10 +5,12 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from evals.benchmark import evaluate
 from evals.corpus import CATALOG, CorpusTools, LabCase, catalog, cleanup, digest, request_key, write_json
 from evals.scoring import distribution, fraction, public_native, summarize, validate_review, verify_report
 from sentinel.agent.context import build_context
 from sentinel.agent.contracts import Evidence, Incident, ToolRequest
+from sentinel.agent.runner import RunResult
 from sentinel.tools.http import TelemetryError
 
 
@@ -37,6 +39,31 @@ def cases():
 
 
 class BenchmarkTests(unittest.TestCase):
+    def test_subscription_limit_stops_batch_after_retaining_the_first_failed_attempt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            write_json(root / "preparation.json", {"cases": ["fixture"]})
+            write_json(root / "fixture/ready.json", {
+                "incident": Incident(service="payment", symptom="Fixture", start=1000.0, end=1180.0).model_dump(),
+                "corpus_sha256": "fixture"})
+            run = root / "investigations/quota"
+            run.mkdir(parents=True)
+            (run / "events.jsonl").write_text('{"event":"model_finished","failure_category":"subscription_usage_limit"}\n')
+            failed = RunResult("quota", "failed", "Safe failure", None, "gpt-5.6-luna", "chatgpt",
+                               1, 1, 0, 0, 0, None, True, 1.0, ["ev_001"], str(run))
+            with patch("evals.benchmark.code_hash", return_value="frozen"), \
+                 patch("evals.benchmark.CorpusTools"), patch("evals.benchmark.model_provider") as provider, \
+                 patch("evals.benchmark.InvestigationRunner") as runner:
+                runner.return_value.run.return_value = failed
+                with self.assertRaisesRegex(ValueError, "paused new requests"):
+                    evaluate(root, model="gpt-5.6-luna", repeats=3)
+                self.assertEqual(provider.call_count, 1)
+                self.assertEqual(runner.return_value.run.call_count, 1)
+            rows = (root / "runs.jsonl").read_text().splitlines()
+            self.assertEqual(len(rows), 1)
+            self.assertTrue(json.loads(rows[0])["result"]["usage_unknown"])
+            self.assertFalse((root / "model-complete.json").exists())
+
     def test_catalog_has_distinct_faults_and_all_three_abstention_controls(self):
         scenarios = catalog()
         self.assertGreaterEqual(len(scenarios), 10)
@@ -158,6 +185,33 @@ class BenchmarkTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_review(p, bad, cases()["control"])
 
+    def test_correct_no_fault_finding_is_not_a_false_cause_or_explicit_abstention(self):
+        p = packet(status="diagnosed", scenario="control")
+        r = review(p, "correct")
+        summary = summarize([p], {p["result"]["run_id"]: r}, cases())["primary"]
+        self.assertEqual(summary["control_appropriate_abstention"], fraction(0, 1))
+        self.assertEqual(summary["control_diagnosis_outputs"], 1)
+        self.assertEqual(summary["control_unsupported_fault_attributions"], 0)
+
+    def test_unknown_usage_subtotals_are_excluded_from_complete_token_statistics(self):
+        complete = packet("complete")
+        unknown = packet("unknown", status="failed")
+        unknown["result"].update(input_tokens=900, output_tokens=100, usage_unknown=True)
+        complete["model_measurements"] = [{"latency_ms": 250, "usage_unknown": False},
+                                          {"latency_ms": 500, "usage_unknown": False}]
+        unknown["model_measurements"] = [{"latency_ms": 800, "usage_unknown": False},
+                                         {"usage_unknown": True}]
+        reviews = {p["result"]["run_id"]: review(p, verdict) for p, verdict in
+                   [(complete, "correct"), (unknown, "execution_failure")]}
+        summary = summarize([complete, unknown], reviews, cases())["primary"]
+        self.assertEqual(summary["reported_token_sum"], 1150)
+        self.assertEqual(summary["usage_unknown_runs"], 1)
+        self.assertEqual(summary["usage_unknown_model_calls"], 1)
+        self.assertEqual(summary["fully_reported_tokens"]["total"]["count"], 1)
+        self.assertEqual(summary["fully_reported_tokens"]["total"]["mean"], 150)
+        self.assertEqual(summary["model_call_latency_seconds"]["count"], 3)
+        self.assertEqual(summary["model_call_latency_missing"], 1)
+
     def test_incomplete_or_stale_semantic_reviews_cannot_produce_accuracy(self):
         p = packet()
         with self.assertRaises(ValueError):
@@ -175,7 +229,14 @@ class BenchmarkTests(unittest.TestCase):
         normal = packet("normal")
         baseline = packet("baseline", strategy="chronological_raw")
         reviews = {p["result"]["run_id"]: review(p) for p in [normal, baseline]}
-        self.assertEqual(summarize([normal, baseline], reviews, cases())["comparison"]["pairs"], 1)
+        comparison = summarize([normal, baseline], reviews, cases())["comparison"]
+        self.assertEqual(comparison["pairs"], 1)
+        self.assertEqual(comparison["complete_usage_efficiency"]["pairs"], 1)
+        baseline["result"]["usage_unknown"] = True
+        comparison = summarize([normal, baseline], reviews, cases())["comparison"]
+        self.assertEqual(comparison["complete_usage_efficiency"]["pairs"], 0)
+        self.assertEqual(comparison["structured"]["fault_root_cause_accuracy"], fraction(1, 1))
+        self.assertEqual(comparison["chronological_raw"]["fault_root_cause_accuracy"], fraction(1, 1))
         baseline["corpus_sha256"] = "different"
         with self.assertRaises(ValueError):
             summarize([normal, baseline], reviews, cases())
@@ -217,6 +278,7 @@ class BenchmarkTests(unittest.TestCase):
             config = {"catalog_sha256": digest(CATALOG.read_bytes()), "comparison_cases": [], "repeats": 3}
             write_json(root / "configuration.json", config)
             write_json(root / "preparation.json", {"cases": [case["id"]]})
+            (root / "scenarios.json").write_bytes(CATALOG.read_bytes())
             packets, reviews = [], []
             for repeat in range(1, 4):
                 p = packet(f"fixture-{repeat}", scenario=case["id"])
@@ -233,6 +295,16 @@ class BenchmarkTests(unittest.TestCase):
             summary = summarize(packets, {r["run_id"]: r for r in reviews}, {s["id"]: s for s in catalog()})
             write_json(root / "summary.json", summary)
             self.assertEqual(verify_report(root), summary)
+            future = root / "future-catalog.json"
+            future.write_text('{}')
+            with patch("evals.corpus.CATALOG", future):
+                self.assertEqual(verify_report(root), summary)
+            snapshot = root / "scenarios.json"
+            original = snapshot.read_bytes()
+            snapshot.write_bytes(original + b'\n')
+            with self.assertRaises(ValueError):
+                verify_report(root)
+            snapshot.write_bytes(original)
             write_json(root / "summary.json", {**summary, "total_investigations": 999})
             with self.assertRaises(ValueError):
                 verify_report(root)

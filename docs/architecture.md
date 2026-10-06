@@ -1,8 +1,11 @@
 # Architecture: read-only investigation stage
 
-Sentinel's product goal is evidence-driven incident investigation. The current
-implementation includes a reproducible target, native telemetry/Kubernetes reads,
-and one bounded investigation loop. Live AI diagnosis awaits ChatGPT sign-in.
+Sentinel is a local, read-only AI incident investigation agent. It includes a
+reproducible external target, native telemetry/Kubernetes reads, one bounded
+investigation loop, and a public viewer for a reviewed recording. ChatGPT sign-in
+and a real payment diagnosis have been validated. Repeated evaluation uses
+hash-bound captures from the same telemetry adapters; see
+[the evaluation method and results](validation/resume-evaluation.md).
 
 ```mermaid
 flowchart LR
@@ -55,8 +58,9 @@ dependencies. Its telemetry feeds Prometheus, Jaeger, and OpenSearch. Grafana
 provides human inspection. None of these external components is Sentinel's own
 application logic. Inspect the exact service inventory with `make demo-status`;
 the source of truth is the pinned Compose configuration, not a hypothetical PRD
-incident story. The validated runtime has 28 Compose services and 19 traced
-service identities. The browser SDK contributes `frontend-web` without a separate
+incident story. The validated runtime has 28 external Compose services. Traced
+inventory varies with traffic and Sentinel's own instrumentation. The browser
+SDK contributes `frontend-web` without a separate
 container; databases, storage, and observability containers do not each have an
 application trace identity. See the inventory in
 [checkpoint 1](checkpoints/01-architecture.md).
@@ -97,7 +101,7 @@ See [ADR 006](decisions/006-telemetry-compatibility.md) for compatibility bounda
 then a completion event with the same ID, outcome, latency, and summary. Records
 live in an ignored local JSONL file. Agent runs add evidence IDs, full payloads,
 contexts, decisions, hypotheses, usage, outcomes, and OTel spans in a separate run
-directory. Database-backed transactional persistence comes later.
+directory. Database-backed transactional persistence is not implemented.
 The current audit helper is for a single local CLI process, not a distributed
 job coordinator or durable transactional event store.
 

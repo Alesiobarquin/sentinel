@@ -1,0 +1,25 @@
+{
+  "files": [
+    {
+      "file": "finish_models_with_diagnostics.py.txt",
+      "sha256": "00886e7ae97c2ae40eb03acd75bc157704c3a4136840326a984bc309524d423f",
+      "purpose": "Exact operator preparation/observation helper snapshot, separate from evaluated inference source."
+    },
+    {
+      "file": "continue_evaluation_capture.py.txt",
+      "sha256": "3257fad03ca676abbc5c24f88a357bffb804cd289dbd15eb1ff1835f30b2ae53",
+      "purpose": "Exact operator preparation/observation helper snapshot, separate from evaluated inference source."
+    },
+    {
+      "file": "finish_evaluation_capture.py.txt",
+      "sha256": "1cf6d0a19f04cee09eb8d4f25b3da096f5bf1b45460072f03e97838965589356",
+      "purpose": "Exact operator preparation/observation helper snapshot, separate from evaluated inference source."
+    },
+    {
+      "file": "finish_control_capture.py.txt",
+      "sha256": "2811c24196ddbc809584085b0135081d2a1bd6faebf3d6102e129345ed944df8",
+      "purpose": "Exact operator preparation/observation helper snapshot, separate from evaluated inference source."
+    }
+  ],
+  "recorded_hashes_without_source_snapshot": []
+}

@@ -32,10 +32,10 @@ def write_json(path: Path, value: dict) -> None:
     temporary.replace(path)
 
 
-def catalog() -> list[dict]:
-    data = json.loads(CATALOG.read_text())
+def catalog(path: Path | None = None, *, expected_demo_commit: str | None = None) -> list[dict]:
+    data = json.loads((path or CATALOG).read_text())
     cases = data["scenarios"]
-    if data["demo_commit"] != demo.load_lock()["commit"] or len({s["id"] for s in cases}) != len(cases):
+    if data["demo_commit"] != (expected_demo_commit or demo.load_lock()["commit"]) or len({s["id"] for s in cases}) != len(cases):
         raise ValueError("Catalog identity/version is inconsistent")
     required = {"id", "category", "service", "affected_services", "injection", "symptom", "root_cause",
                 "expected_outcome", "expected_evidence", "relevant_telemetry", "acceptable_diagnosis",
@@ -140,19 +140,40 @@ def request_key(request: ToolRequest) -> str:
     return json.dumps(request.model_dump(), sort_keys=True, separators=(",", ":"))
 
 
-def capture_corpus(incident: Incident, output: Path, *, source_access: bool = True) -> dict:
+def capture_inventory(incident: Incident, output: Path) -> tuple:
+    """Observe an actual service allowlist before an outage; never assert health."""
+    tools = local_tools(incident)
+    request = ToolRequest(name="services", service=None, period=None)
+    recorder = ToolRecorder(output / "baseline-inventory-audit.jsonl")
+    result = recorder.invoke(request.name, request.model_dump(), lambda: tools.execute(request),
+                             lambda r: {"kind": r[0], "source": r[1]})
+    kind, source, raw, summary = result
+    if kind != "inventory" or source != "jaeger" or not raw.get("services"):
+        raise ValueError("Prior inventory must be a nonempty observed Jaeger result")
+    at = time.time()
+    provenance = {"observed_at": at, "limitation": "Real Jaeger inventory observed earlier; not current service health."}
+    write_json(output / "inventory-observation.json", {"observed_at": at, "backend": source,
+               "services": raw["services"], "method": "Real pre-injection read; capture bootstrap, not agent caching."})
+    return kind, "jaeger_prior_inventory", {**raw, **provenance}, {**summary, **provenance}
+
+
+def capture_corpus(incident: Incident, output: Path, *, source_access: bool = True,
+                   prior_inventory: tuple | None = None) -> dict:
     tools = local_tools(incident)
     if not source_access:
         # Model access excludes local source/configuration for the ambiguous
         # case. All telemetry still comes from the actual configured backends.
         tools.source_root = None
     records, recorder = {}, ToolRecorder(output / "capture-audit.jsonl")
+    if prior_inventory is not None:
+        tools.allowed_services.update(prior_inventory[2]["services"])
 
     def read(request):
         started = time.monotonic()
         try:
             kind, source, raw, summary = recorder.invoke(request.name, request.model_dump(),
-                lambda: tools.execute(request), lambda r: {"kind": r[0], "source": r[1]})
+                lambda: prior_inventory if prior_inventory is not None and request.name == "services"
+                        else tools.execute(request), lambda r: {"kind": r[0], "source": r[1]})
             record = {"success": True, "kind": kind, "source": source, "raw": raw, "summary": summary}
         except (TelemetryError, ValueError, OSError) as exc:
             record = {"success": False, "error_type": type(exc).__name__,

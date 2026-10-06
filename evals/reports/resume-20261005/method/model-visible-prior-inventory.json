@@ -1,0 +1,56 @@
+{
+  "source": "jaeger_prior_inventory",
+  "raw": {
+    "services": [
+      "accounting",
+      "ad",
+      "cart",
+      "checkout",
+      "currency",
+      "email",
+      "flagd",
+      "fraud-detection",
+      "frontend",
+      "frontend-proxy",
+      "frontend-web",
+      "image-provider",
+      "load-generator",
+      "payment",
+      "product-catalog",
+      "quote",
+      "recommendation",
+      "sentinel",
+      "shipping",
+      "telemetry-docs"
+    ],
+    "observed_at": 1791255475.8771,
+    "limitation": "Real Jaeger inventory observed earlier; not current service health."
+  },
+  "summary": {
+    "services": [
+      "accounting",
+      "ad",
+      "cart",
+      "checkout",
+      "currency",
+      "email",
+      "flagd",
+      "fraud-detection",
+      "frontend",
+      "frontend-proxy",
+      "frontend-web",
+      "image-provider",
+      "load-generator",
+      "payment",
+      "product-catalog",
+      "quote",
+      "recommendation",
+      "sentinel",
+      "shipping",
+      "telemetry-docs"
+    ],
+    "observed_at": 1791255475.8771,
+    "limitation": "Real Jaeger inventory observed earlier; not current service health."
+  },
+  "limitation": "Supplemental original inventory provenance; public per-run evidence projection keeps only service names."
+}

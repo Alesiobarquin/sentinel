@@ -1,0 +1,8 @@
+{
+  "at": 1791255231.466069,
+  "operator_helper_sha256": "2811c24196ddbc809584085b0135081d2a1bd6faebf3d6102e129345ed944df8",
+  "rejected_baseline": "Kafka restarted from count 6 to 7 during the settling/baseline interval, before fault injection. Its default memory/heap settings remain unchanged; no cause is asserted from the restart alone.",
+  "recovery": "Preserve rejected baseline and require a fresh interval without service restarts.",
+  "operator_preflight_stop": "An earlier helper invocation was stopped before inventory capture or fault injection to remove injection-specific wording from model-visible inventory metadata. No corpus or model call resulted.",
+  "ground_truth_boundary": "Only previously observed inventory, timestamp, and generic freshness limitation enter model context; injection method stays outside it."
+}

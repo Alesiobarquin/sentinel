@@ -154,3 +154,37 @@ Artifacts remain under `var/site-qa-peer-review/`,
 The earlier passing suite and screenshots are retained separately from the final
 readability adjustment. This review does not add another AI evaluation or
 establish production reliability.
+
+## Evaluation study presentation
+
+On October 6, the site was updated to explain the executed 48-attempt evaluation,
+with its 12 real-telemetry cases, fault-accuracy denominator, citation-grounding
+scope, provider failures, and incomplete control follow-up. Links lead to the
+methodology and per-run public records. No headline statistics or new dashboard
+were added. The original payment recording remains unchanged; the confidence
+score's calibration caveat is now visible without opening a disclosure.
+
+Local replay validation, TypeScript checks, and production static export passed.
+All **22 desktop/mobile Chromium checks passed in 7.4 seconds**, with retries
+disabled. Six screenshots covered landing, evaluation notes, and the diagnosis
+at widths 1440 and 390. All six were inspected and had document widths equal to
+their viewport widths. The diagnosis shows the original tool sequence, selected
+configuration evidence, citations, competing hypotheses, confidence caveat, and
+recommendation that the agent cannot execute.
+
+The final Python suite passed **151 deterministic tests**, eight opt-in live
+skips, and compilation. Six live telemetry checks passed separately after the
+stock shipping and collector-coverage captures; the two Kubernetes live tests
+were skipped and retain their historical isolated-kind validation. The offline
+report verifier reproduced all 48 packet-bound reviews and summary metrics.
+These checks are separate from AI investigation attempts.
+
+Artifacts remain in `var/resume-evaluation-site-browser.log`,
+`var/resume-evaluation-site-build.log`, `var/resume-evaluation-site-qa/`,
+`var/resume-evaluation-final-python.log`, and
+`var/resume-evaluation-final-live-telemetry.log`. The owned preview used port
+4187; the unrelated server on 4173 was left intact. The developer's Compose lab
+was reset and stopped using its scoped `make demo-down` command, preserving its
+volumes and leaving other projects untouched. Subscription quota prevents the
+remaining 12 control trials; this publication does not declare the evaluation
+sprint complete.

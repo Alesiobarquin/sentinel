@@ -7,14 +7,14 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://alesiobarquin.github.io"),
   title: {
-    default: "Sentinel — Student project",
+    default: "Sentinel — AI Incident Investigation Agent",
     template: "%s · Sentinel",
   },
   description:
     "A student experiment in AI incident investigation: a recorded local payment fault, implementation notes, failed attempts, source code, and tests.",
   alternates: { canonical: "/sentinel/" },
   openGraph: {
-    title: "Sentinel — Student project",
+    title: "Sentinel — AI Incident Investigation Agent",
     description:
       "A local payment-failure experiment with its recorded investigation, implementation, failed attempts, and tests.",
     type: "website",

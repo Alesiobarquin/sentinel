@@ -205,7 +205,8 @@ export function ReplayViewer() {
           <div className="timeline-footnote">
             <Icon name="check" size={15} />
             <p>
-              Eight read-only tools. Recommendations cannot execute changes.
+              Eight diagnostic reads in this run. Recommendations cannot
+              execute changes.
             </p>
           </div>
         </aside>
@@ -306,13 +307,13 @@ export function ReplayViewer() {
                     agent matched the errors to the enabled setting and the
                     corresponding source-code branch.
                   </p>
+                  <p className="fine-print">
+                    Model confidence: {replay.diagnosis.confidence}. This is a
+                    ranking score, not a calibrated probability.
+                  </p>
                   <details className="limitations">
                     <summary>Original model explanation</summary>
                     <p>{replay.diagnosis.root_cause}</p>
-                    <span className="fine-print">
-                      Model confidence: {replay.diagnosis.confidence}. This is a
-                      ranking score, not a calibrated probability.
-                    </span>
                   </details>
                   <div className="citation-row">
                     {replay.diagnosis.evidence_ids.map((id) => (

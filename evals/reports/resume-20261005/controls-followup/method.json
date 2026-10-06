@@ -1,0 +1,8 @@
+{
+  "at": 1791256807.545953,
+  "operator_helper_sha256": "05f99a83ae341f2a5f720438f5200322008313a6105b7d81934bee3b959a9fc3",
+  "purpose": "15 additional control trials (nine primary, six baseline) after provider failures prevented the first cohort from testing missing/ambiguous evidence behavior. Same original native telemetry and inference configuration; no original trial is replaced or removed.",
+  "reported_token_allowance_remaining": 1743426,
+  "original_reported_tokens_spent": 2256574,
+  "limits": "Unknown-usage requests are not assumed free. This allowance admits further calls using reported subtotals only; subscription dollars and actual credit use remain unknown."
+}

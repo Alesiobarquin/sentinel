@@ -1,0 +1,66 @@
+"""Observe sanitized SDK transport errors without changing model requests or source."""
+from pathlib import Path
+import json
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from openai import OpenAIError
+from evals import benchmark as b
+from evals.corpus import digest, write_json
+
+COHORT = ROOT/'var/resume-evaluation/20261005-fixed'
+original_provider = b.model_provider
+
+def observe(exc):
+    status = getattr(exc, 'status_code', None)
+    body = getattr(exc, 'body', None)
+    code = body.get('code') if isinstance(body, dict) else None
+    if isinstance(body, dict) and isinstance(body.get('error'), dict):
+        code = body['error'].get('code')
+    allowed = {'rate_limit_exceeded','insufficient_quota','invalid_api_key','account_deactivated',
+               'model_not_found','permission_denied','server_error','context_length_exceeded'}
+    retry = getattr(getattr(exc, 'response', None), 'headers', {}).get('retry-after')
+    with (COHORT/'transport-observations.jsonl').open('a') as stream:
+        stream.write(json.dumps({'at':time.time(), 'sdk_error_class':type(exc).__name__,
+            'http_status':status if type(status) is int else None,
+            'error_code':code if code in allowed else None,
+            'retry_after_seconds':int(retry) if retry and retry.isdigit() else None})+'\n')
+
+class ObservedStream:
+    def __init__(self, stream): self.stream=stream
+    def __enter__(self):
+        try:
+            self.entered=self.stream.__enter__()
+            return self
+        except OpenAIError as exc:
+            observe(exc)
+            raise
+    def __iter__(self):
+        try:
+            yield from self.entered
+        except OpenAIError as exc:
+            observe(exc)
+            raise
+    def __exit__(self,*args): return self.stream.__exit__(*args)
+
+def provider(model):
+    p=original_provider(model)
+    create=p.client.responses.create
+    def observed_create(**kwargs):
+        try:
+            return ObservedStream(create(**kwargs))
+        except OpenAIError as exc:
+            observe(exc)
+            raise
+    p.client.responses.create=observed_create
+    return p
+
+write_json(COHORT/'execution-recovery-3.json', {'at':time.time(),
+    'operator_helper_sha256':digest(Path(__file__).read_bytes()),
+    'reason':'Three immediate provider failures triggered the guard. Only three unexecuted triples remain. Observe SDK exception class/status/code without error bodies, headers, credentials, or changes to model request arguments; preserve all existing failures.',
+    'completed_runs_before_resume':len((COHORT/'runs.jsonl').read_text().splitlines()),
+    'code_sha256':b.code_hash()})
+b.model_provider=provider
+b.evaluate(COHORT,model='gpt-5.6-luna',repeats=3,wait_for_capture=True,aggregate_token_cap=3887726)

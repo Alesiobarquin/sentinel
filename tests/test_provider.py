@@ -3,6 +3,9 @@ from types import SimpleNamespace as NS
 import json
 import unittest
 
+import httpx
+from openai import APIError, RateLimitError
+
 from sentinel.agent.contracts import Budget, InvestigationResponse, Usage
 from sentinel.agent.provider import ModelError, OpenAIProvider, api_cost
 
@@ -35,6 +38,49 @@ def completed(arguments=None, **changes):
 
 
 class ProviderTests(unittest.TestCase):
+    def test_provider_limit_is_identified_without_copying_sensitive_error_text(self):
+        request = httpx.Request("POST", "https://api.openai.com/v1/responses")
+        errors = [
+            RateLimitError("sensitive arbitrary body sk-fixture-private", response=httpx.Response(429, request=request),
+                           body={"code": "subscription_sharing_usage_limit_exceeded", "secret": "sk-fixture-private"}),
+            APIError("The ChatGPT user has reached their Subscription Sharing usage limit. sk-fixture-private",
+                     request=request, body=None),
+        ]
+        for error in errors:
+            class FailingClient(Client):
+                def create(self, **kwargs):
+                    self.parameters = kwargs
+                    raise error
+            client = FailingClient([])
+            with self.subTest(error=type(error).__name__), self.assertRaises(ModelError) as failure:
+                OpenAIProvider("fake", client=client).step("instructions", {}, Budget())
+            details = failure.exception
+            self.assertEqual(details.failure_category, "subscription_usage_limit")
+            self.assertEqual(details.provider_error_type, type(error).__name__)
+            self.assertEqual(details.http_status, 429 if isinstance(error, RateLimitError) else None)
+            self.assertEqual(details.provider_error_code,
+                             "subscription_sharing_usage_limit_exceeded" if isinstance(error, RateLimitError) else None)
+            self.assertIsNone(details.usage)
+            self.assertNotIn("sk-fixture-private", str(details))
+            self.assertIsNone(details.response)
+        with self.assertRaises(ModelError) as failure:
+            OpenAIProvider("fake", client=Client([NS(type="error", code="subscription_sharing_usage_limit_exceeded",
+                                                   message="sk-fixture-private")])).step("instructions", {}, Budget())
+        self.assertEqual(failure.exception.failure_category, "subscription_usage_limit")
+        self.assertIsNone(failure.exception.http_status)
+        self.assertNotIn("sk-fixture-private", str(failure.exception))
+
+    def test_other_provider_errors_keep_type_without_untrusted_codes_or_messages(self):
+        class FailingClient(Client):
+            def create(self, **kwargs):
+                raise APIError("sk-fixture-secret", request=httpx.Request("POST", "https://api.openai.com"),
+                               body={"code": "sk-untrusted-code"})
+        with self.assertRaises(ModelError) as failure:
+            OpenAIProvider("fake", client=FailingClient([])).step("instructions", {}, Budget())
+        self.assertEqual(failure.exception.failure_category, "provider_failure")
+        self.assertIsNone(failure.exception.provider_error_code)
+        self.assertNotIn("sk-", str(failure.exception))
+
     def test_subscription_request_is_public_streamed_and_preview_compatible(self):
         client = Client([NS(type="response.function_call_arguments.delta", delta="{}"), completed()])
         provider = OpenAIProvider("fake", client=client)

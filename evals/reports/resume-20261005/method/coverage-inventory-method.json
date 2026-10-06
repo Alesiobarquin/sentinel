@@ -1,0 +1,30 @@
+{
+  "operator_helper_sha256": "2811c24196ddbc809584085b0135081d2a1bd6faebf3d6102e129345ed944df8",
+  "observed_at": 1791255475.8771,
+  "backend": "jaeger",
+  "capture_latency_ms": 467.2966669895686,
+  "services": [
+    "accounting",
+    "ad",
+    "cart",
+    "checkout",
+    "currency",
+    "email",
+    "flagd",
+    "fraud-detection",
+    "frontend",
+    "frontend-proxy",
+    "frontend-web",
+    "image-provider",
+    "load-generator",
+    "payment",
+    "product-catalog",
+    "quote",
+    "recommendation",
+    "sentinel",
+    "shipping",
+    "telemetry-docs"
+  ],
+  "method": "The coverage control replays a genuine pre-outage Jaeger inventory to bootstrap allowed services. All baseline/incident metrics, logs, traces, and dependencies are queried through the real adapters after collector stop. This is capture preparation, not implemented agent inventory caching.",
+  "rejected_preparation": "Initial post-stop inventory HTTP request timed out. No corpus was accepted or model request made. LabCase restored the collector."
+}

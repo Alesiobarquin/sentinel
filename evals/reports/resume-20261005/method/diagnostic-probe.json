@@ -1,0 +1,36 @@
+{
+  "at": 1791256612.211894,
+  "code_sha256": "bf16f03662efca7c24fd1ef93c133ce04b8778d187039156d0064206823c43f5",
+  "purpose": "One additional single-call operational diagnostic outside the 48-trial benchmark; it cannot replace failed trials.",
+  "budget": {
+    "max_model_calls": 1,
+    "max_tool_calls": 12,
+    "max_total_tokens": 100000,
+    "max_context_bytes": 32000,
+    "max_response_bytes": 12000,
+    "max_output_tokens": 2400,
+    "max_seconds": 300,
+    "max_api_cost_usd": 1
+  },
+  "result": {
+    "run_id": "3d18a95b-7370-40af-b06d-0a277de4efc1",
+    "status": "budget_exhausted",
+    "reason": "Wall-time or model-call budget reached",
+    "diagnosis": null,
+    "model": "gpt-5.6-luna",
+    "billing_mode": "chatgpt",
+    "model_calls": 1,
+    "tool_calls": 2,
+    "input_tokens": 1798,
+    "output_tokens": 315,
+    "cached_input_tokens": 0,
+    "approximate_api_cost_usd": null,
+    "usage_unknown": false,
+    "latency_ms": 14438.027,
+    "evidence_ids": [
+      "ev_001",
+      "ev_002"
+    ]
+  },
+  "transport_observations": []
+}

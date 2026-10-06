@@ -1,0 +1,6 @@
+{
+  "script_sha256": "3257fad03ca676abbc5c24f88a357bffb804cd289dbd15eb1ff1835f30b2ae53",
+  "shipping_workload": "Real frontend add-to-cart and checkout requests with the upstream Canadian fixture; identical driver during baseline and incident; synthetic_request baggage; local URL only.",
+  "initial_failed_capture": "Shipping flag was enabled but sampled domestic traffic did not exercise the international branch; no model used that capture.",
+  "shipping_log_limit": "Docker stdout exists but shipping log data is not exported to OpenSearch; readiness uses actual delayed server spans."
+}

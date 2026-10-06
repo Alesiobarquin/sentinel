@@ -1,0 +1,7 @@
+{
+  "at": 1791255819.51313,
+  "reason": "The model worker reached its 1200-second wait for an accepted coverage capture. No model request was made during that wait stop. Resume only the remaining unexecuted scenario/strategy/repeat triples with unchanged source/configuration and the same aggregate token allowance.",
+  "completed_runs_before_resume": 39,
+  "code_sha256": "bf16f03662efca7c24fd1ef93c133ce04b8778d187039156d0064206823c43f5",
+  "configuration_sha256": "65020183df3153604f8468eb05834ca81a2f21c7c4dc6d85beb203654f5cf3ac"
+}

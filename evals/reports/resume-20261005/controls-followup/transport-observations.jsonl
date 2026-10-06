@@ -1,0 +1,3 @@
+{"at": 1791256820.602296, "sdk_error_class": "APIError", "http_status": null, "sanitized_message": "The ChatGPT user has reached their Subscription Sharing usage limit. Ask the user to try again after their usage limit resets or use an API key instead."}
+{"at": 1791256825.3316622, "sdk_error_class": "APIError", "http_status": null, "sanitized_message": "The ChatGPT user has reached their Subscription Sharing usage limit. Ask the user to try again after their usage limit resets or use an API key instead."}
+{"at": 1791256829.706302, "sdk_error_class": "APIError", "http_status": null, "sanitized_message": "The ChatGPT user has reached their Subscription Sharing usage limit. Ask the user to try again after their usage limit resets or use an API key instead."}

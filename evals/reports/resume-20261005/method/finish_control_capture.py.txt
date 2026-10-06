@@ -1,0 +1,89 @@
+"""Capture controls with an observed pre-outage inventory; no synthetic telemetry."""
+from pathlib import Path
+import json
+import shutil
+import signal
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from evals import benchmark as b, corpus as c
+from sentinel.agent.contracts import Incident, ToolRequest
+from sentinel.agent.local import local_tools
+
+COHORT = ROOT / 'var/resume-evaluation/20261005-fixed'
+original_write, original_tools = b.write_json, c.local_tools
+inventory = None
+
+class ControlCase(c.LabCase):
+    def __enter__(self):
+        global inventory
+        inventory = None
+        if self.scenario['id'] == 'collector-coverage-gap':
+            now = time.time()
+            tools = local_tools(Incident(service='payment', symptom='Pre-outage inventory', start=now-180, end=now))
+            request = ToolRequest(name='services', service=None, period=None)
+            started = time.monotonic()
+            kind, source, raw, summary = tools.execute(request)
+            inventory = (kind, 'jaeger_prior_inventory',
+                         {**raw, 'observed_at': now, 'limitation': 'Real Jaeger inventory observed earlier; not current service health.'},
+                         {**summary, 'observed_at': now, 'limitation': 'Real Jaeger inventory observed earlier; not current service health.'})
+            c.write_json(COHORT/'coverage-inventory-method.json', {
+                'operator_helper_sha256': c.digest(Path(__file__).read_bytes()),
+                'observed_at': now, 'backend': source, 'capture_latency_ms': (time.monotonic()-started)*1000,
+                'services': raw['services'],
+                'method': 'The coverage control replays a genuine pre-outage Jaeger inventory to bootstrap allowed services. All baseline/incident metrics, logs, traces, and dependencies are queried through the real adapters after collector stop. This is capture preparation, not implemented agent inventory caching.',
+                'rejected_preparation': 'Initial post-stop inventory HTTP request timed out. No corpus was accepted or model request made. LabCase restored the collector.'})
+        return super().__enter__()
+
+    def __exit__(self, *args):
+        global inventory
+        try:
+            return super().__exit__(*args)
+        finally:
+            inventory = None
+
+def observed_tools(incident):
+    tools = original_tools(incident)
+    if inventory is not None:
+        original_execute = tools.execute
+        tools.allowed_services.update(inventory[2]['services'])
+        def execute(request):
+            if request.name == 'services':
+                return inventory
+            return original_execute(request)
+        tools.execute = execute
+    return tools
+
+def publish_ready(path, value):
+    original_write(path, value)
+    if path.name == 'ready.json':
+        target = COHORT/path.parent.name
+        if target.exists(): raise ValueError('Never overwrite accepted telemetry')
+        shutil.copytree(path.parent, target)
+        print('COHORT READY', path.parent.name, flush=True)
+
+def stop(signum, frame):
+    raise KeyboardInterrupt()
+
+signal.signal(signal.SIGTERM, stop)
+failed = COHORT/'_final-captures-1/collector-coverage-gap'
+archive = COHORT/'failed-preparations/coverage-inventory-timeout'
+if failed.exists():
+    if not archive.exists(): shutil.copytree(failed, archive)
+b.LabCase, c.local_tools, b.write_json = ControlCase, observed_tools, publish_ready
+restart_failure = COHORT/'_final-captures-3/collector-coverage-gap'
+restart_archive = COHORT/'failed-preparations/kafka-baseline-restart'
+if restart_failure.exists() and not restart_archive.exists():
+    shutil.copytree(restart_failure, restart_archive)
+c.write_json(COHORT/'control-preparation-recovery.json', {
+    'at': time.time(), 'operator_helper_sha256': c.digest(Path(__file__).read_bytes()),
+    'rejected_baseline': 'Kafka restarted from count 6 to 7 during the settling/baseline interval, before fault injection. Its default memory/heap settings remain unchanged; no cause is asserted from the restart alone.',
+    'recovery': 'Preserve rejected baseline and require a fresh interval without service restarts.',
+    'operator_preflight_stop': 'An earlier helper invocation was stopped before inventory capture or fault injection to remove injection-specific wording from model-visible inventory metadata. No corpus or model call resulted.',
+    'ground_truth_boundary': 'Only previously observed inventory, timestamp, and generic freshness limitation enter model context; injection method stays outside it.'})
+remaining = [s['id'] for s in c.catalog() if not (COHORT/s['id']/'ready.json').exists()]
+b.prepare(COHORT/'_final-captures-4', seconds=180, selected=remaining)
+c.write_json(COHORT/'capture-complete.json', {'scenarios':len(c.catalog()), 'completed_at':time.time(),
+    'rejected_preparations_retained':4, 'preflight_stops_before_capture':1})

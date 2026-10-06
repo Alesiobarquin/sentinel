@@ -1,0 +1,2 @@
+{"event": "tool_started", "call_id": "806e10b7-689b-4498-995f-e4d0bf99b9b7", "tool": "services", "arguments": {"name": "services", "service": null, "period": null}, "timestamp": "2026-10-06T02:41:51.788928+00:00"}
+{"event": "tool_finished", "call_id": "806e10b7-689b-4498-995f-e4d0bf99b9b7", "tool": "services", "timestamp": "2026-10-06T02:42:01.793758+00:00", "latency_ms": 10004.985, "success": false, "error_type": "TelemetryError"}

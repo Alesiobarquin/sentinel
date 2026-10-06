@@ -1,0 +1,6 @@
+{
+  "at": 1791256078.7865868,
+  "reason": "Three consecutive provider failures triggered the stop guard. Inspected local spans: two requests failed with unspecified upstream cause, one timed out at the wall budget, and all three last calls have unknown usage. All completed trials are retained as failures; resume only the six unexecuted ambiguous-control comparison trials with unchanged configuration. No failed trial is retried.",
+  "completed_runs_before_resume": 42,
+  "code_sha256": "bf16f03662efca7c24fd1ef93c133ce04b8778d187039156d0064206823c43f5"
+}

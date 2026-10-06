@@ -1,0 +1,10 @@
+{
+  "status": "blocked_by_subscription_sharing_usage_limit",
+  "planned_attempts": 15,
+  "executed_attempts": 3,
+  "unexecuted_attempts": 12,
+  "complete": false,
+  "reported_tokens_subtotal": 2060,
+  "usage_unknown_attempts": 3,
+  "included_in_original_accuracy": false
+}

@@ -8,8 +8,9 @@ from pathlib import Path
 import signal
 import time
 
-from evals.corpus import CATALOG, CorpusTools, LabCase, capture_corpus, catalog, digest, request_key, runtime, write_json
+from evals.corpus import CATALOG, CorpusTools, LabCase, capture_corpus, capture_inventory, catalog, digest, request_key, runtime, write_json
 from scripts import demo
+from scripts.evaluation_workload import case_workload
 from scripts.first_investigation import model_provider
 from sentinel.agent.contracts import Budget, Incident, ToolRequest
 from sentinel.agent.runner import InvestigationRunner
@@ -49,24 +50,46 @@ def preparation_checks(case: dict, corpus: dict) -> dict:
                "ad-high-cpu": "high cpu-load", "payment-bad-routing": "could not charge",
                "payment-wrong-suspect": "invalid token", "payment-process-unavailable": "could not charge",
                "ambiguous-payment": "invalid token"}
-    checks = {"real_backend_marker_present": markers.get(case["id"], "") in text}
+    checks = {"real_backend_marker_present": markers[case["id"]] in text} if case["id"] in markers else {}
+    observations = {}
+    if case["id"] == "shipping-slowdown":
+        observations["fault_log_marker_observed"] = checks.pop("real_backend_marker_present")
+        window = corpus["incident"]
+        delayed = [s for t in record("traces", "shipping", "incident")["raw"].get("traces", [])
+                   for s in t["spans"] if s["service"] == "shipping" and s["operation"] == "POST /ship-order"
+                   and window["start"] <= s["start_time"] <= window["end"] and s["duration_ms"] >= 5000]
+        checks["real_in_window_shipping_delay_span"] = bool(delayed)
+        observations["delayed_shipping_spans"] = [{k: s[k] for k in ["span_id", "start_time", "duration_ms"]} for s in delayed]
     for period in ["baseline", "incident"]:
         checks[f"{period}_reads_succeeded"] = all(record(name, service, period)["success"]
             for service in affected for name in ["metrics", "logs", "traces"])
     if case["id"] == "collector-coverage-gap":
         checks["real_incident_telemetry_empty"] = all(
             not record("logs", s, "incident")["raw"].get("groups") and
-            not record("traces", s, "incident")["raw"].get("traces") for s in affected)
+            not record("traces", s, "incident")["raw"].get("traces") and
+            all(not record("metrics", s, "incident")["raw"].get(metric, {}).get("series")
+                for metric in ["calls", "p95_duration_ms", "minimum_counter_samples"]) for s in affected)
+        checks["baseline_telemetry_observed"] = all(
+            record("logs", s, "baseline")["raw"].get("groups") and
+            record("traces", s, "baseline")["raw"].get("traces") and
+            any(sample["value"] is not None and sample["value"] > 0
+                for series in record("metrics", s, "baseline")["raw"].get("calls", {}).get("series", [])
+                for sample in series["samples"]) for s in affected)
     if case["id"] == "healthy-payment":
         logs = record("logs", "payment", "incident")["raw"]
         traces = record("traces", "payment", "incident")["raw"]
         checks["healthy_successful_traffic_observed"] = bool(logs.get("groups")) and bool(traces.get("traces"))
         checks["no_sampled_payment_error"] = not any(
             s["is_error"] and s["service"] == "payment" for t in traces.get("traces", []) for s in t["spans"])
+        baseline_logs = record("logs", "payment", "baseline")["raw"]
+        baseline_traces = record("traces", "payment", "baseline")["raw"]
+        checks["healthy_baseline_traffic_observed"] = bool(baseline_logs.get("groups")) and bool(baseline_traces.get("traces"))
+        checks["no_sampled_baseline_payment_error"] = not any(
+            s["is_error"] and s["service"] == "payment" for t in baseline_traces.get("traces", []) for s in t["spans"])
     if case["id"] == "ambiguous-payment":
         checks["source_and_configuration_unavailable"] = not record("source", "payment", None)["success"] and \
             not record("runtime_configuration", None, None)["success"]
-    return {"checks": checks, "passed": all(checks.values()),
+    return {"checks": checks, "observations": observations, "passed": all(checks.values()),
             "interpretation": "Preparation checks only; does not grade model diagnosis or prove complete signal coverage."}
 
 
@@ -77,6 +100,7 @@ def prepare(root: Path, *, seconds: int = 180, selected: list[str] | None = None
     if root.exists():
         raise ValueError("Use a new capture directory; existing evidence is immutable")
     root.mkdir(parents=True, mode=0o700)
+    (root / "scenarios.json").write_bytes(CATALOG.read_bytes())
     cases = [s for s in all_cases if selected is None or s["id"] in selected]
     write_json(root / "preparation.json", {"cases": [s["id"] for s in cases], "seconds": seconds,
                "catalog_sha256": digest(CATALOG.read_bytes()), "demo_commit": demo.load_lock()["commit"]})
@@ -84,41 +108,51 @@ def prepare(root: Path, *, seconds: int = 180, selected: list[str] | None = None
         directory = root / case["id"]
         directory.mkdir()
         print(f"CAPTURE {number}/{len(cases)} {case['id']}: clean baseline", flush=True)
-        before = runtime()
-        # Require a new complete healthy window; exclude the previous case's
-        # reset/export settling interval from the baseline.
-        pause(30 + seconds + 30)
-        baseline_end = time.time() - 30
-        baseline_start = baseline_end - seconds
-        baseline_runtime = runtime()
-        if any(not v["running"] for v in baseline_runtime):
-            raise ValueError("A target service is unavailable before fault setup")
-        before_counts = {v["name"]: v["restart_count"] for v in before}
-        if any(v["restart_count"] != before_counts[v["name"]] for v in baseline_runtime):
-            write_json(directory / "baseline-restart-failure.json", {"before": before, "after": baseline_runtime})
-            raise ValueError("Unexpected service restart contaminated the baseline; preparation stopped")
-        with LabCase(case):
-            injected_at = time.time()
-            print(f"CAPTURE {case['id']}: real incident window", flush=True)
-            pause(10 + seconds + 30)
-            incident = Incident(service=case["service"], symptom=case["symptom"], start=injected_at + 10,
-                                end=injected_at + 10 + seconds, baseline_start=baseline_start, baseline_end=baseline_end)
-            corpus = capture_corpus(incident, directory, source_access=case["injection"]["source_access"])
-            checks = preparation_checks(case, corpus)
-            write_json(directory / "preparation-checks.json", checks)
-            incident_runtime = runtime()
-            stats = demo.run(["docker", "stats", "--no-stream", "--format", "{{json .}}",
-                              "sentinel-demo-ad-1"]).strip()
-            write_json(directory / "setup.json", {"scenario": case, "baseline_runtime": baseline_runtime,
-                       "incident_runtime": incident_runtime, "injected_at": injected_at,
-                       "observed_ad_resources": json.loads(stats)})
-            if not checks["passed"]:
-                raise ValueError(f"Real scenario preparation checks failed for {case['id']}; preserve and inspect the capture")
+        with case_workload(case, directory):
+            prepare_case(case, directory, seconds)
+        corpus = json.loads((directory / "corpus.json").read_text())
         reset_at = time.time()
         write_json(directory / "ready.json", {"scenario_id": case["id"], "corpus_sha256": digest((directory / "corpus.json").read_bytes()),
                    "incident": corpus["incident"], "reset_at": reset_at, "cleanup_completed": True})
         print(f"READY {case['id']}: hash-bound real telemetry, local cleanup complete", flush=True)
     write_json(root / "capture-complete.json", {"scenarios": len(cases), "completed_at": datetime.now(timezone.utc).isoformat()})
+
+
+def prepare_case(case: dict, directory: Path, seconds: int):
+    before = runtime()
+    # Require a new complete healthy window; exclude the previous case's
+    # reset/export settling interval from the baseline.
+    pause(30 + seconds + 30)
+    baseline_end = time.time() - 30
+    baseline_start = baseline_end - seconds
+    baseline_runtime = runtime()
+    if any(not v["running"] for v in baseline_runtime):
+        raise ValueError("A target service is unavailable before fault setup")
+    before_counts = {v["name"]: v["restart_count"] for v in before}
+    if any(v["restart_count"] != before_counts[v["name"]] for v in baseline_runtime):
+        write_json(directory / "baseline-restart-failure.json", {"before": before, "after": baseline_runtime})
+        raise ValueError("Unexpected service restart contaminated the baseline; preparation stopped")
+    prior = None
+    if case["id"] == "collector-coverage-gap":
+        prior = capture_inventory(Incident(service=case["service"], symptom="Prior service inventory",
+            start=baseline_start, end=baseline_end), directory)
+    with LabCase(case):
+        injected_at = time.time()
+        print(f"CAPTURE {case['id']}: real incident window", flush=True)
+        pause(10 + seconds + 30)
+        incident = Incident(service=case["service"], symptom=case["symptom"], start=injected_at + 10,
+                            end=injected_at + 10 + seconds, baseline_start=baseline_start, baseline_end=baseline_end)
+        corpus = capture_corpus(incident, directory, source_access=case["injection"]["source_access"], prior_inventory=prior)
+        checks = preparation_checks(case, corpus)
+        write_json(directory / "preparation-checks.json", checks)
+        incident_runtime = runtime()
+        stats = demo.run(["docker", "stats", "--no-stream", "--format", "{{json .}}",
+                          "sentinel-demo-ad-1"]).strip()
+        write_json(directory / "setup.json", {"scenario": case, "baseline_runtime": baseline_runtime,
+                   "incident_runtime": incident_runtime, "injected_at": injected_at,
+                   "observed_ad_resources": json.loads(stats)})
+        if not checks["passed"]:
+            raise ValueError(f"Real scenario preparation checks failed for {case['id']}; preserve and inspect the capture")
 
 
 def evaluate(root: Path, *, model: str, repeats: int = 3, wait_for_capture: bool = False,
@@ -179,6 +213,9 @@ def evaluate(root: Path, *, model: str, repeats: int = 3, wait_for_capture: bool
                     stream.flush()
                 total_tokens += result.input_tokens + result.output_tokens
                 print(f"RESULT {result.status} calls={result.model_calls}/{result.tool_calls} tokens={result.input_tokens + result.output_tokens} elapsed={result.latency_ms/1000:.1f}s", flush=True)
+                events = (Path(result.directory) / "events.jsonl").read_text().splitlines()
+                if any(json.loads(e).get("failure_category") == "subscription_usage_limit" for e in events):
+                    raise ValueError("ChatGPT plan usage limit reached; paused new requests. Review ChatGPT Settings > Usage before continuing.")
                 consecutive_failures = consecutive_failures + 1 if result.status == "failed" else 0
                 if consecutive_failures >= 3:
                     raise ValueError("Three consecutive failed runs; stopped without retrying or hiding them")

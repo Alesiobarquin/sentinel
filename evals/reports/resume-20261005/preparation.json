@@ -1,0 +1,19 @@
+{
+  "cases": [
+    "payment-failure",
+    "cart-failure",
+    "ad-failure",
+    "shipping-slowdown",
+    "catalog-lock-contention",
+    "ad-high-cpu",
+    "payment-bad-routing",
+    "payment-wrong-suspect",
+    "payment-process-unavailable",
+    "healthy-payment",
+    "collector-coverage-gap",
+    "ambiguous-payment"
+  ],
+  "seconds": 180,
+  "catalog_sha256": "e813e73e669fea378632c10c03dfa375935e98c3cbdfaad3f66369b873a49e15",
+  "demo_commit": "dedc0178918e260823323b8d95005a8cb924b007"
+}

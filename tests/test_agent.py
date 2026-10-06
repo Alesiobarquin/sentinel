@@ -171,6 +171,24 @@ class AgentTests(unittest.TestCase):
         self.assertEqual(result.model_calls, 1)
         self.assertIn('"usage_unknown": true', artifacts["events.jsonl"])
 
+    def test_failed_request_records_latency_and_safe_quota_metadata_without_retry(self):
+        failure = ModelError("Safe failure", provider_error_type="RateLimitError", http_status=429,
+                             provider_error_code="subscription_sharing_usage_limit_exceeded",
+                             failure_category="subscription_usage_limit")
+        result, artifacts, provider, _ = self.run_fixture([failure])
+        self.assertEqual(result.status, "failed")
+        self.assertEqual(result.model_calls, 1)
+        self.assertEqual(len(provider.contexts), 1)
+        self.assertTrue(result.usage_unknown)
+        self.assertIsNone(result.approximate_api_cost_usd)
+        self.assertIn("usage limit reached", result.reason)
+        events = [json.loads(line) for line in artifacts["events.jsonl"].splitlines()]
+        finished = next(e for e in events if e["event"] == "model_finished")
+        self.assertGreaterEqual(finished["latency_ms"], 0)
+        self.assertEqual(finished["http_status"], 429)
+        self.assertEqual(finished["failure_category"], "subscription_usage_limit")
+        self.assertIsNone(finished["usage"])
+
     def test_invalid_completed_model_output_retains_measured_usage(self):
         failure = ModelError("Invalid completed output", usage=Usage(input_tokens=100, output_tokens=50), response_id="completed-invalid")
         result, artifacts, _, _ = self.run_fixture([failure])

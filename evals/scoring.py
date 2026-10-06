@@ -6,7 +6,7 @@ from pathlib import Path
 import statistics
 from copy import deepcopy
 
-from evals.corpus import catalog, digest, write_json
+from evals.corpus import CATALOG, catalog, digest, write_json
 from sentinel.agent.contracts import Evidence, InvestigationStep
 from sentinel.agent.runner import validate_references
 from sentinel.replay import METRIC, SECRET, SUMMARIES, project
@@ -98,7 +98,8 @@ def review_packet(row: dict) -> dict:
               "result": result, "tool_requests": tools, "decisions": decisions,
               "evidence": [{**public_evidence(e), "native_result": public_native(e, json.loads((directory / e.payload_file).read_text()))}
                            for e in evidence], "context_selection": context_stats,
-              "model_measurements": [{k: e[k] for k in ["call", "success", "model", "latency_ms", "usage", "usage_unknown"] if k in e}
+              "model_measurements": [{k: e[k] for k in ["call", "success", "model", "latency_ms", "usage", "usage_unknown",
+                  "provider_error_type", "http_status", "provider_error_code", "failure_category"] if k in e}
                                      for e in events if e["event"] == "model_finished"]}
     encoded = json.dumps(packet, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
     if SECRET.search(encoded.decode()):
@@ -184,12 +185,17 @@ def summarize(packets: list[dict], reviews: dict[str, dict], cases: dict[str, di
         expected_total = sum(len(cases[p["scenario_id"]]["expected_evidence"]) for p in rows)
         required_counts = [(len(set(cases[p["scenario_id"]]["required_tools"]) & {t["name"] for t in p["tool_requests"]}),
                             len(cases[p["scenario_id"]]["required_tools"])) for p in rows]
+        complete_usage = [r for r in results if not r["usage_unknown"]]
+        measurements = [m for p in rows for m in p.get("model_measurements", [])]
+        model_latencies = [m["latency_ms"] / 1000 for m in measurements if "latency_ms" in m]
         return {"investigations": len(rows), "scenarios": len({p["scenario_id"] for p in rows}), "causal_verdicts": counts,
             "fault_root_cause_accuracy": fraction(sum(review(p)["root_cause"] == "correct" for p in faults), len(faults)),
             "fault_partially_correct": sum(review(p)["root_cause"] == "partially_correct" for p in faults),
             "fault_abstentions": sum(review(p)["root_cause"] == "abstained" for p in faults),
             "control_appropriate_abstention": fraction(sum(review(p)["appropriate_abstention"] for p in controls), len(controls)),
-            "control_false_diagnoses": sum(p["result"]["status"] == "diagnosed" for p in controls),
+            "control_diagnosis_outputs": sum(p["result"]["status"] == "diagnosed" for p in controls),
+            "control_unsupported_fault_attributions": sum(p["result"]["status"] == "diagnosed" and
+                review(p)["root_cause"] in {"incorrect", "partially_correct"} for p in controls),
             "diagnosis_citations_structurally_valid": fraction(citations_valid, len(diagnosed)),
             "diagnosis_claims_supported": fraction(sum(review(p)["claims_supported"] is True for p in diagnosed), len(diagnosed)),
             "expected_evidence_retrieval": fraction(sum(len(review(p)["important_evidence_retrieved"]) for p in rows), expected_total),
@@ -203,11 +209,20 @@ def summarize(packets: list[dict], reviews: dict[str, dict], cases: dict[str, di
             "tool_calls": distribution([r["tool_calls"] for r in results]),
             "model_calls": distribution([r["model_calls"] for r in results]),
             "latency_seconds": distribution([r["latency_ms"] / 1000 for r in results]),
+            "diagnosed_latency_seconds": distribution([p["result"]["latency_ms"] / 1000 for p in diagnosed]),
+            "model_call_latency_seconds": distribution(model_latencies),
+            "model_call_latency_missing": sum(r["model_calls"] for r in results) - len(model_latencies),
             "input_tokens": distribution([r["input_tokens"] for r in results]),
             "output_tokens": distribution([r["output_tokens"] for r in results]),
             "total_tokens": distribution([r["input_tokens"] + r["output_tokens"] for r in results]),
             "reported_token_sum": sum(r["input_tokens"] + r["output_tokens"] for r in results),
             "usage_unknown_runs": sum(r["usage_unknown"] for r in results),
+            "usage_unknown_model_calls": sum(m.get("usage_unknown", False) for m in measurements),
+            "token_statistics_basis": "Reported subtotals; incomplete runs are lower bounds. See fully_reported_tokens for complete-usage runs only.",
+            "fully_reported_tokens": {
+                "input": distribution([r["input_tokens"] for r in complete_usage]),
+                "output": distribution([r["output_tokens"] for r in complete_usage]),
+                "total": distribution([r["input_tokens"] + r["output_tokens"] for r in complete_usage])},
             "monetary_cost_usd": None if not results or any(r["approximate_api_cost_usd"] is None for r in results)
                                   else sum(r["approximate_api_cost_usd"] for r in results)}
 
@@ -221,9 +236,18 @@ def summarize(packets: list[dict], reviews: dict[str, dict], cases: dict[str, di
         match = next(p for p in paired if (p["scenario_id"], p["repeat"]) == (b["scenario_id"], b["repeat"]))
         if match["corpus_sha256"] != b["corpus_sha256"] or match["configuration_sha256"] != b["configuration_sha256"]:
             raise ValueError("Comparison arms used different evidence/configuration")
+    complete_keys = {(b["scenario_id"], b["repeat"]) for b in baseline if not b["result"]["usage_unknown"]} & {
+        (p["scenario_id"], p["repeat"]) for p in paired if not p["result"]["usage_unknown"]}
+    def complete_efficiency(rows):
+        selected = [p for p in rows if (p["scenario_id"], p["repeat"]) in complete_keys]
+        stats = group(selected)
+        return {key: stats[key] for key in ["tool_calls", "model_calls", "latency_seconds", "fully_reported_tokens"]}
     return {"schema_version": 1, "review_method": "Codex-assisted semantic review; not independent human adjudication",
-            "total_investigations": len(packets), "primary": group(structured),
-            "comparison": {"pairs": len(paired), "structured": group(paired), "chronological_raw": group(baseline)},
+            "total_investigations": len(packets), "all_runs": group(packets), "primary": group(structured),
+            "comparison": {"pairs": len(paired), "structured": group(paired), "chronological_raw": group(baseline),
+                "complete_usage_efficiency": {"pairs": len(complete_keys),
+                    "scope": "Both arms have fully reported usage. Descriptive efficiency subset; failures remain in all-pair accuracy. Not a causal claim about context quality.",
+                    "structured": complete_efficiency(paired), "chronological_raw": complete_efficiency(baseline)}},
             "per_scenario": {name: group([p for p in structured if p["scenario_id"] == name]) for name in cases
                              if any(p["scenario_id"] == name for p in structured)}}
 
@@ -235,9 +259,14 @@ def report(root: Path, reviews_path: Path, output: Path) -> dict:
     reviews = {r["run_id"]: r for r in reviews_list}
     if len(reviews) != len(reviews_list) or set(reviews) != {p["result"]["run_id"] for p in packets}:
         raise ValueError("Each run needs exactly one bound semantic review")
-    cases = {s["id"]: s for s in catalog()}
     preparation = json.loads((root / "preparation.json").read_text())
     config = json.loads((root / "configuration.json").read_text())
+    snapshot = root / "scenarios.json"
+    if not snapshot.exists():
+        snapshot = CATALOG
+    if digest(snapshot.read_bytes()) != config["catalog_sha256"]:
+        raise ValueError("Report must use the evaluated ground-truth catalog, not its current replacement")
+    cases = {s["id"]: s for s in catalog(snapshot, expected_demo_commit=preparation.get("demo_commit"))}
     expected = {(name, strategy, repeat) for name in preparation["cases"]
                 for strategy in (["structured", "chronological_raw"] if name in config["comparison_cases"] else ["structured"])
                 for repeat in range(1, config["repeats"] + 1)}
@@ -246,6 +275,7 @@ def report(root: Path, reviews_path: Path, output: Path) -> dict:
         raise ValueError("Incomplete or duplicate evaluation cohort; do not report it as complete")
     summary = summarize(packets, reviews, cases)
     output.mkdir(parents=True, exist_ok=True)
+    (output / "scenarios.json").write_bytes(snapshot.read_bytes())
     with (output / "investigations.jsonl").open("w") as stream:
         for packet in packets:
             stream.write(json.dumps(packet, separators=(",", ":"), allow_nan=False) + "\n")
@@ -277,7 +307,10 @@ def verify_report(output: Path) -> dict:
     config_path = output / "configuration.json"
     config = json.loads(config_path.read_text())
     preparation = json.loads((output / "preparation.json").read_text())
-    if config["catalog_sha256"] != digest(Path(__file__).with_name("resume-scenarios.json").read_bytes()):
+    snapshot = output / "scenarios.json"
+    if not snapshot.exists():
+        snapshot = CATALOG
+    if config["catalog_sha256"] != digest(snapshot.read_bytes()):
         raise ValueError("Published report requires its exact ground-truth catalog version")
     expected = {(name, strategy, repeat) for name in preparation["cases"]
                 for strategy in (["structured", "chronological_raw"] if name in config["comparison_cases"] else ["structured"])
@@ -291,7 +324,7 @@ def verify_report(output: Path) -> dict:
             raise ValueError("Published investigation was altered after review")
         if p["configuration_sha256"] != digest(config_path.read_bytes()):
             raise ValueError("Published configuration differs from the evaluated configuration")
-    summary = summarize(packets, reviews, {s["id"]: s for s in catalog()})
+    summary = summarize(packets, reviews, {s["id"]: s for s in catalog(snapshot, expected_demo_commit=preparation.get("demo_commit"))})
     if summary != json.loads((output / "summary.json").read_text()):
         raise ValueError("Published metrics do not match per-run results and reviews")
     return summary

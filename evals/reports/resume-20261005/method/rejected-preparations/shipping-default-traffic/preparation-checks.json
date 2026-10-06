@@ -1,0 +1,9 @@
+{
+  "checks": {
+    "real_backend_marker_present": false,
+    "baseline_reads_succeeded": true,
+    "incident_reads_succeeded": true
+  },
+  "passed": false,
+  "interpretation": "Preparation checks only; does not grade model diagnosis or prove complete signal coverage."
+}

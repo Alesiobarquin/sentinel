@@ -1,0 +1,7 @@
+{
+  "at": 1791252974.105959,
+  "operator_helper_sha256": "1cf6d0a19f04cee09eb8d4f25b3da096f5bf1b45460072f03e97838965589356",
+  "failure": "Docker ps timed out after 15 seconds during baseline runtime validation, before LabCase entry; no fault was injected.",
+  "recovery": "Docker management and all three telemetry HTTP backends respond again; all Sentinel flags are off and no tracked fault exists. Preserve the rejected preparation and recapture fresh windows.",
+  "unrelated_projects_untouched": true
+}

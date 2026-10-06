@@ -26,10 +26,41 @@ read immutable captured responses, so they do not observe a later case's flags.
 Both comparison arms use the same corpus, instructions, and budgets. Completed
 runs are retained on restart; source/config changes require a new cohort.
 Model failures are never retried or converted into evidence of abstention.
+The current harness stops new requests immediately after a recognized subscription
+usage-limit failure; generic failures stop after three consecutive failed runs.
+Both retain completed attempts. Do not use sign-in loops or paid fallbacks to
+work around an account/app limit. A model catalog listing proves model access,
+not that sufficient usage remains for a study.
+The simpler baseline keeps the newest complete native results first, without
+signal ranking or the agent's additional result reduction. Both strategies
+retain an evidence index and explicit omission IDs within 32,000 bytes.
 
 Private corpora, contexts, native SDK records, and run files remain under `var/`.
 The report exporter selects publication fields and screens common credential and
 private-path patterns; it does not make full private files public.
+
+### Real capture preparation
+
+International shipping needs non-US orders; default domestic traffic may never
+exercise its delay. The stock capture runs `scripts/evaluation_workload.py`
+during both baseline and incident, sending actual loopback cart/checkout requests
+with the upstream Canadian fixture. It requires an in-window five-second shipping
+server span, records empty shipping log coverage, audits only safe request
+metadata, and joins the workload thread before marking the case ready. This is
+closed-loop traffic, not a fixed-arrival performance benchmark.
+
+Before stopping the collector, capture queries a real Jaeger service inventory
+to bootstrap tool service permissions. Only its observed service names, time,
+and a generic freshness limit enter model context. The injected method remains
+outside it. Missing telemetry is then queried through the real adapters; no
+synthetic empty responses are inserted. Runtime guards reject interrupted or
+restarted baselines. Healthy controls require sampled traffic and no payment
+error spans in both windows.
+
+Each capture archives the exact catalog bytes. Reporting verifies that snapshot's
+hash, even when the current definitions are corrected later. Do not retroactively
+rescore a cohort with easier evidence categories or quietly replace a failed
+preparation/model trial.
 
 ## Semantic review rubric
 
@@ -54,6 +85,10 @@ Valid evidence IDs alone are insufficient. Trace sampling, missing counters,
 current configuration, and source-image provenance limits apply to every verdict.
 Log messages naming Redis/Invalid token, long upstream spans, and a gold loyalty
 attribute do not independently prove the corresponding causal interpretation.
+Check explicit citations in the diagnosis text as well as its structured list.
+The application validates typed citation fields, not every reference embedded
+in prose. Whole matching traces can include child spans outside the requested
+window; inspect their timestamps before equating them with in-window metrics.
 
 Record the catalog's expected evidence actually retrieved, required tool use,
 unnecessary calls, and unsafe/advisory recommendations. A reasonable baseline
@@ -67,18 +102,64 @@ including failed runs. Partial credit is reported separately rather than blended
 into accuracy. Grounding uses produced diagnoses as its denominator. Unsafe
 recommendation rate is explicitly over all reviewed runs. Expected evidence and
 required-tool coverage are descriptive, not calibrated retrieval/selection accuracy.
+The healthy case can produce a factually supported no-current-fault conclusion
+through `diagnose`. Record that semantic verdict separately from the prescribed
+explicit-abstention terminal state; it is not a fabricated fault attribution.
+The report also shows unsafe recommendations over emitted diagnoses, so a failed
+run with no recommendation cannot make the system appear safer by itself.
 
 The report uses arithmetic means, medians, and nearest-rank p95. Runner latency
 includes model requests, replay work, and trace shutdown; it excludes capture,
 sign-in preflight, and fault settling. Captured backend latency is retained
 separately. Subscription dollar cost is unknown, not zero. Repetitions share one
 capture, so these measurements cannot establish general production reliability.
+Unknown-usage runs contain reported subtotals, not full consumption. Complete-token
+statistics exclude those runs. The comparison's complete-usage efficiency subset
+requires known usage in both members of a pair; do not remove failed pairs from
+accuracy or attribute speed to successful reasoning when requests never completed.
 
 After adding bound reviews, produce machine-readable public results:
 
 ```sh
 uv run python scripts/run_evaluation.py report --corpora var/resume-evaluation/NEW_COHORT --reviews var/resume-evaluation/NEW_COHORT/reviews.jsonl --output evals/reports/NEW_COHORT
+uv run python scripts/run_evaluation.py verify --report evals/reports/NEW_COHORT
 ```
+
+`verify` recalculates the published summary from the public investigation and
+review JSONL files. It checks cohort completeness, packet/configuration hashes,
+ground-truth catalog identity, and review binding without model credentials or
+private run directories. Recalculation verifies arithmetic and provenance;
+independent judgment is still needed to challenge the semantic reviews.
+
+## Continuing the frozen control cohort
+
+The original 48 trials are complete. The separate 15-trial control follow-up has
+three retained quota failures and 12 unexecuted triples. New requests are paused
+until the authorized account/app usage is available. OpenAI's
+[recovery guidance](https://developers.openai.com/siwc/token-sharing-open-source/errors-and-recovery)
+does not establish a reset time from the error alone; review ChatGPT Settings → Usage.
+
+Use the existing frozen c27bbb3 worktree and absolute corpus path in this workspace.
+The current main source/catalog has later preparation/reporting/observability
+changes, so it correctly fails the original configuration-identity check.
+
+```sh
+sentinel_project="$(pwd)"
+# Already prepared in this workspace; otherwise create this detached checkout.
+git worktree add --detach var/evaluation-source c27bbb317f7666a10b54e3f317db18d8230c0563
+cd var/evaluation-source
+"$sentinel_project/.venv/bin/python" scripts/run_evaluation.py evaluate \
+  --corpora "$sentinel_project/var/resume-evaluation/20261005-controls-followup" \
+  --model gpt-5.6-luna --repeats 3 --token-cap 1743426
+```
+
+Do not recreate an existing worktree or change the saved allowance. The frozen
+runner retains its older three-failure guard; stop if quota persists. Continuation
+must skip existing triples, preserve every failed attempt, keep the original
+inference fingerprint and catalog, and report the follow-up separately. Model
+availability/account timing is a confounder, not an architecture improvement.
+The local prepared operator helper also observes safe transport failures without
+changing model request arguments. Full-context/SDK records remain private.
 
 ## Questions to explain
 
@@ -89,3 +170,9 @@ uv run python scripts/run_evaluation.py report --corpora var/resume-evaluation/N
 4. Which data reaches the model, the private audit, and the public report?
 5. How do correlated repetitions limit claims about uncertainty/generalization?
 6. What was changed in the local target, and how does it avoid baseline confounding?
+7. Why did retrieving the correct source fail to ensure it remained usable in
+   later context, and why does the duplicate-read policy matter?
+8. Why did the native baseline diagnose one more fault despite higher average
+   token use? What would a new fair comparison need to change and hold fixed?
+9. How do provider failures, imperfect controls, and assisted grading limit the
+   observed accuracy and abstention claims?
